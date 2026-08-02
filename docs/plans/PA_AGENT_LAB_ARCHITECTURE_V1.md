@@ -144,15 +144,22 @@ ADR-0006 accepts:
 - a pinned PostgreSQL plus `pgvector` Docker image as the sole initial system of record;
 - Python only after a separately approved training contract, except for the isolated Phase 8 replay sidecar governed by ADR-0007.
 
+Accepted charting boundary under ADR-0012:
+
+- repository-owned fixed SVG candle/grid/continuity scene;
+- unmodified `@resvg/resvg-js@2.6.2` rasterization;
+- byte-validated `1200 x 720` PNG artifacts with content-addressed local storage.
+
+Future on-demand agent chart capability should wrap this seam in a project-scoped MCP plus skill rather than fetch market data or control TradingView.
+
 Implementation candidates that do not yet authorize dependencies are:
 
 - API: Fastify, Zod, and generated OpenAPI;
 - UI: React, Vite, and TypeScript;
-- charting: TradingView Lightweight Charts or an audited repository-local renderer;
 - large offline candle analysis: Parquet and DuckDB when needed;
 - model access: a small provider-neutral adapter with structured-output support.
 
-The implemented `@pa-agent-lab/contracts` Phase 1 slices use pinned TypeScript and Node's built-in test runner with no runtime dependency. ADR-0008 defines scheduling, ADR-0010 defines semantic output, and ADR-0011 defines causal input, outbound privacy, and model-run audit. None authorizes provider access.
+The implemented `@pa-agent-lab/contracts` slices have no runtime dependency. `@pa-agent-lab/chart-renderer` uses only ADR-0012's exact resvg-js dependency. ADR-0008 defines scheduling, ADR-0010 semantic output, ADR-0011 causal input and run audit, and ADR-0012 chart artifacts. None authorizes provider access.
 
 Do not introduce SQLite, Qdrant, Chroma, Redis, Neo4j, LangChain, or LlamaIndex initially. Explicit retrieval and orchestration code is easier to audit for leakage, authority, and version identity.
 

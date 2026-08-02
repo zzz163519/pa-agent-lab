@@ -7,8 +7,8 @@
     "node": ">=24.18.0"
   },
   "scripts": {
-    "test": "node --test packages/contracts/test/*.test.ts",
-    "typecheck": "tsc -p packages/contracts/tsconfig.json"
+    "test": "node --test packages/*/test/*.test.ts",
+    "typecheck": "tsc -p packages/contracts/tsconfig.json && tsc -p packages/chart-renderer/tsconfig.json"
   },
   "devDependencies": {
     "@types/node": "24.13.3",

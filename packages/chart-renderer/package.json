@@ -1,0 +1,13 @@
+{
+  "name": "@pa-agent-lab/chart-renderer",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./anonymous-chart-renderer-v1": "./src/anonymous-chart-renderer-v1.ts"
+  },
+  "dependencies": {
+    "@pa-agent-lab/contracts": "workspace:*",
+    "@resvg/resvg-js": "2.6.2"
+  }
+}

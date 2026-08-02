@@ -1,6 +1,6 @@
 # ADR-0011: Causal Policy Input and Model-Run Audit Contracts
 
-Status: ACCEPTED. IMPLEMENTED AS A PHASE 1 CONTRACT SLICE.
+Status: ACCEPTED. IMPLEMENTED AS A PHASE 1 CONTRACT SLICE. SPECIALIZED BY ADR-0012 FOR CHART ARTIFACTS.
 
 ## Decision
 
@@ -24,7 +24,7 @@ normalizedPrice = rawPrice / firstVisibleClose * 100
 
 The context chart manifest covers the complete visible prefix. The detail chart manifest covers exactly the final 40 bars. Both are `image/png`, are content-addressed by SHA-256, and share the same anonymous `lastVisibleBarId`. The model-input hash commits to normalized OHLC, continuity, both chart manifests, and the retrieved Doctrine RAG records.
 
-Chart manifests reference deterministic image artifacts; image-byte storage, rendering, and provider-specific multipart/base64 transport remain separate later contracts.
+ADR-0012 now implements deterministic image rendering, byte validation, and local content-addressed storage. Provider-specific multipart/base64 transport remains separate.
 
 ## Outbound privacy
 
@@ -57,11 +57,10 @@ Public modules:
 
 Both are exported from `@pa-agent-lab/contracts` and as package subpaths. Builders validate runtime values, use a strict canonical-JSON subset that rejects lossy or cyclic hash preimages, create SHA-256 identities, and deeply freeze accepted records. No runtime dependency is added.
 
-## Not authorized or implemented
+## Not authorized or implemented by this ADR
 
 This ADR does not authorize or implement:
 
-- chart rendering or storage;
 - provider-specific image transport or external model calls;
 - retry, timeout, rate-limit, usage, or pricing policy;
 - database persistence or uniqueness constraints;

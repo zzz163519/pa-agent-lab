@@ -116,7 +116,7 @@ These tests prove contract, causality, privacy-field, and immutable-identity beh
 
 ## Deferred
 
-- deterministic anonymous chart renderer and image-byte artifact contract;
+- provider-specific image transport;
 - strict persisted JSON/OpenAPI parsing for all records;
 - database tables and atomic uniqueness constraints;
 - actual RAG approval and retrieval service;

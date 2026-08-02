@@ -47,6 +47,8 @@ Keep these tracks separate even when they agree:
 - ADR-0009 fixes the first V1 Brooks policy duration to five-minute closed bars (`barDurationSeconds = 300`); any later timeframe is a separately versioned generalization candidate.
 - ADR-0010 fixes V1 BrooksDecision semantics: no numeric probability/confidence, Scalp has no fixed minimum R:R, Swing requires deterministic `>= 2.0R`, and the model receives no active-position outcomes.
 - ADR-0011 separates local raw-price Case records from exact-whitelist anonymous model payloads and binds ModelRun, provider attempts, and validation audits without authorizing provider calls.
+- ADR-0012 fixes deterministic anonymous 120/40 PNG artifacts and authorizes only unmodified `@resvg/resvg-js@2.6.2` for rasterization; chart artifacts contain no source identity, real time, labels, volume, indicators, or network resources.
+- Before implementing a new agent capability, search skills.sh, ClawHub, MCP registries, search engines, and maintained open-source tools. Record why a candidate is reused or rejected against causal, privacy, determinism, audit, and authority boundaries.
 - RAG uses only approved simplified DoctrineUnits containing core trading semantics; source metadata remains local and outside the RAG record.
 - A logical decision call is distinct from provider retry attempts, and peer evaluation must preserve identical decision-point coverage.
 - Keep PA judgment separate from deterministic validation, execution simulation, risk, and accounting.

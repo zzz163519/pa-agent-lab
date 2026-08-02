@@ -35,7 +35,7 @@ Still open:
 
 ## Model and privacy
 
-ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 versus Gemini 3.6 Flash peer bakeoff. ADR-0011 freezes the provider-neutral anonymous payload, ModelRun, terminal provider-attempt, and validation-audit identities without authorizing a provider call.
+ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 versus Gemini 3.6 Flash peer bakeoff. ADR-0011 freezes the provider-neutral anonymous payload and run audit. ADR-0012 freezes deterministic local PNG bytes, manifests, and content-addressed chart artifacts without authorizing provider transport or calls.
 
 Still open:
 
@@ -43,7 +43,7 @@ Still open:
 - verify provider endpoints accept the approved image and structured-output contract;
 - freeze retry counts, timeout policy, rate limits, batching, usage audit, and valid-decision cost without changing logical decision-point symmetry;
 - freeze provider-specific invalid-response codes and external retention configuration;
-- define deterministic chart-byte resolution and provider transport;
+- define provider-specific image transport from validated local PNG bytes;
 - define the quality gate and cost calculation before model evaluation.
 
 ## RAG and memory

@@ -87,22 +87,24 @@ export interface NormalizedClosedBarV1 {
   readonly continuityFromPrevious: BarContinuityStateV1;
 }
 
+export interface AnonymousMarketInputV1 {
+  readonly barDurationSeconds: typeof FIRST_BROOKS_POLICY_BAR_DURATION_SECONDS;
+  readonly lastVisibleBarId: string;
+  readonly visibleBarCount: number;
+  readonly isLeftCensored: boolean;
+  readonly leftCensoredBarsMissing: number;
+  readonly normalization: Readonly<{
+    method: "first_visible_close_equals_100";
+    base: typeof NORMALIZED_FIRST_VISIBLE_CLOSE;
+    anchorBarId: string;
+  }>;
+  readonly bars: readonly Readonly<NormalizedClosedBarV1>[];
+}
+
 export interface BrooksPolicyInputV1 {
   readonly schemaVersion: typeof BROOKS_POLICY_INPUT_SCHEMA_VERSION;
   readonly inputHash: ContractSha256;
-  readonly market: Readonly<{
-    barDurationSeconds: typeof FIRST_BROOKS_POLICY_BAR_DURATION_SECONDS;
-    lastVisibleBarId: string;
-    visibleBarCount: number;
-    isLeftCensored: boolean;
-    leftCensoredBarsMissing: number;
-    normalization: Readonly<{
-      method: "first_visible_close_equals_100";
-      base: typeof NORMALIZED_FIRST_VISIBLE_CLOSE;
-      anchorBarId: string;
-    }>;
-    bars: readonly Readonly<NormalizedClosedBarV1>[];
-  }>;
+  readonly market: Readonly<AnonymousMarketInputV1>;
   readonly charts: Readonly<{
     context: Readonly<AnonymousChartManifestV1>;
     detail: Readonly<AnonymousChartManifestV1>;
@@ -173,17 +175,16 @@ export function assertBrooksPolicyCaseIntegrity(
   }
 }
 
-export function createBrooksPolicyInput(
-  input: CreateBrooksPolicyInputInputV1,
-): BrooksPolicyInputV1 {
+export function createAnonymousMarketInput(
+  policyCase: BrooksPolicyCaseV1,
+): Readonly<AnonymousMarketInputV1> {
   try {
-    assertBrooksPolicyCaseIntegrity(input.policyCase);
-    const firstClose = input.policyCase.bars[0]?.close;
+    assertBrooksPolicyCaseIntegrity(policyCase);
+    const firstClose = policyCase.bars[0]?.close;
     if (firstClose === undefined || firstClose <= 0) {
       fail("first visible close must be positive");
     }
-
-    const bars = input.policyCase.bars.map((bar, index) => ({
+    const bars = policyCase.bars.map((bar, index) => ({
       barId: anonymousBarId(index),
       sequence: index,
       open: normalizePrice(bar.open, firstClose),
@@ -192,12 +193,36 @@ export function createBrooksPolicyInput(
       close: normalizePrice(bar.close, firstClose),
       continuityFromPrevious: bar.continuityFromPrevious,
     }));
-    const expectedContextIds = bars.map((bar) => bar.barId);
-    const expectedDetailIds = expectedContextIds.slice(-BROOKS_DETAIL_BAR_COUNT);
-    const lastVisibleBarId = expectedContextIds.at(-1);
+    const lastVisibleBarId = bars.at(-1)?.barId;
     if (lastVisibleBarId === undefined) {
       fail("policy input requires visible bars");
     }
+    return deepFreeze({
+      barDurationSeconds: FIRST_BROOKS_POLICY_BAR_DURATION_SECONDS,
+      lastVisibleBarId,
+      visibleBarCount: bars.length,
+      isLeftCensored: policyCase.isLeftCensored,
+      leftCensoredBarsMissing: BROOKS_CONTEXT_BAR_COUNT - bars.length,
+      normalization: {
+        method: "first_visible_close_equals_100",
+        base: NORMALIZED_FIRST_VISIBLE_CLOSE,
+        anchorBarId: bars[0]!.barId,
+      },
+      bars,
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+export function createBrooksPolicyInput(
+  input: CreateBrooksPolicyInputInputV1,
+): BrooksPolicyInputV1 {
+  try {
+    const market = createAnonymousMarketInput(input.policyCase);
+    const expectedContextIds = market.bars.map((bar) => bar.barId);
+    const expectedDetailIds = expectedContextIds.slice(-BROOKS_DETAIL_BAR_COUNT);
+    const { lastVisibleBarId } = market;
 
     validateChart(
       "context",
@@ -214,19 +239,7 @@ export function createBrooksPolicyInput(
     validateDoctrine(input.doctrine);
 
     const body = {
-      market: {
-        barDurationSeconds: FIRST_BROOKS_POLICY_BAR_DURATION_SECONDS,
-        lastVisibleBarId,
-        visibleBarCount: bars.length,
-        isLeftCensored: input.policyCase.isLeftCensored,
-        leftCensoredBarsMissing: BROOKS_CONTEXT_BAR_COUNT - bars.length,
-        normalization: {
-          method: "first_visible_close_equals_100" as const,
-          base: NORMALIZED_FIRST_VISIBLE_CLOSE,
-          anchorBarId: bars[0]!.barId,
-        },
-        bars,
-      },
+      market,
       charts: {
         context: cloneChart(input.charts.context),
         detail: cloneChart(input.charts.detail),
