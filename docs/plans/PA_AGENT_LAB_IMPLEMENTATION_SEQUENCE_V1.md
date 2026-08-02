@@ -35,6 +35,22 @@ Current phase. The ADR-0008 scheduling, ADR-0010 semantic, ADR-0011 causal-input
 
 Exit condition: synthetic schema tests can reject future bars, raw identity/price leakage, unauthorized memory, missing provenance, malformed continuity, track conflation, invalid replay states, and implicit same-bar ordering before any provider or replay-engine call.
 
+## Parallel Phase 1 corpus preflight: public-source inventory and doctrine pilot
+
+This is an authorized preparatory track, not formal Phase 4 ingestion and not a new runtime service. It may proceed in parallel with the contract/API track before Phase 2 or Phase 4.
+
+- inventory the official Brooks public area as the primary source surface;
+- inventory public Ask Al Q&A transcripts as the first text-oriented extraction source;
+- produce `SOURCE_INVENTORY_V1` with URL, source type, approximate volume, copyright/availability status, content/version hash, and extraction priority;
+- extract 5–10 source-mapped `draft` DoctrineUnits from Ask Al, the six-aspect coverage model, and the ten-pattern pilot set;
+- use the V6 rulebook layer model as a coverage checklist only;
+- use the V6 50-case stale-trend review only as an extraction-priority and failure-mode signal;
+- record source mapping and human semantic review notes without promoting the pilot to a complete approved corpus.
+
+This track does not authorize embeddings, vector retrieval, a running RAG service, provider calls, training, or model-generated approval. Formal source ingestion, approved DoctrineUnit lifecycle, and retrieval remain Phase 4 work.
+
+Exit condition: one small public-source inventory and 5–10 draft DoctrineUnits show whether the current contract can express structural semantics clearly, identify the highest-priority coverage gaps, and preserve Brooks-source versus V6-prioritization separation.
+
 ## Phase 2: Case store and API
 
 - implement immutable case and label persistence;
@@ -56,10 +72,14 @@ Exit condition: Calvin can produce one complete, immutable, outcome-blind review
 
 ## Phase 4: Doctrine ingestion and RAG
 
-- inventory only legally available source material;
+The Phase 1 corpus preflight is input discovery and semantic pilot work; Phase 4 is the formal approved-corpus and retrieval implementation.
+
+- inventory only legally available source material, using the preflight inventory as a starting point;
 - create simple local Source records and approved DoctrineUnits containing core trading semantics;
+- preserve source/version hashes and source mapping in local authority records while keeping the RAG view simplified;
 - implement metadata, lexical, and vector retrieval over approved DoctrineUnits;
-- persist retrieved doctrine IDs for each model run.
+- persist retrieved doctrine IDs for each model run;
+- enforce exclusion of draft, retired, Calvin-review, research-memory, and model-generated authority.
 
 Exit condition: a doctrine query returns bounded approved trading semantics and cannot retrieve draft, retired, Calvin-review, or model-generated authority.
 

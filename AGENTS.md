@@ -39,6 +39,13 @@ Keep these tracks separate even when they agree:
 - Existing contacted development windows are development evidence, not an out-of-sample holdout.
 - Private Brooks materials must not be committed or redistributed. Store only authorized metadata, hashes, derived indexes, and permitted excerpts.
 
+## Corpus workflow
+
+- The official Brooks public area is the primary corpus. Public Ask Al Q&A transcripts are the first text-oriented extraction source and may be stored locally as source text when lawfully available; keep source URL, type, volume, copyright status, extraction priority, and content/version hash in `SOURCE_INVENTORY_V1`.
+- Before formal Phase 4 ingestion, an authorized corpus preflight may inventory the public source area and produce 5–10 source-mapped draft DoctrineUnits from Ask Al, the six-aspect coverage model, and the ten-pattern pilot set.
+- Use the V6 rulebook layer model only as a coverage checklist and the V6 50-case stale-trend review only as a prioritization/failure-mode signal. Neither is Brooks doctrine authority, and V6 outcomes or artifacts remain forbidden inputs.
+- Keep pilot DoctrineUnits `draft` until their source mapping and semantic wording are manually reviewed. This preflight does not authorize embeddings, vector retrieval, a running RAG service, provider calls, training, or promotion of a complete approved corpus; formal ingestion and retrieval remain Phase 4 work.
+
 ## Engineering model
 
 - Direct Pi is the primary coordinator and final writer unless Calvin approves another workflow.
@@ -50,6 +57,8 @@ Keep these tracks separate even when they agree:
 - ADR-0012 fixes deterministic anonymous 120/40 PNG artifacts and authorizes only unmodified `@resvg/resvg-js@2.6.2` for rasterization; chart artifacts contain no source identity, real time, labels, volume, indicators, or network resources.
 - ADR-0013 fixes strict persisted JSON, generated OpenAPI 3.1 components, chart metadata binding, and append-only PostgreSQL uniqueness/relationship constraints without authorizing a database or API service.
 - Before implementing a new agent capability, search skills.sh, ClawHub, MCP registries, search engines, and maintained open-source tools. Record why a candidate is reused or rejected against causal, privacy, determinism, audit, and authority boundaries.
+- The official Brooks public area is the primary corpus. Public Ask Al Q&A transcripts are the first text-oriented extraction source for the authorized preflight corpus track. Create `SOURCE_INVENTORY_V1` before formal Phase 4 ingestion, and use a small source-mapped 5–10 DoctrineUnit pilot to test whether the current contract expresses structural semantics.
+- The V6 rulebook layer model may provide a coverage checklist, and the V6 50-case stale-trend review may prioritize extraction and counterexamples; neither may become Brooks doctrine authority or replace Brooks source provenance.
 - RAG uses only approved simplified DoctrineUnits containing core trading semantics; source metadata remains local and outside the RAG record.
 - A logical decision call is distinct from provider retry attempts, and peer evaluation must preserve identical decision-point coverage.
 - Keep PA judgment separate from deterministic validation, execution simulation, risk, and accounting.
