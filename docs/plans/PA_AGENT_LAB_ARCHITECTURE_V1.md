@@ -154,12 +154,12 @@ Future on-demand agent chart capability should wrap this seam in a project-scope
 
 Implementation candidates that do not yet authorize dependencies are:
 
-- API: Fastify, Zod, and generated OpenAPI;
+- API: Fastify consuming ADR-0013 generated JSON Schema/OpenAPI components;
 - UI: React, Vite, and TypeScript;
 - large offline candle analysis: Parquet and DuckDB when needed;
 - model access: a small provider-neutral adapter with structured-output support.
 
-The implemented `@pa-agent-lab/contracts` slices have no runtime dependency. `@pa-agent-lab/chart-renderer` uses only ADR-0012's exact resvg-js dependency. ADR-0008 defines scheduling, ADR-0010 semantic output, ADR-0011 causal input and run audit, and ADR-0012 chart artifacts. None authorizes provider access.
+The implemented `@pa-agent-lab/contracts` slices have no runtime dependency. `@pa-agent-lab/chart-renderer` uses only ADR-0012's exact resvg-js dependency. `@pa-agent-lab/persistence-contracts` uses ADR-0013's exact Ajv and Microsoft jsonc-parser runtime dependencies; schema generation and PostgreSQL WASM conformance remain dev-only. ADR-0008 defines scheduling, ADR-0010 semantic output, ADR-0011 causal input and run audit, ADR-0012 chart artifacts, and ADR-0013 persisted record transport and database constraints. None authorizes a database/API service or provider access.
 
 Do not introduce SQLite, Qdrant, Chroma, Redis, Neo4j, LangChain, or LlamaIndex initially. Explicit retrieval and orchestration code is easier to audit for leakage, authority, and version identity.
 
@@ -182,7 +182,7 @@ Every evaluated decision should persist at least:
 The following remain unresolved:
 
 - exact public source inventory, media/transcript identity, and permitted local excerpt policy;
-- exact persisted JSON/OpenAPI transport and database uniqueness schemas for the implemented Case and audit records;
+- exact Phase 2 Fastify routes, error envelopes, request limits, PostgreSQL image digest, roles, and whether local event streaming is needed;
 - dataset partitions, retrieval permissions, and genuinely untouched evaluation cases;
 - exact semantic, consistency, and prefix-invariance acceptance thresholds;
 - provider-specific pinned model IDs, retirement policy, external data-retention configuration, retry attempts, and rate limits;

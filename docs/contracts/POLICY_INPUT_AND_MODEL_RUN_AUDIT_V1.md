@@ -114,11 +114,13 @@ Synthetic tests cover:
 
 These tests prove contract, causality, privacy-field, and immutable-identity behavior. They do not prove chart anonymity, doctrine quality, model quality, or profitability.
 
-## Deferred
+## Implemented by ADR-0013
+
+ADR-0013 now provides strict persisted JSON/OpenAPI parsing and atomic database uniqueness/relationship constraints for this record chain. It does not start a database or API service.
+
+## Still deferred
 
 - provider-specific image transport;
-- strict persisted JSON/OpenAPI parsing for all records;
-- database tables and atomic uniqueness constraints;
 - actual RAG approval and retrieval service;
 - provider adapters, retry policy, timeouts, rate limits, token usage, and cost;
 - model calls, evaluation, replay, training, and any trading authority.

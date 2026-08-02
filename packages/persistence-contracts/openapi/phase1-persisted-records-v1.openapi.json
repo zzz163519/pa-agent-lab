@@ -1,0 +1,736 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "PA Agent Lab Phase 1 Persisted Record Schemas",
+    "version": "1.0.0"
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "paths": {},
+  "components": {
+    "schemas": {
+      "BrooksPolicyCaseV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-policy-case.v1"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "caseId": {
+            "type": "string"
+          },
+          "policyStreamId": {
+            "type": "string"
+          },
+          "barDurationSeconds": {
+            "type": "integer",
+            "const": 300,
+            "minimum": 0
+          },
+          "bars": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "barId": {
+                  "type": "string"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "open": {
+                  "type": "number"
+                },
+                "high": {
+                  "type": "number"
+                },
+                "low": {
+                  "type": "number"
+                },
+                "close": {
+                  "type": "number"
+                },
+                "isClosed": {
+                  "type": "boolean"
+                },
+                "continuityFromPrevious": {
+                  "$ref": "#/components/schemas/BarContinuityStateV1"
+                }
+              },
+              "required": [
+                "barId",
+                "sequence",
+                "open",
+                "high",
+                "low",
+                "close",
+                "isClosed",
+                "continuityFromPrevious"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 40,
+            "maxItems": 120
+          },
+          "lastVisibleBarId": {
+            "type": "string"
+          },
+          "isLeftCensored": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "caseHash",
+          "caseId",
+          "policyStreamId",
+          "barDurationSeconds",
+          "bars",
+          "lastVisibleBarId",
+          "isLeftCensored"
+        ],
+        "additionalProperties": false
+      },
+      "ContractSha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "BarContinuityStateV1": {
+        "type": "string",
+        "enum": [
+          "contiguous",
+          "session_boundary",
+          "missing_data",
+          "unknown"
+        ]
+      },
+      "BrooksPolicyInputV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-policy-input.v1"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "market": {
+            "type": "object",
+            "properties": {
+              "barDurationSeconds": {
+                "type": "integer",
+                "const": 300,
+                "minimum": 0
+              },
+              "lastVisibleBarId": {
+                "type": "string"
+              },
+              "visibleBarCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 120
+              },
+              "isLeftCensored": {
+                "type": "boolean"
+              },
+              "leftCensoredBarsMissing": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 80
+              },
+              "normalization": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "const": "first_visible_close_equals_100"
+                  },
+                  "base": {
+                    "type": "number",
+                    "const": 100
+                  },
+                  "anchorBarId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "method",
+                  "base",
+                  "anchorBarId"
+                ],
+                "additionalProperties": false
+              },
+              "bars": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "barId": {
+                      "type": "string"
+                    },
+                    "sequence": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "open": {
+                      "type": "number"
+                    },
+                    "high": {
+                      "type": "number"
+                    },
+                    "low": {
+                      "type": "number"
+                    },
+                    "close": {
+                      "type": "number"
+                    },
+                    "continuityFromPrevious": {
+                      "$ref": "#/components/schemas/BarContinuityStateV1"
+                    }
+                  },
+                  "required": [
+                    "barId",
+                    "sequence",
+                    "open",
+                    "high",
+                    "low",
+                    "close",
+                    "continuityFromPrevious"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 40,
+                "maxItems": 120
+              }
+            },
+            "required": [
+              "barDurationSeconds",
+              "lastVisibleBarId",
+              "visibleBarCount",
+              "isLeftCensored",
+              "leftCensoredBarsMissing",
+              "normalization",
+              "bars"
+            ],
+            "additionalProperties": false
+          },
+          "charts": {
+            "type": "object",
+            "properties": {
+              "context": {
+                "type": "object",
+                "properties": {
+                  "panel": {
+                    "type": "string",
+                    "enum": [
+                      "context",
+                      "detail"
+                    ]
+                  },
+                  "mediaType": {
+                    "type": "string",
+                    "const": "image/png"
+                  },
+                  "contentHash": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "barIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 40,
+                    "maxItems": 120
+                  },
+                  "lastVisibleBarId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "panel",
+                  "mediaType",
+                  "contentHash",
+                  "barIds",
+                  "lastVisibleBarId"
+                ],
+                "additionalProperties": false
+              },
+              "detail": {
+                "type": "object",
+                "properties": {
+                  "panel": {
+                    "type": "string",
+                    "enum": [
+                      "context",
+                      "detail"
+                    ]
+                  },
+                  "mediaType": {
+                    "type": "string",
+                    "const": "image/png"
+                  },
+                  "contentHash": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "barIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 40,
+                    "maxItems": 120
+                  },
+                  "lastVisibleBarId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "panel",
+                  "mediaType",
+                  "contentHash",
+                  "barIds",
+                  "lastVisibleBarId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "context",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "doctrine": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "doctrineId": {
+                  "type": "string"
+                },
+                "concept": {
+                  "type": "string"
+                },
+                "rule": {
+                  "type": "string"
+                },
+                "appliesWhen": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "avoidWhen": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "decisionEffect": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "doctrineId",
+                "concept",
+                "rule",
+                "appliesWhen",
+                "avoidWhen",
+                "decisionEffect"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "inputHash",
+          "market",
+          "charts",
+          "doctrine"
+        ],
+        "additionalProperties": false
+      },
+      "AnonymousChartArtifactMetadataV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "anonymous-chart-artifact-metadata.v1"
+          },
+          "metadataId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "artifactId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "sourceCaseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "anonymousMarketHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "rendererId": {
+            "type": "string",
+            "const": "pa-candlestick-svg-resvg.v1"
+          },
+          "rendererRuntime": {
+            "type": "string",
+            "const": "@resvg/resvg-js@2.6.2"
+          },
+          "rendererPlatform": {
+            "type": "string",
+            "const": "@resvg/resvg-js-linux-x64-gnu@2.6.2"
+          },
+          "panel": {
+            "type": "string",
+            "enum": [
+              "context",
+              "detail"
+            ]
+          },
+          "mediaType": {
+            "type": "string",
+            "const": "image/png"
+          },
+          "widthPx": {
+            "type": "integer",
+            "const": 1200,
+            "minimum": 1
+          },
+          "heightPx": {
+            "type": "integer",
+            "const": 720,
+            "minimum": 1
+          },
+          "renderInputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "contentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "byteLength": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "barIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 40,
+            "maxItems": 120
+          },
+          "lastVisibleBarId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "metadataId",
+          "artifactId",
+          "sourceCaseHash",
+          "anonymousMarketHash",
+          "rendererId",
+          "rendererRuntime",
+          "rendererPlatform",
+          "panel",
+          "mediaType",
+          "widthPx",
+          "heightPx",
+          "renderInputHash",
+          "contentHash",
+          "byteLength",
+          "barIds",
+          "lastVisibleBarId"
+        ],
+        "additionalProperties": false
+      },
+      "ModelRunRecordV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "model-run.v1"
+          },
+          "modelRunId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "callId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "caseId": {
+            "type": "string"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "localLastVisibleBarId": {
+            "type": "string"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/ModelCallMode"
+          },
+          "policyStreamId": {
+            "type": "string"
+          },
+          "decisionPointBarId": {
+            "type": "string"
+          },
+          "decisionPointSequence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "candidateId": {
+            "type": "string"
+          },
+          "modelId": {
+            "type": "string"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "payloadHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "promptHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "outputSchemaVersion": {
+            "type": "string"
+          },
+          "reasoningBudgetId": {
+            "type": "string"
+          },
+          "repeatIndex": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "retrievedDoctrineIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "modelRunId",
+          "callId",
+          "caseId",
+          "caseHash",
+          "localLastVisibleBarId",
+          "mode",
+          "policyStreamId",
+          "decisionPointBarId",
+          "decisionPointSequence",
+          "candidateId",
+          "modelId",
+          "inputHash",
+          "payloadHash",
+          "promptHash",
+          "outputSchemaVersion",
+          "reasoningBudgetId",
+          "repeatIndex",
+          "retrievedDoctrineIds"
+        ],
+        "additionalProperties": false
+      },
+      "ModelCallMode": {
+        "type": "string",
+        "enum": [
+          "evaluation_sampled",
+          "continuous_every_close"
+        ]
+      },
+      "ProviderAttemptRecordV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "provider-attempt.v1"
+          },
+          "attemptId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "attemptKey": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "modelRunId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "callId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "attemptIndex": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "providerId": {
+            "type": "string"
+          },
+          "modelId": {
+            "type": "string"
+          },
+          "requestHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProviderAttemptStatusV1"
+          },
+          "responseHash": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "errorCode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "latencyMs": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "attemptId",
+          "attemptKey",
+          "modelRunId",
+          "callId",
+          "attemptIndex",
+          "providerId",
+          "modelId",
+          "requestHash",
+          "status",
+          "responseHash",
+          "errorCode",
+          "latencyMs"
+        ],
+        "additionalProperties": false
+      },
+      "ProviderAttemptStatusV1": {
+        "type": "string",
+        "enum": [
+          "response_received",
+          "timeout",
+          "transport_error"
+        ]
+      },
+      "ModelRunAuditRecordV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "model-run-audit.v1"
+          },
+          "auditId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "modelRunId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "callId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "attemptId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "caseId": {
+            "type": "string"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "payloadHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "promptHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "retrievedDoctrineIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rawOutputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "decisionHash": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "validationResultHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "validationStatus": {
+            "$ref": "#/components/schemas/ModelRunValidationStatusV1"
+          },
+          "rejectionCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "auditId",
+          "modelRunId",
+          "callId",
+          "attemptId",
+          "caseId",
+          "caseHash",
+          "inputHash",
+          "payloadHash",
+          "promptHash",
+          "retrievedDoctrineIds",
+          "rawOutputHash",
+          "decisionHash",
+          "validationResultHash",
+          "validationStatus",
+          "rejectionCodes"
+        ],
+        "additionalProperties": false
+      },
+      "ModelRunValidationStatusV1": {
+        "type": "string",
+        "enum": [
+          "accepted",
+          "rejected"
+        ]
+      }
+    }
+  },
+  "x-pa-record-kinds": {
+    "policy_case": "BrooksPolicyCaseV1",
+    "policy_input": "BrooksPolicyInputV1",
+    "chart_artifact_metadata": "AnonymousChartArtifactMetadataV1",
+    "model_run": "ModelRunRecordV1",
+    "provider_attempt": "ProviderAttemptRecordV1",
+    "model_run_audit": "ModelRunAuditRecordV1"
+  },
+  "x-pa-runtime-authority": "research_only_no_provider_or_trading_authority"
+}

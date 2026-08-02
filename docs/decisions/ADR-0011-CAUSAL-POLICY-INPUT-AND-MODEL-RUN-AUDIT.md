@@ -57,15 +57,18 @@ Public modules:
 
 Both are exported from `@pa-agent-lab/contracts` and as package subpaths. Builders validate runtime values, use a strict canonical-JSON subset that rejects lossy or cyclic hash preimages, create SHA-256 identities, and deeply freeze accepted records. No runtime dependency is added.
 
-## Not authorized or implemented by this ADR
+## Deferred to ADR-0013
+
+ADR-0013 now implements strict persisted JSON/OpenAPI parsing and atomic database uniqueness/relationship constraints for this record chain. A running database, API routes, and provider transport remain unauthorized and unimplemented.
+
+## Still not authorized or implemented
 
 This ADR does not authorize or implement:
 
 - provider-specific image transport or external model calls;
 - retry, timeout, rate-limit, usage, or pricing policy;
-- database persistence or uniqueness constraints;
-- persisted JSON/OpenAPI parsing for all domain records;
+- a running database or API service;
 - actual Doctrine retrieval or approval services;
 - historical replay, training, Paper, Live, exchange, wallet, or real-money activity.
 
-Phase 2 persistence must enforce uniqueness for model-run identity and `(modelRunId, attemptIndex)` in addition to validating the immutable record hashes.
+ADR-0013 enforces uniqueness for model-run identity and `(modelRunId, attemptIndex)`, plus immutable Case/input/chart/run/attempt/audit relationships. Phase 2 must consume those constraints rather than replace them.

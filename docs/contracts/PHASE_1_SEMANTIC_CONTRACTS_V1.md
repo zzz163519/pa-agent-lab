@@ -186,12 +186,12 @@ Synthetic tests cover:
 
 Tests prove schema, causal, semantic-boundary, and authority behavior, not profitability.
 
-## Deferred
+## Implemented by ADR-0013
 
-Still deferred:
+ADR-0013 now provides strict persisted JSON/OpenAPI parsers and immutable Case/database constraints for the implemented persistence record set.
 
-- strict persisted JSON/OpenAPI parsers and unknown-key rejection at the API boundary;
-- Case persistence and immutable database constraints;
+## Still deferred
+
 - actual RAG indexing/retrieval;
 - exact Brooks source inventory and approved DoctrineUnit content;
 - model run attempts, retries, costs, and provider retention;

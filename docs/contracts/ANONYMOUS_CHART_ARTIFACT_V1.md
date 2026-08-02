@@ -116,10 +116,14 @@ Tests use synthetic closed bars only and verify:
 
 These tests prove renderer and artifact behavior, not Price Action doctrine, model vision quality, or profitability.
 
-## Deferred
+## Implemented by ADR-0013
+
+ADR-0013 now provides strict persisted chart metadata plus PostgreSQL uniqueness and Case-binding constraints. PNG bytes remain in this contract's content-addressed files.
+
+## Still deferred
 
 - provider-specific image transport;
 - an MCP/skill wrapper for on-demand agent use;
-- database/API artifact metadata persistence;
+- a running database or API service;
 - visual model-quality evaluation;
 - any market fetch, model call, replay, training, or trading authority.

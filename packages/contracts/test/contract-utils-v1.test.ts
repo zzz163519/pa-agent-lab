@@ -1,13 +1,23 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { canonicalHash } from "../src/contract-utils-v1.ts";
+import {
+  canonicalHash,
+  canonicalStringify,
+} from "../src/contract-utils-v1.ts";
 
 describe("canonical contract hashing", () => {
   it("keeps object-key ordering deterministic", () => {
     assert.equal(
       canonicalHash({ beta: 2, alpha: 1 }),
       canonicalHash({ alpha: 1, beta: 2 }),
+    );
+  });
+
+  it("serializes a stable literal without changing array order", () => {
+    assert.equal(
+      canonicalStringify({ beta: [{ zeta: 2, alpha: 1 }], alpha: true }),
+      '{"alpha":true,"beta":[{"alpha":1,"zeta":2}]}',
     );
   });
 

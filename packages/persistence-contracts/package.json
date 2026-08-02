@@ -1,0 +1,20 @@
+{
+  "name": "@pa-agent-lab/persistence-contracts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./chart-artifact-metadata-v1": "./src/chart-artifact-metadata-v1.ts",
+    "./persisted-json-v1": "./src/persisted-json-v1.ts"
+  },
+  "dependencies": {
+    "@pa-agent-lab/chart-renderer": "workspace:*",
+    "@pa-agent-lab/contracts": "workspace:*",
+    "ajv": "8.20.0",
+    "jsonc-parser": "3.3.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.4",
+    "ts-json-schema-generator": "2.9.0"
+  }
+}

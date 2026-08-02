@@ -58,9 +58,11 @@ Still open:
 
 ## API and user interface
 
+ADR-0013 accepts strict persisted JSON, generated OpenAPI 3.1 record components, and PostgreSQL-native immutable uniqueness/relationship constraints. It does not choose or start an API or database service.
+
 Still open:
 
-- freeze persisted JSON/OpenAPI parsing, database uniqueness, and API transport schemas;
+- define versioned Fastify routes, request limits, response envelopes, and local error mapping for the accepted record components;
 - define annotation interactions for source approval and whole-decision blind review;
 - decide whether REST/OpenAPI is sufficient or model runs also need local event streaming.
 

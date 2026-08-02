@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "node --test packages/*/test/*.test.ts",
-    "typecheck": "tsc -p packages/contracts/tsconfig.json && tsc -p packages/chart-renderer/tsconfig.json"
+    "typecheck": "tsc -p packages/contracts/tsconfig.json && tsc -p packages/chart-renderer/tsconfig.json && tsc -p packages/persistence-contracts/tsconfig.json",
+    "generate:transport-schemas": "node packages/persistence-contracts/scripts/generate-transport-schemas-v1.ts"
   },
   "devDependencies": {
     "@types/node": "24.13.3",

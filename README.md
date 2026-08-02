@@ -11,7 +11,7 @@ PA Agent Lab 是一个独立的 Price Action agent 研究项目。
 
 ## Current Status
 
-治理仓库和架构记录已经建立。Phase 1 已实现模型调用调度、候选对称性、冻结结果缓存、因果 Case、匿名 120/40 输入、确定性 PNG 图表 artifact、外发隐私、ModelRun/ProviderAttempt/Audit，以及 BrooksDecision、简化 DoctrineUnit、整条决策级 CalvinReview 和确定性 Conflict 合同。持久化 API、前端、实际 RAG、模型 provider、训练和回放仍未实现。
+治理仓库和架构记录已经建立。Phase 1 已实现模型调用调度、候选对称性、冻结结果缓存、因果 Case、匿名 120/40 输入、确定性 PNG 图表 artifact、严格持久化 JSON/OpenAPI、PostgreSQL 不可变唯一约束、外发隐私、ModelRun/ProviderAttempt/Audit，以及 BrooksDecision、简化 DoctrineUnit、整条决策级 CalvinReview 和确定性 Conflict 合同。运行中的数据库/API、前端、实际 RAG、模型 provider、训练和回放仍未实现。
 
 本项目不具备 Paper、Live、交易所提交、下单或真实资金权限。
 
@@ -33,10 +33,13 @@ PA Agent Lab 是一个独立的 Price Action agent 研究项目。
 - [ADR-0010: Brooks 决策、Doctrine 与审阅合同](docs/decisions/ADR-0010-BROOKS-DECISION-DOCTRINE-AND-REVIEW-CONTRACTS.md)
 - [ADR-0011: 因果输入与 ModelRun 审计合同](docs/decisions/ADR-0011-CAUSAL-POLICY-INPUT-AND-MODEL-RUN-AUDIT.md)
 - [ADR-0012: 确定性匿名图表 Artifact](docs/decisions/ADR-0012-DETERMINISTIC-ANONYMOUS-CHART-ARTIFACTS.md)
+- [ADR-0013: 严格持久化记录与数据库约束](docs/decisions/ADR-0013-STRICT-PERSISTED-RECORDS-AND-DATABASE-CONSTRAINTS.md)
 - [Phase 1 语义合同 V1](docs/contracts/PHASE_1_SEMANTIC_CONTRACTS_V1.md)
 - [Phase 1 输入与 ModelRun 审计 V1](docs/contracts/POLICY_INPUT_AND_MODEL_RUN_AUDIT_V1.md)
 - [匿名图表 Artifact V1](docs/contracts/ANONYMOUS_CHART_ARTIFACT_V1.md)
+- [持久化 transport 与数据库合同 V1](docs/contracts/PERSISTED_TRANSPORT_AND_DATABASE_CONTRACTS_V1.md)
 - [图表 Skill/MCP/开源复用扫描](docs/research/CHART_RENDERER_SKILL_MCP_REUSE_SCAN_V1.md)
+- [持久化合同复用扫描](docs/research/PERSISTENCE_CONTRACT_REUSE_SCAN_V1.md)
 - [第三方依赖声明](THIRD_PARTY_NOTICES.md)
 - [模型调用调度合同 V1](docs/contracts/MODEL_CALL_SCHEDULING_V1.md)
 - [V6 只读复用清单](docs/plans/V6_READ_ONLY_REUSE_INVENTORY_V1.md)
@@ -45,7 +48,7 @@ PA Agent Lab 是一个独立的 Price Action agent 研究项目。
 
 ## Development
 
-当前 workspace 使用 Node 24、pnpm 10 和严格 TypeScript。`@pa-agent-lab/contracts` 无运行时依赖；`@pa-agent-lab/chart-renderer` 只使用 ADR-0012 精确授权的 `@resvg/resvg-js@2.6.2`。
+当前 workspace 使用 Node 24、pnpm 10 和严格 TypeScript。`@pa-agent-lab/contracts` 无运行时依赖；`@pa-agent-lab/chart-renderer` 只使用 ADR-0012 精确授权的 `@resvg/resvg-js@2.6.2`；`@pa-agent-lab/persistence-contracts` 只在严格 JSON/schema 边界使用 ADR-0013 精确授权的 Ajv 和 Microsoft jsonc-parser。
 
 ```bash
 pnpm install

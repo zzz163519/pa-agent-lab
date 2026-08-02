@@ -78,6 +78,6 @@ This ADR does not authorize:
 - browser or TradingView capture;
 - market-data acquisition;
 - indicators, signal detection, or strategy interpretation;
-- PostgreSQL/API persistence;
+- running PostgreSQL or API services beyond ADR-0013's metadata/constraint contracts;
 - chart access to Calvin review, outcomes, PnL, positions, or research memory;
 - replay, training, Paper, Live, exchange, wallet, or real-money activity.

@@ -21,7 +21,7 @@ Exit condition: repository identity, authority tracks, and prohibited inputs are
 
 ## Phase 1: Domain contracts
 
-Current phase. The ADR-0008 scheduling, ADR-0010 semantic, ADR-0011 causal-input/privacy/model-run-audit, and ADR-0012 deterministic-chart slices are implemented; persisted JSON/OpenAPI parsing, database/API storage, provider transport, and replay request/result boundaries are not yet frozen.
+Current phase. The ADR-0008 scheduling, ADR-0010 semantic, ADR-0011 causal-input/privacy/model-run-audit, ADR-0012 deterministic-chart, and ADR-0013 strict-persistence contract slices are implemented; a running database/API, provider transport, and replay request/result boundaries are not yet frozen.
 
 - freeze causal case identity and visible-through boundary;
 - freeze the accepted 120/40 chart/OHLC payload, normalization, bar identity, continuity, left-censoring, anonymity schemas, and the ADR-0009 five-minute (`300` second) V1 decision duration;
@@ -29,7 +29,7 @@ Current phase. The ADR-0008 scheduling, ADR-0010 semantic, ADR-0011 causal-input
 - use the simple ADR-0010 Source and DoctrineUnit records and defer actual ingestion to Phase 4;
 - define policy decision, evidence reference, uncertainty, and validation records;
 - freeze deterministic anonymous chart bytes, artifact identity, and local content-addressed persistence;
-- define persisted JSON/OpenAPI parsing and database uniqueness for the implemented Case, input, chart artifact, ModelRun, ProviderAttempt, and Audit records;
+- use ADR-0013 strict persisted JSON, generated OpenAPI 3.1 components, chart metadata, and atomic PostgreSQL uniqueness for the implemented Case, input, chart artifact, ModelRun, ProviderAttempt, and Audit records;
 - defer detailed dataset partition machinery until Phase 6 needs a frozen evaluation case list;
 - define provider-neutral replay request, result, ambiguity, censoring, and audit identities without implementing or installing a replay engine.
 

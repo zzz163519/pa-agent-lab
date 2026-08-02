@@ -55,10 +55,13 @@ export function assertOneOf<T extends string>(
 }
 
 export function canonicalHash(value: unknown): ContractSha256 {
-  const canonical = canonicalize(value);
   return `sha256:${createHash("sha256")
-    .update(JSON.stringify(canonical), "utf8")
+    .update(canonicalStringify(value), "utf8")
     .digest("hex")}`;
+}
+
+export function canonicalStringify(value: unknown): string {
+  return JSON.stringify(canonicalize(value));
 }
 
 export function deepFreeze<T>(value: T): Readonly<T> {

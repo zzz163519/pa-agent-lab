@@ -98,6 +98,10 @@ Synthetic tests prove:
 
 These tests prove contract and causal behavior, not model quality or profitability.
 
+## Implemented by ADR-0013
+
+ADR-0013 now provides strict persisted JSON/OpenAPI parsing and database uniqueness for call-linked ModelRun and ProviderAttempt records.
+
 ## Deferred contracts
 
 Still unresolved:
@@ -105,5 +109,4 @@ Still unresolved:
 - exact sampled selection policies and dataset partitions;
 - exact pinned provider model IDs;
 - retry count, timeout, rate-limit, transport, usage, and valid-decision cost policy;
-- persisted JSON/OpenAPI parsing and database uniqueness constraints;
 - exact Phase 8 replay request and result schemas.

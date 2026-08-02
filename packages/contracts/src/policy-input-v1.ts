@@ -269,7 +269,7 @@ export function createOutboundModelPayload(
   try {
     assertSha256("promptHash", input.promptHash);
     assertNonEmpty("outputSchemaVersion", input.outputSchemaVersion);
-    assertPolicyInputIntegrity(input.policyInput);
+    assertBrooksPolicyInputIntegrity(input.policyInput);
     const body = {
       policyInput: input.policyInput,
       promptHash: input.promptHash,
@@ -452,8 +452,14 @@ function validateDoctrine(doctrine: readonly DoctrineRagRecordV1[]): void {
   });
 }
 
-function assertPolicyInputIntegrity(input: BrooksPolicyInputV1): void {
-  validateUnknownPolicyInput(input);
+export function assertBrooksPolicyInputIntegrity(
+  input: BrooksPolicyInputV1,
+): void {
+  try {
+    validateUnknownPolicyInput(input);
+  } catch (error) {
+    rethrow(error);
+  }
 }
 
 function validateUnknownPolicyInput(value: unknown): void {
@@ -551,7 +557,10 @@ function validateUnknownPolicyInput(value: unknown): void {
   const isLeftCensored = market.isLeftCensored as boolean;
   if (
     market.leftCensoredBarsMissing !== BROOKS_CONTEXT_BAR_COUNT - bars.length ||
-    (isLeftCensored ? bars.length < 40 || bars.length >= 120 : bars.length !== 120)
+    (isLeftCensored
+      ? bars.length < BROOKS_DETAIL_BAR_COUNT ||
+        bars.length >= BROOKS_CONTEXT_BAR_COUNT
+      : bars.length !== BROOKS_CONTEXT_BAR_COUNT)
   ) {
     fail("policyInput left-censoring metadata is inconsistent");
   }

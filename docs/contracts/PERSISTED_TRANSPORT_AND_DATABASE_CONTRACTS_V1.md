@@ -1,0 +1,159 @@
+# Phase 1 Persisted Transport and Database Contracts V1
+
+Status: IMPLEMENTED CONTRACT SLICE. NO RUNNING DATABASE OR API SERVICE.
+
+Authority: ADR-0008, ADR-0011, ADR-0012, and ADR-0013.
+
+## Package
+
+```text
+@pa-agent-lab/persistence-contracts
+@pa-agent-lab/persistence-contracts/chart-artifact-metadata-v1
+@pa-agent-lab/persistence-contracts/persisted-json-v1
+```
+
+Primary seams:
+
+- `createAnonymousChartArtifactMetadata`;
+- `assertAnonymousChartArtifactMetadataIntegrity`;
+- `parsePersistedRecordJson`;
+- `serializePersistedRecord`;
+- `PERSISTED_RECORD_KINDS`.
+
+## Record kinds
+
+| Kind | Type | Identity authority |
+|---|---|---|
+| `policy_case` | `BrooksPolicyCaseV1` | local raw causal prefix and `caseHash` |
+| `policy_input` | `BrooksPolicyInputV1` | provider-safe normalized input and `inputHash` |
+| `chart_artifact_metadata` | `AnonymousChartArtifactMetadataV1` | Case/market/artifact binding and `metadataId` |
+| `model_run` | `ModelRunRecordV1` | logical call, Case, payload, prompt, model, and `modelRunId` |
+| `provider_attempt` | `ProviderAttemptRecordV1` | retry index, terminal transport content, `attemptKey`, and `attemptId` |
+| `model_run_audit` | `ModelRunAuditRecordV1` | response and deterministic validation evidence in `auditId` |
+
+## Strict persisted JSON
+
+A record is accepted only after:
+
+1. strict JSON syntax traversal;
+2. duplicate-key rejection at every object depth;
+3. generated JSON Schema structural validation;
+4. exact record-kind matching;
+5. domain-integrity validation and identity recomputation;
+6. deep freezing.
+
+Comments, trailing commas, duplicate names, unknown fields, missing JSON identity fields, wrong schema versions, malformed arrays, non-integer identity fields, unauthorized chart renderer identities, and changed hash preimages are rejected.
+
+Serialization validates first and emits canonical JSON. Object keys are recursively sorted; arrays preserve domain order. Canonical serialization rejects undefined, negative zero, non-finite numbers, custom prototypes, accessors, symbols, sparse arrays, hidden fields, and cycles through the existing contract utility.
+
+## Chart artifact metadata
+
+`createAnonymousChartArtifactMetadata(bundle, panel)` accepts only a validated ADR-0012 bundle. It excludes:
+
+- PNG base64 bytes;
+- normalized bar values already committed by `renderInputHash` and retained in Case/input artifacts;
+- local filesystem paths.
+
+It retains:
+
+- `sourceCaseHash`;
+- anonymous-market hash;
+- selected `artifactId` and a binding `metadataId`;
+- pinned renderer/runtime/platform identity;
+- panel, dimensions, render-input hash, content hash, byte length, bar IDs, and final visible bar.
+
+Context metadata begins at `bar:000`; detail metadata contains the final 40 consecutive anonymous IDs. PNG bytes remain under ADR-0012 content-addressed filesystem persistence.
+
+## Generated schemas
+
+Committed artifacts:
+
+```text
+packages/persistence-contracts/schemas/phase1-persisted-records-v1.schema.json
+packages/persistence-contracts/openapi/phase1-persisted-records-v1.openapi.json
+```
+
+The OpenAPI document uses version 3.1.1 and JSON Schema 2020-12. It contains components only and no endpoint paths. This is deliberate: Phase 1 freezes transport payloads; Phase 2 decides routes and service behavior.
+
+Run generation with:
+
+```bash
+pnpm generate:transport-schemas
+```
+
+Tests regenerate the artifacts from TypeScript and compare the resulting object graph. A type change without regenerated committed schemas fails the suite.
+
+Generated schemas enforce structural constraints. Existing TypeScript domain validators remain authoritative for cross-field relations and content hashes that JSON Schema cannot independently recompute.
+
+## PostgreSQL migration
+
+Migration:
+
+```text
+packages/persistence-contracts/sql/0001_phase1_immutable_records_v1.sql
+```
+
+Record tables:
+
+- `pa_policy_cases`;
+- `pa_policy_inputs`;
+- `pa_chart_artifact_metadata`;
+- `pa_model_runs`;
+- `pa_provider_attempts`;
+- `pa_model_run_audits`.
+
+`pa_case_policy_inputs` is an append-only provenance relation rather than a seventh record type. It permits content-addressed anonymous inputs to be shared by multiple local Cases without losing Case-to-input audit binding. The same row must reference one context and one detail metadata record whose Case, panel, and PNG content hash match the input manifests through composite foreign keys.
+
+### Atomic constraints
+
+The migration enforces:
+
+- lowercase SHA-256 shape for indexed identities;
+- exact schema-version and JSON-to-column identity matches, using null-safe required-field checks so absent JSON fields fail closed;
+- one immutable local `caseId`;
+- one visible bar and one decision sequence per policy stream;
+- one deterministic chart render per Case/panel/render input;
+- one ModelRun per logical `callId`;
+- one provider attempt per `(modelRunId, attemptIndex)` and unique `attemptKey`;
+- one audit per received attempt;
+- composite Case/input/context-chart/detail-chart/run/request/response/audit foreign-key binding.
+
+Every record and relation table has triggers that reject `UPDATE`, `DELETE`, and `TRUNCATE`. Service-level idempotent insertion may later use `INSERT ... ON CONFLICT` only after comparing the existing immutable record; this migration does not silently replace data. Phase 2 roles must withhold table-owner and DDL privileges from application writers so they cannot disable the triggers.
+
+### Validation layers
+
+The database does not reimplement every domain rule or SHA-256 preimage calculation in SQL. The required write order is:
+
+```text
+strict JSON parser
+  -> generated structural schema
+    -> TypeScript domain validator
+      -> atomic PostgreSQL insert
+```
+
+The database independently protects identities, relationships, uniqueness, and immutability if concurrent writers race or an application query is malformed.
+
+## Verified behavior
+
+Synthetic tests prove:
+
+- canonical round-trip for all six record kinds;
+- duplicate keys, comments, trailing commas, unknown nested fields, wrong kinds, unauthorized renderer identities, and hash tampering are rejected;
+- OpenAPI and JSON Schema artifacts cannot drift from TypeScript silently;
+- all OpenAPI references resolve and endpoint paths remain empty;
+- the SQL migration executes under PGlite PostgreSQL WASM;
+- one complete Case/input/chart/run/attempt/audit chain persists;
+- two local Cases with identical anonymous content share one `inputHash` while retaining separate context/detail metadata bindings;
+- wrong-Case/wrong-panel chart metadata, broken run/request/response foreign keys, and column/JSON mismatches fail atomically;
+- timeout and transport-error attempts persist a `NULL` response but cannot acquire a ModelRunAudit;
+- all seven record/relation tables install both row-mutation and statement-truncation triggers; updates, deletes, and truncation fail atomically.
+
+These tests prove transport and persistence contracts, not PostgreSQL deployment, provider behavior, Price Action quality, model quality, replay correctness, or profitability.
+
+## Deferred
+
+- running PostgreSQL plus pgvector and its exact container digest;
+- Fastify routes, request limits, response envelopes, local event streaming, roles, and authentication;
+- a storage repository or connection pool;
+- provider image transport and model calls;
+- replay, training, Paper, Live, exchange, wallet, or real-money authority.

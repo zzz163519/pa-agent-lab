@@ -310,6 +310,93 @@ export function createModelRunAuditRecord(
   }
 }
 
+export function assertModelRunRecordIntegrity(
+  value: unknown,
+): asserts value is ModelRunRecordV1 {
+  try {
+    validateRunRecord(
+      exactRecord("model run", value, [
+        "schemaVersion",
+        "modelRunId",
+        "callId",
+        "caseId",
+        "caseHash",
+        "localLastVisibleBarId",
+        "mode",
+        "policyStreamId",
+        "decisionPointBarId",
+        "decisionPointSequence",
+        "candidateId",
+        "modelId",
+        "inputHash",
+        "payloadHash",
+        "promptHash",
+        "outputSchemaVersion",
+        "reasoningBudgetId",
+        "repeatIndex",
+        "retrievedDoctrineIds",
+      ]) as unknown as ModelRunRecordV1,
+    );
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+export function assertProviderAttemptRecordIntegrity(
+  value: unknown,
+): asserts value is ProviderAttemptRecordV1 {
+  try {
+    validateAttemptRecord(
+      exactRecord("provider attempt", value, [
+        "schemaVersion",
+        "attemptId",
+        "attemptKey",
+        "modelRunId",
+        "callId",
+        "attemptIndex",
+        "providerId",
+        "modelId",
+        "requestHash",
+        "status",
+        "responseHash",
+        "errorCode",
+        "latencyMs",
+      ]) as unknown as ProviderAttemptRecordV1,
+    );
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+export function assertModelRunAuditRecordIntegrity(
+  value: unknown,
+): asserts value is ModelRunAuditRecordV1 {
+  try {
+    validateAuditRecord(
+      exactRecord("model run audit", value, [
+        "schemaVersion",
+        "auditId",
+        "modelRunId",
+        "callId",
+        "attemptId",
+        "caseId",
+        "caseHash",
+        "inputHash",
+        "payloadHash",
+        "promptHash",
+        "retrievedDoctrineIds",
+        "rawOutputHash",
+        "decisionHash",
+        "validationResultHash",
+        "validationStatus",
+        "rejectionCodes",
+      ]) as unknown as ModelRunAuditRecordV1,
+    );
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
 function validateCallIdentity(call: ModelCallRecordV1): void {
   if (call.schemaVersion !== MODEL_CALL_SCHEDULE_SCHEMA_VERSION) {
     fail("model call schemaVersion is unsupported");
@@ -468,6 +555,100 @@ function validateAttemptRecord(attempt: ProviderAttemptRecordV1): void {
   if (attempt.attemptId !== expectedId) {
     fail("provider attempt hash does not match its content");
   }
+}
+
+function validateAuditRecord(audit: ModelRunAuditRecordV1): void {
+  if (audit.schemaVersion !== MODEL_RUN_AUDIT_SCHEMA_VERSION) {
+    fail("model run audit schemaVersion is unsupported");
+  }
+  for (const [name, value] of [
+    ["auditId", audit.auditId],
+    ["audit modelRunId", audit.modelRunId],
+    ["audit callId", audit.callId],
+    ["audit attemptId", audit.attemptId],
+    ["audit caseHash", audit.caseHash],
+    ["audit inputHash", audit.inputHash],
+    ["audit payloadHash", audit.payloadHash],
+    ["audit promptHash", audit.promptHash],
+    ["audit rawOutputHash", audit.rawOutputHash],
+    ["audit validationResultHash", audit.validationResultHash],
+  ] as const) {
+    assertSha256(name, value);
+  }
+  assertNonEmpty("audit caseId", audit.caseId);
+  assertStringList("audit retrievedDoctrineIds", audit.retrievedDoctrineIds);
+  assertUnique("audit retrievedDoctrineIds", audit.retrievedDoctrineIds);
+  assertOneOf(
+    "audit validationStatus",
+    audit.validationStatus,
+    MODEL_RUN_VALIDATION_STATUSES,
+  );
+  assertStringList("audit rejectionCodes", audit.rejectionCodes);
+  assertUnique("audit rejectionCodes", audit.rejectionCodes);
+  validateDecisionResult(
+    audit.validationStatus,
+    audit.decisionHash,
+    audit.rejectionCodes,
+  );
+  const expected = canonicalHash({
+    modelRunId: audit.modelRunId,
+    callId: audit.callId,
+    attemptId: audit.attemptId,
+    caseId: audit.caseId,
+    caseHash: audit.caseHash,
+    inputHash: audit.inputHash,
+    payloadHash: audit.payloadHash,
+    promptHash: audit.promptHash,
+    retrievedDoctrineIds: audit.retrievedDoctrineIds,
+    rawOutputHash: audit.rawOutputHash,
+    decisionHash: audit.decisionHash,
+    validationResultHash: audit.validationResultHash,
+    validationStatus: audit.validationStatus,
+    rejectionCodes: audit.rejectionCodes,
+  });
+  if (audit.auditId !== expected) {
+    fail("model run audit hash does not match its content");
+  }
+}
+
+function exactRecord(
+  name: string,
+  value: unknown,
+  allowedKeys: readonly string[],
+): Record<string, unknown> {
+  if (
+    value === null ||
+    typeof value !== "object" ||
+    Array.isArray(value) ||
+    (Object.getPrototypeOf(value) !== Object.prototype &&
+      Object.getPrototypeOf(value) !== null)
+  ) {
+    fail(`${name} must be a plain object`);
+  }
+  if (Object.getOwnPropertySymbols(value).length !== 0) {
+    fail(`${name} cannot contain symbol fields`);
+  }
+  const record = value as Record<string, unknown>;
+  const keys = Object.getOwnPropertyNames(record);
+  for (const key of keys) {
+    const descriptor = Object.getOwnPropertyDescriptor(record, key);
+    if (
+      descriptor === undefined ||
+      !("value" in descriptor) ||
+      descriptor.enumerable !== true
+    ) {
+      fail(`${name} fields must be enumerable data properties`);
+    }
+  }
+  const unknownKey = keys.find((key) => !allowedKeys.includes(key));
+  if (unknownKey !== undefined) {
+    fail(`${name} contains unknown field: ${unknownKey}`);
+  }
+  const missingKey = allowedKeys.find((key) => !Object.hasOwn(record, key));
+  if (missingKey !== undefined) {
+    fail(`${name} is missing field: ${missingKey}`);
+  }
+  return record;
 }
 
 function validateAttemptTerminalFields(
