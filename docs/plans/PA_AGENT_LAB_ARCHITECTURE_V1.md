@@ -106,9 +106,9 @@ Deterministic services validate input visibility, continuity, evidence reference
 
 ## Deterministic replay platform
 
-ADR-0007 accepts a NautilusTrader-first Phase 8 platform direction behind a versioned TypeScript replay contract. It is a replaceable local execution-simulation sidecar, not a source of doctrine, policy, or research authority. LEAN is limited to a small point-in-time set of hand-computed conformance fixtures rather than a maintained second integration.
+ADR-0007 accepts a NautilusTrader-first Phase 8 platform direction behind a versioned TypeScript replay contract. ADR-0014 implements the engine-neutral Phase 1 contract boundary: exact immutable dataset slices, strictly post-cutoff provenance, one frozen decision path per request, explicit `rejected | resolved | unresolved | right_censored` results, and opaque audit hashes. The future engine remains a replaceable local execution-simulation sidecar, not a source of doctrine, policy, or research authority. LEAN is limited to a small point-in-time set of hand-computed conformance fixtures rather than a maintained second integration.
 
-Replay consumes frozen, content-hashed decisions; no model call or policy mutation occurs mid-run. The TypeScript boundary rejects protected or unauthorized data before sidecar execution, normalizes and validates results, and persists raw and canonical artifacts. Engine-default OHLC traversal cannot resolve same-bar ambiguity silently: approved finer post-decision data may establish order, otherwise the affected result remains explicit and fails closed.
+Replay consumes frozen, content-hashed decisions; no model call or policy mutation occurs mid-run. The implemented TypeScript boundary rejects broad, protected, unauthorized, at-cutoff, and pre-cutoff data before sidecar execution; one unresolved request path terminates fail closed without mutating independent paths. Engine-default OHLC traversal cannot resolve same-bar ambiguity silently: approved finer post-decision data may establish order, otherwise the result is `unresolved` with an explicit reason. The exact engine payload normalization and mechanical result fields remain Phase 8 work.
 
 The sidecar is not authorized before Phase 8. When separately approved, it must be pinned, unmodified, process-isolated, offline during authoritative replay, and configured without credentials or Paper/Live connectivity.
 
@@ -159,7 +159,7 @@ Implementation candidates that do not yet authorize dependencies are:
 - large offline candle analysis: Parquet and DuckDB when needed;
 - model access: a small provider-neutral adapter with structured-output support.
 
-The implemented `@pa-agent-lab/contracts` slices have no runtime dependency. `@pa-agent-lab/chart-renderer` uses only ADR-0012's exact resvg-js dependency. `@pa-agent-lab/persistence-contracts` uses ADR-0013's exact Ajv and Microsoft jsonc-parser runtime dependencies; schema generation and PostgreSQL WASM conformance remain dev-only. ADR-0008 defines scheduling, ADR-0010 semantic output, ADR-0011 causal input and run audit, ADR-0012 chart artifacts, and ADR-0013 persisted record transport and database constraints. None authorizes a database/API service or provider access.
+The implemented `@pa-agent-lab/contracts` slices have no runtime dependency. `@pa-agent-lab/chart-renderer` uses only ADR-0012's exact resvg-js dependency. `@pa-agent-lab/persistence-contracts` uses ADR-0013's exact Ajv and Microsoft jsonc-parser runtime dependencies; schema generation and PostgreSQL WASM conformance remain dev-only. ADR-0008 defines scheduling, ADR-0010 semantic output, ADR-0011 causal input and run audit, ADR-0012 chart artifacts, ADR-0013 persisted record transport/database constraints, and ADR-0014 the provider-neutral replay boundary. None authorizes a database/API service, provider access, replay engine, or execution mechanics.
 
 Do not introduce SQLite, Qdrant, Chroma, Redis, Neo4j, LangChain, or LlamaIndex initially. Explicit retrieval and orchestration code is easier to audit for leakage, authority, and version identity.
 
@@ -188,6 +188,6 @@ The following remain unresolved:
 - provider-specific pinned model IDs, retirement policy, external data-retention configuration, retry attempts, and rate limits;
 - frozen evaluation selection policies, plus criteria for any later 15-minute or multi-timeframe generalization candidate under ADR-0009;
 - criteria and exact fixtures for the Phase 8 NautilusTrader adoption gate, LEAN conformance snapshot, and cross-process reproducibility;
-- exact post-decision execution-data resolution, fee, slippage, funding, latency, sizing, and portfolio experiment contracts;
+- exact engine/runtime/config/raw-artifact formats, Phase 8 execution-event normalization, fee, slippage, funding, latency, sizing, order, fill, position, and portfolio experiment contracts behind ADR-0014's opaque hashes;
 - how Calvin reviews are repeated to measure reviewer stability without becoming runtime policy;
 - criteria for promoting a `researchCandidate` to a new frozen Brooks-compatible policy version.

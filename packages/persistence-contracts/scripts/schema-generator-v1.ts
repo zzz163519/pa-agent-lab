@@ -3,10 +3,11 @@ import { resolve } from "node:path";
 import {
   BROOKS_CONTEXT_BAR_COUNT,
   BROOKS_DETAIL_BAR_COUNT,
+  FIRST_BROOKS_POLICY_BAR_DURATION_SECONDS,
 } from "@pa-agent-lab/contracts";
 import { createGenerator } from "ts-json-schema-generator";
 
-const TARGETS = [
+const PERSISTED_TARGETS = [
   {
     kind: "policy_case",
     component: "BrooksPolicyCaseV1",
@@ -39,6 +40,28 @@ const TARGETS = [
   },
 ] as const;
 
+const REPLAY_TARGETS = [
+  {
+    component: "ReplayRequestV1",
+    source: "../contracts/src/replay-boundary-v1.ts",
+  },
+  {
+    component: "ReplayResultV1",
+    source: "../contracts/src/replay-boundary-v1.ts",
+  },
+] as const;
+
+interface SchemaTargetV1 {
+  readonly component: string;
+  readonly source: string;
+}
+
+interface SchemaDocumentMetadataV1 {
+  readonly schemaId: string;
+  readonly title: string;
+  readonly extensions: Readonly<Record<string, unknown>>;
+}
+
 export interface GeneratedTransportDocumentsV1 {
   readonly schemaBundle: Readonly<Record<string, unknown>>;
   readonly openapi: Readonly<Record<string, unknown>>;
@@ -47,9 +70,44 @@ export interface GeneratedTransportDocumentsV1 {
 export function buildTransportSchemaDocumentsV1(
   packageRoot: string,
 ): GeneratedTransportDocumentsV1 {
+  const recordKinds = Object.fromEntries(
+    PERSISTED_TARGETS.map((target) => [target.kind, target.component]),
+  );
+  return buildSchemaDocuments(packageRoot, PERSISTED_TARGETS, {
+    schemaId: "https://pa-agent-lab.local/schemas/phase1-persisted-records-v1",
+    title: "PA Agent Lab Phase 1 Persisted Record Schemas",
+    extensions: {
+      "x-pa-record-kinds": recordKinds,
+      "x-pa-runtime-authority":
+        "research_only_no_provider_or_trading_authority",
+    },
+  });
+}
+
+export function buildReplayBoundaryTransportDocumentsV1(
+  packageRoot: string,
+): GeneratedTransportDocumentsV1 {
+  return buildSchemaDocuments(packageRoot, REPLAY_TARGETS, {
+    schemaId: "https://pa-agent-lab.local/schemas/replay-boundary-v1",
+    title: "PA Agent Lab Replay Boundary V1 Schemas",
+    extensions: {
+      "x-pa-replay-components": REPLAY_TARGETS.map(
+        (target) => target.component,
+      ),
+      "x-pa-runtime-authority":
+        "research_only_no_replay_engine_or_trading_authority",
+    },
+  });
+}
+
+function buildSchemaDocuments(
+  packageRoot: string,
+  targets: readonly SchemaTargetV1[],
+  metadata: SchemaDocumentMetadataV1,
+): GeneratedTransportDocumentsV1 {
   const components: Record<string, unknown> = {};
 
-  for (const target of TARGETS) {
+  for (const target of targets) {
     const generator = createGenerator({
       path: resolve(packageRoot, target.source),
       type: target.component,
@@ -80,9 +138,6 @@ export function buildTransportSchemaDocumentsV1(
 
   refineGeneratedComponents(components);
 
-  const recordKinds = Object.fromEntries(
-    TARGETS.map((target) => [target.kind, target.component]),
-  );
   const openapiComponents = Object.fromEntries(
     Object.entries(components).map(([name, schema]) => [
       name,
@@ -99,20 +154,19 @@ export function buildTransportSchemaDocumentsV1(
   return {
     schemaBundle: {
       $schema: "https://json-schema.org/draft/2020-12/schema",
-      $id: "https://pa-agent-lab.local/schemas/phase1-persisted-records-v1",
+      $id: metadata.schemaId,
       $defs: schemaDefinitions,
     },
     openapi: {
       openapi: "3.1.1",
       info: {
-        title: "PA Agent Lab Phase 1 Persisted Record Schemas",
+        title: metadata.title,
         version: "1.0.0",
       },
       jsonSchemaDialect: "https://json-schema.org/draft/2020-12/schema",
       paths: {},
       components: { schemas: openapiComponents },
-      "x-pa-record-kinds": recordKinds,
-      "x-pa-runtime-authority": "research_only_no_provider_or_trading_authority",
+      ...metadata.extensions,
     },
   };
 }
@@ -138,6 +192,18 @@ function refineSchemaNode(value: unknown): void {
     if (integerMinimum !== undefined && property.type === "number") {
       property.type = "integer";
       property.minimum = integerMinimum;
+    } else if (
+      integerMinimum !== undefined &&
+      Array.isArray(property.type) &&
+      property.type.includes("number")
+    ) {
+      property.type = property.type.map((type) =>
+        type === "number" ? "integer" : type,
+      );
+      property.minimum = integerMinimum;
+    }
+    if (name === "barDurationSeconds") {
+      property.const = FIRST_BROOKS_POLICY_BAR_DURATION_SECONDS;
     }
     if (name === "visibleBarCount") {
       property.maximum = BROOKS_CONTEXT_BAR_COUNT;
@@ -165,6 +231,12 @@ function integerMinimumFor(name: string): number | undefined {
       "visibleBarCount",
       "leftCensoredBarsMissing",
       "decisionPointSequence",
+      "firstEventSequence",
+      "lastEventSequence",
+      "terminalEventSequence",
+      "detectedAtEventSequence",
+      "lastObservedEventSequence",
+      "parentPolicyBarSequence",
       "repeatIndex",
       "attemptIndex",
     ].includes(name)

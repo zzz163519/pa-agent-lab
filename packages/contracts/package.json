@@ -11,6 +11,7 @@
     "./doctrine-v1": "./src/doctrine-v1.ts",
     "./model-call-schedule-v1": "./src/model-call-schedule-v1.ts",
     "./model-run-audit-v1": "./src/model-run-audit-v1.ts",
-    "./policy-input-v1": "./src/policy-input-v1.ts"
+    "./policy-input-v1": "./src/policy-input-v1.ts",
+    "./replay-boundary-v1": "./src/replay-boundary-v1.ts"
   }
 }

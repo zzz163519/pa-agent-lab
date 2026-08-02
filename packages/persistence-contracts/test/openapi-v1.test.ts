@@ -4,7 +4,10 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 
-import { buildTransportSchemaDocumentsV1 } from "../scripts/schema-generator-v1.ts";
+import {
+  buildReplayBoundaryTransportDocumentsV1,
+  buildTransportSchemaDocumentsV1,
+} from "../scripts/schema-generator-v1.ts";
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -95,6 +98,74 @@ describe("generated Phase 1 transport schemas V1", () => {
       assert.match(reference, /^#\/components\/schemas\/[A-Za-z0-9_]+$/);
       const name = reference.slice("#/components/schemas/".length);
       assert.ok(openapi.components.schemas[name], `unresolved schema: ${name}`);
+    }
+  });
+  it("publishes replay request and result schemas without persisted-record or API authority", async () => {
+    const generated = buildReplayBoundaryTransportDocumentsV1(packageRoot);
+    const [schemaBundle, openapi] = await Promise.all([
+      readJson(resolve(packageRoot, "schemas/replay-boundary-v1.schema.json")),
+      readJson(resolve(packageRoot, "openapi/replay-boundary-v1.openapi.json")),
+    ]);
+    assert.deepEqual(schemaBundle, generated.schemaBundle);
+    assert.deepEqual(openapi, generated.openapi);
+
+    const document = openapi as {
+      readonly paths: Readonly<Record<string, unknown>>;
+      readonly components: {
+        readonly schemas: Readonly<Record<string, unknown>>;
+      };
+      readonly "x-pa-replay-components": readonly string[];
+      readonly "x-pa-record-kinds"?: unknown;
+      readonly "x-pa-runtime-authority": string;
+    };
+    assert.deepEqual(document.paths, {});
+    assert.deepEqual(document["x-pa-replay-components"], [
+      "ReplayRequestV1",
+      "ReplayResultV1",
+    ]);
+    assert.equal(document["x-pa-record-kinds"], undefined);
+    assert.equal(
+      document["x-pa-runtime-authority"],
+      "research_only_no_replay_engine_or_trading_authority",
+    );
+    for (const component of document["x-pa-replay-components"]) {
+      const schema = document.components.schemas[component] as {
+        readonly additionalProperties?: unknown;
+      };
+      assert.equal(schema.additionalProperties, false);
+    }
+    const unresolvedTerminal = document.components.schemas
+      .UnresolvedReplayTerminalV1 as {
+      readonly properties: {
+        readonly detectedAtEventSequence: {
+          readonly type?: unknown;
+          readonly minimum?: number;
+        };
+      };
+    };
+    assert.deepEqual(
+      unresolvedTerminal.properties.detectedAtEventSequence,
+      { type: ["integer", "null"], minimum: 0 },
+    );
+    const decisionBinding = document.components.schemas
+      .ReplayDecisionBindingV1 as {
+      readonly properties: {
+        readonly barDurationSeconds: {
+          readonly type?: string;
+          readonly minimum?: number;
+          readonly const?: number;
+        };
+      };
+    };
+    assert.deepEqual(decisionBinding.properties.barDurationSeconds, {
+      type: "integer",
+      minimum: 0,
+      const: 300,
+    });
+    for (const reference of collectReferences(document)) {
+      assert.match(reference, /^#\/components\/schemas\/[A-Za-z0-9_]+$/);
+      const name = reference.slice("#/components/schemas/".length);
+      assert.ok(document.components.schemas[name], `unresolved schema: ${name}`);
     }
   });
 });

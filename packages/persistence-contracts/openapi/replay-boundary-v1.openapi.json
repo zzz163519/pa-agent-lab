@@ -1,0 +1,400 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "PA Agent Lab Replay Boundary V1 Schemas",
+    "version": "1.0.0"
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "paths": {},
+  "components": {
+    "schemas": {
+      "ReplayRequestV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "replay-request.v1"
+          },
+          "requestHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "pathId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "pathScope": {
+            "type": "string",
+            "const": "single_frozen_decision"
+          },
+          "decisionBinding": {
+            "$ref": "#/components/schemas/ReplayDecisionBindingV1"
+          },
+          "datasetAuthorizationHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "executionDataProvenanceHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "executionDataRange": {
+            "$ref": "#/components/schemas/ReplayExecutionDataRangeV1"
+          },
+          "experimentPolicyHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "modelCallsPermitted": {
+            "type": "boolean",
+            "const": false
+          },
+          "policyMutationPermitted": {
+            "type": "boolean",
+            "const": false
+          },
+          "futureDataPermitted": {
+            "type": "boolean",
+            "const": false
+          },
+          "implicitOhlcTraversalPermitted": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "requestHash",
+          "pathId",
+          "pathScope",
+          "decisionBinding",
+          "datasetAuthorizationHash",
+          "executionDataProvenanceHash",
+          "executionDataRange",
+          "experimentPolicyHash",
+          "modelCallsPermitted",
+          "policyMutationPermitted",
+          "futureDataPermitted",
+          "implicitOhlcTraversalPermitted"
+        ],
+        "additionalProperties": false
+      },
+      "ContractSha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "ReplayDecisionBindingV1": {
+        "type": "object",
+        "properties": {
+          "bundleId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "callId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "caseId": {
+            "type": "string"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "decisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "policyStreamId": {
+            "type": "string"
+          },
+          "decisionPointBarId": {
+            "type": "string"
+          },
+          "decisionPointSequence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "anonymousLastVisibleBarId": {
+            "type": "string"
+          },
+          "barDurationSeconds": {
+            "type": "integer",
+            "minimum": 0,
+            "const": 300
+          }
+        },
+        "required": [
+          "bundleId",
+          "callId",
+          "caseHash",
+          "caseId",
+          "inputHash",
+          "decisionHash",
+          "policyStreamId",
+          "decisionPointBarId",
+          "decisionPointSequence",
+          "anonymousLastVisibleBarId",
+          "barDurationSeconds"
+        ],
+        "additionalProperties": false
+      },
+      "ReplayExecutionDataRangeV1": {
+        "type": "object",
+        "properties": {
+          "firstEventId": {
+            "type": "string"
+          },
+          "firstEventSequence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "lastEventId": {
+            "type": "string"
+          },
+          "lastEventSequence": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "firstEventId",
+          "firstEventSequence",
+          "lastEventId",
+          "lastEventSequence"
+        ],
+        "additionalProperties": false
+      },
+      "ReplayResultV1": {
+        "type": "object",
+        "properties": {
+          "terminal": {
+            "$ref": "#/components/schemas/ReplayTerminalV1"
+          },
+          "engineRuntimeHash": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "replayConfigHash": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rawArtifactHash": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "validationAuditHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "replay-result.v1"
+          },
+          "resultHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "requestHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "pathId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "datasetAuthorizationHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "executionDataProvenanceHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "experimentPolicyHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "datasetAuthorizationHash",
+          "engineRuntimeHash",
+          "executionDataProvenanceHash",
+          "experimentPolicyHash",
+          "pathId",
+          "rawArtifactHash",
+          "replayConfigHash",
+          "requestHash",
+          "resultHash",
+          "schemaVersion",
+          "terminal",
+          "validationAuditHash"
+        ],
+        "additionalProperties": false
+      },
+      "ReplayTerminalV1": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/RejectedReplayTerminalV1"
+          },
+          {
+            "$ref": "#/components/schemas/ResolvedReplayTerminalV1"
+          },
+          {
+            "$ref": "#/components/schemas/UnresolvedReplayTerminalV1"
+          },
+          {
+            "$ref": "#/components/schemas/RightCensoredReplayTerminalV1"
+          }
+        ]
+      },
+      "RejectedReplayTerminalV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "const": "rejected"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/ReplayRejectionReasonV1"
+          },
+          "sidecarStarted": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "required": [
+          "state",
+          "reason",
+          "sidecarStarted"
+        ],
+        "additionalProperties": false
+      },
+      "ReplayRejectionReasonV1": {
+        "type": "string",
+        "enum": [
+          "dataset_authorization_revoked",
+          "dataset_artifact_hash_mismatch",
+          "provenance_artifact_hash_mismatch",
+          "experiment_policy_hash_mismatch",
+          "engine_runtime_not_authorized",
+          "replay_config_not_authorized",
+          "audit_identity_mismatch"
+        ]
+      },
+      "ResolvedReplayTerminalV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "const": "resolved"
+          },
+          "reason": {
+            "type": "null"
+          },
+          "terminalEventId": {
+            "type": "string"
+          },
+          "terminalEventSequence": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "state",
+          "reason",
+          "terminalEventId",
+          "terminalEventSequence"
+        ],
+        "additionalProperties": false
+      },
+      "UnresolvedReplayTerminalV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "const": "unresolved"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/ReplayUnresolvedReasonV1"
+          },
+          "affectedPathAction": {
+            "type": "string",
+            "const": "terminated_fail_closed"
+          },
+          "detectedAtEventId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detectedAtEventSequence": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          }
+        },
+        "required": [
+          "state",
+          "reason",
+          "affectedPathAction",
+          "detectedAtEventId",
+          "detectedAtEventSequence"
+        ],
+        "additionalProperties": false
+      },
+      "ReplayUnresolvedReasonV1": {
+        "type": "string",
+        "enum": [
+          "missing_execution_data",
+          "segment_boundary",
+          "same_bar_order_ambiguous",
+          "source_order_unknown"
+        ]
+      },
+      "RightCensoredReplayTerminalV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "const": "right_censored"
+          },
+          "reason": {
+            "type": "string",
+            "const": "authorized_horizon_exhausted"
+          },
+          "censoringBoundaryEventId": {
+            "type": "string"
+          },
+          "lastObservedEventId": {
+            "type": "string"
+          },
+          "lastObservedEventSequence": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "state",
+          "reason",
+          "censoringBoundaryEventId",
+          "lastObservedEventId",
+          "lastObservedEventSequence"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "x-pa-replay-components": [
+    "ReplayRequestV1",
+    "ReplayResultV1"
+  ],
+  "x-pa-runtime-authority": "research_only_no_replay_engine_or_trading_authority"
+}

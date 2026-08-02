@@ -1,6 +1,6 @@
 # Two-Track Preflight Audit and Minimal Replay Gap V1
 
-Status: `audit_and_plan`, not a replay implementation and not an approval of Phase 8 execution mechanics.
+Status: `audit_and_plan`. Track A was implemented by this artifact set. The Track B identity/state gaps identified below were subsequently implemented by ADR-0014 and `REPLAY_BOUNDARY_V1`; Phase 8 execution mechanics remain deferred.
 
 ## Audit conclusion
 

@@ -190,6 +190,10 @@ Tests prove schema, causal, semantic-boundary, and authority behavior, not profi
 
 ADR-0013 now provides strict persisted JSON/OpenAPI parsers and immutable Case/database constraints for the implemented persistence record set.
 
+## Implemented by ADR-0014
+
+ADR-0014 now provides provider-neutral replay request/result identities, exact-slice authorization, strictly post-cutoff provenance, explicit ambiguity/censoring states, and audit hashes without implementing replay mechanics.
+
 ## Still deferred
 
 - actual RAG indexing/retrieval;
@@ -197,4 +201,4 @@ ADR-0013 now provides strict persisted JSON/OpenAPI parsers and immutable Case/d
 - model run attempts, retries, costs, and provider retention;
 - probability calibration;
 - active-position review;
-- deterministic replay request/result implementation.
+- deterministic replay engine integration and mechanical order/fill/accounting results.

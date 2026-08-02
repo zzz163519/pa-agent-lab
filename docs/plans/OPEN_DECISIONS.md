@@ -80,15 +80,14 @@ Still open:
 
 ## Deterministic replay
 
-ADR-0007 accepts NautilusTrader as the first Phase 8 replay sidecar candidate and LEAN only as a bounded conformance challenger. PA Agent Lab will not build a complete replay, matching, portfolio, and accounting engine from scratch. No replay engine installation or execution is authorized before separate Phase 8 approval.
+ADR-0007 accepts NautilusTrader as the first Phase 8 replay sidecar candidate and LEAN only as a bounded conformance challenger. ADR-0014 freezes the provider-neutral Phase 1 request/result identity, exact-slice authorization, strictly post-cutoff provenance, terminal states, and opaque audit hashes. PA Agent Lab will not build a complete replay, matching, portfolio, and accounting engine from scratch. No replay engine installation or execution is authorized before separate Phase 8 approval.
 
 Still open:
 
 - pin the exact NautilusTrader release, image digest, Python/runtime identity, and TypeScript adapter protocol;
-- freeze `ReplayRequest`, `ReplayResult`, raw-artifact, experiment-policy, and canonical replay hash schemas;
-- freeze post-decision execution-data resolution and segment behavior;
+- freeze the exact engine config and raw-artifact formats referenced by ADR-0014's opaque hashes;
 - freeze deterministic sizing, fee, slippage, funding, latency, order, and portfolio assumptions;
-- define affected-path behavior after unresolved same-bar ambiguity or missing execution data;
+- freeze Phase 8 execution-event normalization beyond ADR-0014's identity/provenance boundary;
 - freeze the hand-computed fixtures and tolerances used for the LEAN conformance snapshot;
 - prove offline sandboxing, absence of credentials and Paper/Live configuration, and cross-container reproducibility.
 

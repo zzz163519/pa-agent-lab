@@ -102,6 +102,10 @@ These tests prove contract and causal behavior, not model quality or profitabili
 
 ADR-0013 now provides strict persisted JSON/OpenAPI parsing and database uniqueness for call-linked ModelRun and ProviderAttempt records.
 
+## Implemented by ADR-0014
+
+ADR-0014 now consumes the frozen bundle through a one-selected-path `ReplayRequestV1`, rechecks Case/input/decision/cutoff identity, forbids model calls and policy mutation, and emits only explicit terminal-state/audit identities.
+
 ## Deferred contracts
 
 Still unresolved:
@@ -109,4 +113,4 @@ Still unresolved:
 - exact sampled selection policies and dataset partitions;
 - exact pinned provider model IDs;
 - retry count, timeout, rate-limit, transport, usage, and valid-decision cost policy;
-- exact Phase 8 replay request and result schemas.
+- exact Phase 8 engine adapter, execution-event payload, and mechanical result schemas behind ADR-0014's opaque hashes.

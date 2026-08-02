@@ -21,7 +21,7 @@ Exit condition: repository identity, authority tracks, and prohibited inputs are
 
 ## Phase 1: Domain contracts
 
-Current phase. The ADR-0008 scheduling, ADR-0010 semantic, ADR-0011 causal-input/privacy/model-run-audit, ADR-0012 deterministic-chart, and ADR-0013 strict-persistence contract slices are implemented; a running database/API, provider transport, and replay request/result boundaries are not yet frozen.
+Current phase. The ADR-0008 scheduling, ADR-0010 semantic, ADR-0011 causal-input/privacy/model-run-audit, ADR-0012 deterministic-chart, ADR-0013 strict-persistence, and ADR-0014 provider-neutral replay-boundary contract slices are implemented; a running database/API, provider transport, replay engine, and execution mechanics are not authorized.
 
 - freeze causal case identity and visible-through boundary;
 - freeze the accepted 120/40 chart/OHLC payload, normalization, bar identity, continuity, left-censoring, anonymity schemas, and the ADR-0009 five-minute (`300` second) V1 decision duration;
@@ -31,7 +31,7 @@ Current phase. The ADR-0008 scheduling, ADR-0010 semantic, ADR-0011 causal-input
 - freeze deterministic anonymous chart bytes, artifact identity, and local content-addressed persistence;
 - use ADR-0013 strict persisted JSON, generated OpenAPI 3.1 components, chart metadata, and atomic PostgreSQL uniqueness for the implemented Case, input, chart artifact, ModelRun, ProviderAttempt, and Audit records;
 - defer detailed dataset partition machinery until Phase 6 needs a frozen evaluation case list;
-- define provider-neutral replay request, result, ambiguity, censoring, and audit identities without implementing or installing a replay engine.
+- use ADR-0014's exact-slice authorization, strictly post-cutoff provenance, one-path `ReplayRequest`, four-state `ReplayResult`, ambiguity/censoring, and audit identities without implementing or installing a replay engine;
 
 Exit condition: synthetic schema tests can reject future bars, raw identity/price leakage, unauthorized memory, missing provenance, malformed continuity, track conflation, invalid replay states, and implicit same-bar ordering before any provider or replay-engine call.
 
@@ -122,7 +122,7 @@ ADR-0007 accepts a NautilusTrader-first platform direction, with LEAN limited to
 
 - consume only frozen, content-hashed policy decisions and experiment assumptions;
 - connect validated TypeScript `ReplayRequest` values to a pinned, unmodified, offline NautilusTrader sidecar;
-- normalize raw engine artifacts into a versioned `ReplayResult` and validate deterministic order, fill, risk, fee, slippage, funding, position, and accounting behavior;
+- normalize raw engine artifacts into ADR-0014 `ReplayResult` identities and separately approved mechanical fields, then validate deterministic order, fill, risk, fee, slippage, funding, position, and accounting behavior;
 - prohibit mid-run model calls or policy mutation;
 - reject protected windows and unauthorized datasets before opening or sending data;
 - use approved finer-grained post-decision execution data when it causally resolves sequencing;

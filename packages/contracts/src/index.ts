@@ -6,3 +6,4 @@ export * from "./doctrine-v1.ts";
 export * from "./model-call-schedule-v1.ts";
 export * from "./model-run-audit-v1.ts";
 export * from "./policy-input-v1.ts";
+export * from "./replay-boundary-v1.ts";
