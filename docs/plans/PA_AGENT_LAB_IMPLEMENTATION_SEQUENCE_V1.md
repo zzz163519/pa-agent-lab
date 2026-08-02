@@ -1,16 +1,16 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. NO STEP BEYOND REPOSITORY BOOTSTRAP IS AUTHORIZED BY THIS DOCUMENT.
+Status: DRAFT SEQUENCE. REPOSITORY BOOTSTRAP AND THE ADR-0008 PHASE 1 SCHEDULING CONTRACT SLICE ARE AUTHORIZED; OTHER STEPS REQUIRE SEPARATE APPROVAL.
 
 ## Delivery model
 
 Use contract/API-first vertical slices. Do not build the full frontend first, and do not defer all user-interface work until the backend is complete.
 
-The first user interface exists to produce high-quality outcome-blind labels and inspect disagreements. It is not a dashboard, trading terminal, or marketing site.
+The first user interface exists to produce high-quality outcome-blind source reviews and adjudication evidence. It is not a dashboard, trading terminal, policy-authoring shortcut, or marketing site.
 
 ## Phase 0: Governance bootstrap
 
-Current phase.
+Baseline complete. Later governance decisions remain append-only work.
 
 - establish the independent repository and charter;
 - record accepted architecture decisions separately from drafts;
@@ -21,13 +21,18 @@ Exit condition: repository identity, authority tracks, and prohibited inputs are
 
 ## Phase 1: Domain contracts
 
+Current phase. The ADR-0008 scheduling and ADR-0010 semantic contract slices are implemented in `packages/contracts`; Case/payload persistence, remaining audit records, and strict API parsing are not yet frozen.
+
 - freeze causal case identity and visible-through boundary;
-- freeze `brooksAssessment`, `calvinPolicy`, and disagreement schemas;
+- freeze the accepted 120/40 chart/OHLC payload, normalization, bar identity, continuity, left-censoring, anonymity schemas, and the ADR-0009 five-minute (`300` second) V1 decision duration;
+- freeze `brooksDecision`, `calvinReview`, and disagreement schemas;
 - define doctrine source, excerpt, interpretation, and citation records;
 - define policy decision, evidence reference, uncertainty, and validation records;
-- define dataset partitions and retrieval permissions.
+- define the deterministic outbound-payload privacy validator and immutable payload audit;
+- defer detailed dataset partition machinery until Phase 6 needs a frozen evaluation case list;
+- define provider-neutral replay request, result, ambiguity, censoring, and audit identities without implementing or installing a replay engine.
 
-Exit condition: synthetic schema tests can reject future bars, unauthorized memory, missing provenance, and track conflation.
+Exit condition: synthetic schema tests can reject future bars, raw identity/price leakage, unauthorized memory, missing provenance, malformed continuity, track conflation, invalid replay states, and implicit same-bar ordering before any provider or replay-engine call.
 
 ## Phase 2: Case store and API
 
@@ -41,37 +46,37 @@ Exit condition: one synthetic causal case can be created, labeled, frozen, retri
 ## Phase 3: Thin annotation UI
 
 - render only the anonymous causal prefix through R;
-- collect structured Brooks and Calvin tracks separately;
-- support `no_trade`, `uncertain`, abstention, and correction events;
-- hide agent proposals until the human label is frozen when anchoring would bias evidence;
-- display provenance and conflict after freeze.
+- collect approved core DoctrineUnits and whole-decision offline `calvinReview` records separately;
+- support `agree`, `clarify`, `disagree`, and `uncertain` for the complete decision;
+- hide agent proposals until the whole-decision review record is frozen when anchoring would bias evidence;
+- display the immutable BrooksDecision, CalvinReview, and derived whole-decision conflict after freeze.
 
-Exit condition: Calvin can produce a complete, immutable, outcome-blind label without editing JSON manually.
+Exit condition: Calvin can produce one complete, immutable, outcome-blind review without editing JSON manually. The review cannot patch Brooks fields or enter runtime retrieval automatically.
 
 ## Phase 4: Doctrine ingestion and RAG
 
 - inventory only legally available source material;
-- ingest text or timestamped transcripts with source hashes;
-- create reviewed semantic doctrine units;
-- implement metadata, lexical, and vector retrieval;
-- persist every retrieved item and citation.
+- create simple local Source records and approved DoctrineUnits containing core trading semantics;
+- implement metadata, lexical, and vector retrieval over approved DoctrineUnits;
+- persist retrieved doctrine IDs for each model run.
 
-Exit condition: a doctrine query returns bounded, source-located evidence and cannot retrieve unapproved/model-generated authority.
+Exit condition: a doctrine query returns bounded approved trading semantics and cannot retrieve draft, retired, Calvin-review, or model-generated authority.
 
-## Phase 5: Policy Agent vertical slice
+## Phase 5: Brooks Policy Agent vertical slice
 
-- provide one causal case, bounded doctrine context, and allowed precedents;
-- request one schema-constrained policy proposal;
+- provide one causal case, bounded doctrine context, and allowed source-grounded examples;
+- request one schema-constrained complete Brooks research decision;
+- exclude `calvinReview`, evaluation cases, outcomes, and research memory from retrieval;
 - reject invalid citations, future references, track conflation, and invalid geometry;
 - persist the complete inference audit.
 
-Exit condition: one decision is repeatable under a fixed model/prompt identity and fails closed under adversarial causal tests.
+Exit condition: one Brooks decision is repeatable under a fixed model/prompt identity and fails closed under adversarial causal tests.
 
 ## Phase 6: Semantic evaluation
 
 Evaluate before PnL or full replay:
 
-- agreement with determinate Calvin fields;
+- agreement with determinate source-grounded Brooks decision fields;
 - doctrine consistency and citation correctness;
 - no-trade and uncertainty calibration;
 - repeated-run consistency;
@@ -80,7 +85,7 @@ Evaluate before PnL or full replay:
 - evaluation-case retrieval exclusion;
 - behavior under missing data and ambiguity.
 
-Exit condition: a pre-approved semantic gate passes. Fluent explanations alone do not pass the gate.
+Exit condition: each candidate independently passes the same pre-approved semantic and causal gates on byte-equivalent market inputs, retrieval evidence, prompts, schemas, and reasoning budgets. Only candidates that pass are compared on observable reasoning quality, valid-decision cost, retries, latency, and throughput. Fluent explanations alone do not pass.
 
 ## Phase 7: Training decision
 
@@ -92,12 +97,20 @@ Exit condition: a new model version improves the frozen semantic gate without le
 
 ## Phase 8: Deterministic replay integration
 
-- connect policy proposals to a versioned read-only replay interface;
-- retain deterministic order, fill, risk, fee, slippage, funding, and accounting authority;
-- run fixed development evidence without mid-run policy mutation;
-- preserve rejected, ambiguous, and right-censored decisions.
+ADR-0007 accepts a NautilusTrader-first platform direction, with LEAN limited to bounded synthetic conformance checks. Phase 8 still requires separate contract and implementation approval before either engine is installed or run.
 
-Exit condition: replay behavior is reproducible from policy output and audit artifacts. It still has no Paper or Live authority.
+- consume only frozen, content-hashed policy decisions and experiment assumptions;
+- connect validated TypeScript `ReplayRequest` values to a pinned, unmodified, offline NautilusTrader sidecar;
+- normalize raw engine artifacts into a versioned `ReplayResult` and validate deterministic order, fill, risk, fee, slippage, funding, position, and accounting behavior;
+- prohibit mid-run model calls or policy mutation;
+- reject protected windows and unauthorized datasets before opening or sending data;
+- use approved finer-grained post-decision execution data when it causally resolves sequencing;
+- reject assumed OHLC traversal and preserve unresolved same-bar order as `ambiguous`;
+- preserve missing data, segment boundaries, rejected decisions, and right-censored positions;
+- prove reproducibility across fresh container starts and compare bounded hand-computed fixtures with LEAN;
+- run offline with no credentials, Paper adapter, Live adapter, exchange connection, wallet access, or public listener.
+
+Exit condition: canonical replay output is reproducible from frozen policy and audit artifacts, all ADR-0007 adoption gates pass, and no engine default silently weakens causal or ambiguity contracts. Replay still has no Paper or Live authority.
 
 ## Phase 9: Independent Research Agent
 
@@ -115,9 +128,9 @@ Domain contracts
   -> Case API and audit store
   -> Thin annotation UI
   -> Doctrine RAG API
-  -> Policy inference API
+  -> Brooks Policy inference API
   -> Evaluation surfaces
   -> Training and replay integrations
 ```
 
-This order makes the API contract authoritative while introducing the UI early enough to test whether the labeling workflow captures Calvin's actual judgment.
+This order makes the API contract authoritative while introducing the UI early enough to test whether the review workflow captures Calvin's source interpretation and disagreements without turning them into runtime policy.

@@ -11,18 +11,19 @@ RAG is recommended because doctrine needs source traceability and case precedent
 ## Logical flow
 
 ```text
-Authorized Brooks sources -> Doctrine ingestion -> Doctrine RAG ----+
-                                                                    |
-Calvin blind labels -------> Case store -------> Case RAG ----------+--> PA Policy Agent
-                                                                    |          |
-Closed causal candles -----> Context/evidence service --------------+          v
-                                                                       Structured decision
-                                                                               |
-                                                                       Policy validator
-                                                                               |
-                                                            Replay/execution/risk/accounting
-                                                                               |
-                                                                      Immutable audit record
+Authorized Brooks sources -> Doctrine ingestion -> Doctrine RAG --------+
+                                                                          |
+Closed causal candles ------> Anonymous chart/OHLC service ---------------+--> Brooks Policy Agent
+                                                                          |          |
+                                                                          |          v
+                                                                          |   Structured Brooks decision
+                                                                          |          |
+                                                                          |   Deterministic validator
+                                                                          |          |
+                                                                          +--> Immutable decision audit
+
+Calvin offline reviews -----> Review store ------> adjudication/evaluation only
+Research evidence ----------> isolated Research Agent -> researchCandidate only
 ```
 
 A later Research Agent is isolated from the frozen Policy Agent. It proposes a new `researchCandidate` version and cannot mutate the active policy.
@@ -31,57 +32,51 @@ A later Research Agent is isolated from the frozen Policy Agent. It proposes a n
 
 ### Doctrine RAG
 
-Doctrine RAG should store source-grounded semantic units rather than arbitrary token chunks. A doctrine unit should eventually include:
+ADR-0010 keeps doctrine retrieval deliberately small. Local Source records retain only the minimum source ID, type, title, URL/local reference, content hash, and private flag needed to avoid losing provenance. Those fields do not enter RAG embeddings or model context.
 
-- source identity, content hash, edition or version, and location;
-- primary quotation or authorized extract;
-- concept tags and applicable market context;
-- causal prerequisites and exclusions;
-- commonly confused concepts;
-- approved interpretation and review status;
-- supersession and conflict links.
+A DoctrineUnit contains:
 
-Suggested authority tiers remain open for approval:
+- stable `doctrineId` and local `sourceId`;
+- concept and rule;
+- `appliesWhen` and `avoidWhen`;
+- `decisionEffect`;
+- `draft | approved | retired` status.
 
-1. legally held Brooks primary course, book, transcript, or manual material;
-2. official public Brooks glossary, manuals, and Ask Al material;
-3. human-reviewed doctrine cards derived from primary material;
-4. Calvin application notes, stored outside doctrine authority;
-5. model-generated interpretations, stored only as candidates.
+The RAG-facing record contains only `doctrineId` plus the five core trading-semantics fields. Only approved records are retrievable.
 
-### Case RAG
+Approved source classes are:
 
-Case RAG should retrieve causal precedents, not future outcomes. Each case requires:
+1. Brooks public materials and direct material from the official Al Brooks YouTube channel;
+2. reviewed third-party transcripts of Brooks course material, including approved Bilibili sources;
+3. locally reviewed core DoctrineUnits derived from those sources;
+4. V6 definition candidates imported under ADR-0004 and reviewed before approval.
 
-- exact visible-through bar and source commitment;
-- anonymous normalized chart and causal OHLC payload;
-- structured `brooksAssessment` and `calvinPolicy` tracks;
-- no-trade, uncertainty, invalidation, and correction evidence;
-- dataset split and retrieval-access policy;
-- immutable case and label version identities.
+Model-generated doctrine remains draft. Complete copyrighted transcripts stay outside Git and outside the RAG record.
 
-Training cases may be retrievable by an aligned policy. Evaluation and holdout cases must be excluded by server-side authorization, not merely by prompt instructions.
+### Source examples and review store
+
+Each reviewed case keeps its exact visible-through bar, anonymous normalized input identity, structured BrooksDecision, and optional whole-decision CalvinReview. Calvin review remains separate and unavailable to runtime retrieval. Detailed holdout/contact-state machinery is deferred until Phase 6; Phase 1 does not build it.
 
 ### Retrieval method
 
-The initial recommendation is hybrid retrieval:
+The initial recommendation is:
 
-1. authority and dataset metadata filtering;
-2. PostgreSQL full-text or exact terminology retrieval;
-3. vector similarity retrieval;
-4. deterministic reranking and bounded context assembly;
-5. persisted citations and retrieved-chunk hashes.
+1. filter to approved DoctrineUnits;
+2. use PostgreSQL terminology/full-text and vector retrieval;
+3. assemble a small bounded set of core trading semantics;
+4. persist only the retrieved `doctrineId` values with the model run.
 
-A standalone vector database and a graph database are not recommended initially. PostgreSQL plus `pgvector` is sufficient unless measured scale or relationship queries prove otherwise.
+A standalone vector or graph database is not recommended initially. PostgreSQL plus `pgvector` is sufficient.
 
 ## Memory isolation
 
 Use separate stores or hard authorization boundaries for:
 
-| Memory | Purpose | Policy Agent access | Automatic writes |
+| Memory | Purpose | Brooks Policy Agent access | Automatic writes |
 |---|---|---:|---:|
 | `doctrine_memory` | source-grounded Brooks concepts | read | no |
-| `case_memory` | Calvin examples, labels, corrections | bounded read | no authoritative writes |
+| `brooks_case_memory` | approved source-grounded Brooks examples | bounded read | no authoritative writes |
+| `calvin_review` | offline agree/clarify/disagree/uncertain records | forbidden | no |
 | `working_memory` | current causal segment and active reasoning state | read/write within run | expires or resets by contract |
 | `research_outcome_memory` | outcomes, diagnostics, hypotheses | forbidden | research pipeline only |
 | `decision_audit` | immutable input/retrieval/output/validation record | append through service | append only |
@@ -91,51 +86,75 @@ Ordinary conversation history is not strategy memory. A conversation item become
 
 ## Agent boundary
 
-The Policy Agent should emit a schema-validated proposal, not free-form action authority. Candidate fields include:
+The Brooks Policy Agent emits a schema-validated research proposal, not free-form action authority. Candidate fields include:
 
 - broad context;
 - current leg and Always-In;
 - location and magnets;
-- pressure and breakout lifecycle;
+- pressure and breakout/reversal lifecycle;
 - setup, signal, and trigger lifecycle;
-- direction and trade permission;
+- `long`, `short`, `no_trade`, or `uncertain`;
 - entry premise, protection, and invalidation;
 - holding intent;
-- no-trade or abstention reason;
 - evidence references and doctrine citations.
 
-The exact fields and enums require a separate contract. The model should be allowed to emit `uncertain` and `no_trade` without being penalized merely for not producing a trade.
+It emits no position size, account action, exchange order, PnL expectation, Paper/Live command, or real-money authority. ADR-0010 and `PHASE_1_SEMANTIC_CONTRACTS_V1.md` define the accepted V1 fields and enums.
 
 ## Deterministic boundary
 
 Deterministic services validate input visibility, continuity, evidence references, authority, price geometry, ticks, ambiguity, order sequencing, fills, risk, costs, accounting, and audit persistence. A second language model must not repair invalid output by guessing.
 
+## Deterministic replay platform
+
+ADR-0007 accepts a NautilusTrader-first Phase 8 platform direction behind a versioned TypeScript replay contract. It is a replaceable local execution-simulation sidecar, not a source of doctrine, policy, or research authority. LEAN is limited to a small point-in-time set of hand-computed conformance fixtures rather than a maintained second integration.
+
+Replay consumes frozen, content-hashed decisions; no model call or policy mutation occurs mid-run. The TypeScript boundary rejects protected or unauthorized data before sidecar execution, normalizes and validates results, and persists raw and canonical artifacts. Engine-default OHLC traversal cannot resolve same-bar ambiguity silently: approved finer post-decision data may establish order, otherwise the affected result remains explicit and fails closed.
+
+The sidecar is not authorized before Phase 8. When separately approved, it must be pinned, unmodified, process-isolated, offline during authoritative replay, and configured without credentials or Paper/Live connectivity.
+
 ## Input modalities
 
-The recommended policy input combines:
+The accepted policy input combines:
 
-- an anonymous normalized chart for global geometry;
-- exact causal OHLC and bar identities for precision;
-- deterministic continuity and boundary metadata;
-- retrieved doctrine and allowed precedent evidence.
+- a deterministic anonymous 120-bar context chart;
+- a detail panel repeating the final 40 bars with the same closed `lastVisibleBar`;
+- normalized causal OHLC and stable local bar identities for all 120 visible bars;
+- explicit left-censoring when history is insufficient;
+- `barDurationSeconds = 300` for the first V1 Brooks policy stream under ADR-0009, plus per-bar `contiguous | session_boundary | missing_data | unknown` continuity;
+- retrieved Brooks doctrine and allowed source-grounded example evidence.
+
+Raw prices remain local. External chart and OHLC payloads use `rawPrice / firstVisibleClose * 100` and omit symbol, real timestamp, date, time zone, venue, market class, source/window identity, account information, future bars, outcomes, indicators, and Vegas overlays.
 
 Image-only input loses price and identity precision. Feature-only input risks repeating the current over-compression problem.
 
-## Recommended technology stack
+## Model evaluation
 
-These are recommendations, not accepted dependency choices:
+GPT-5.6 and Gemini 3.6 Flash are peer candidates, not a primary/fallback pair. Exact versions are frozen before a blind, outcome-free comparison on byte-equivalent inputs, retrieval evidence, prompts, schemas, and reasoning budgets.
 
-- domain contracts, causal services, validator, replay integration, and API: TypeScript;
+ADR-0008 separates `evaluation_sampled` from the future `continuous_every_close` baseline. ADR-0009 fixes both first V1 streams to five-minute closed bars. Evaluation points are selected and content-hash committed before outputs or outcomes are inspected, then expanded into an equal point-by-repeat-by-candidate call matrix. A provider retry is an attempt record, not another decision point. Full continuous inference precomputes and freezes at most one logical call per newly closed bar before deterministic replay.
+
+Semantic and causal quality gates run before price comparison. Observable doctrine accuracy, citations, ambiguity handling, abstention, prefix invariance, repeated consistency, valid-decision cost, retries, latency, and throughput determine selection. ADR-0003 removes the runtime Calvin stage, so the accepted comparison is direct model-versus-model evaluation on the complete Brooks decision contract rather than a two-stage 2x2 matrix.
+
+## Technology stack
+
+ADR-0006 accepts:
+
+- a `pnpm` workspace;
+- strict TypeScript and ESM for domain contracts, causal services, validator, API, UI, retrieval, model gateway, and audit;
+- a pinned PostgreSQL plus `pgvector` Docker image as the sole initial system of record;
+- Python only after a separately approved training contract, except for the isolated Phase 8 replay sidecar governed by ADR-0007.
+
+Implementation candidates that do not yet authorize dependencies are:
+
 - API: Fastify, Zod, and generated OpenAPI;
 - UI: React, Vite, and TypeScript;
 - charting: TradingView Lightweight Charts or an audited repository-local renderer;
-- system of record: PostgreSQL;
-- vector retrieval: `pgvector`;
 - large offline candle analysis: Parquet and DuckDB when needed;
-- model access: a small provider-neutral adapter with structured-output support;
-- fine-tuning and preference optimization: a separate Python pipeline only after an approved training contract.
+- model access: a small provider-neutral adapter with structured-output support.
 
-Do not introduce LangChain or LlamaIndex initially. Explicit retrieval and orchestration code is easier to audit for leakage, authority, and version identity.
+The implemented `@pa-agent-lab/contracts` Phase 1 slice uses pinned TypeScript and Node's built-in test runner with no runtime dependency. ADR-0008 defines its scheduling authority; it does not authorize provider access.
+
+Do not introduce SQLite, Qdrant, Chroma, Redis, Neo4j, LangChain, or LlamaIndex initially. Explicit retrieval and orchestration code is easier to audit for leakage, authority, and version identity.
 
 ## Audit identity
 
@@ -155,11 +174,13 @@ Every evaluated decision should persist at least:
 
 The following remain unresolved:
 
-- legally available Brooks source corpus and permitted local processing;
-- local versus external model providers and privacy boundary;
-- first decision schema and annotation granularity;
-- chart renderer and multimodal model requirements;
-- database deployment and backup model;
-- training, validation, and genuinely untouched evaluation partitions;
-- how Calvin labels are repeated to measure human self-consistency;
-- criteria for promoting a `researchCandidate` to a new frozen policy version.
+- exact public source inventory, media/transcript identity, and permitted local excerpt policy;
+- exact remaining Case, ModelRun, persisted API, and immutable audit schemas;
+- dataset partitions, retrieval permissions, and genuinely untouched evaluation cases;
+- exact semantic, consistency, and prefix-invariance acceptance thresholds;
+- provider-specific pinned model IDs, retirement policy, external data-retention configuration, retry attempts, and rate limits;
+- frozen evaluation selection policies, plus criteria for any later 15-minute or multi-timeframe generalization candidate under ADR-0009;
+- criteria and exact fixtures for the Phase 8 NautilusTrader adoption gate, LEAN conformance snapshot, and cross-process reproducibility;
+- exact post-decision execution-data resolution, fee, slippage, funding, latency, sizing, and portfolio experiment contracts;
+- how Calvin reviews are repeated to measure reviewer stability without becoming runtime policy;
+- criteria for promoting a `researchCandidate` to a new frozen Brooks-compatible policy version.

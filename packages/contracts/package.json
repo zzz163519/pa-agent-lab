@@ -1,0 +1,13 @@
+{
+  "name": "@pa-agent-lab/contracts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./brooks-decision-v1": "./src/brooks-decision-v1.ts",
+    "./calvin-review-v1": "./src/calvin-review-v1.ts",
+    "./decision-conflict-v1": "./src/decision-conflict-v1.ts",
+    "./doctrine-v1": "./src/doctrine-v1.ts",
+    "./model-call-schedule-v1": "./src/model-call-schedule-v1.ts"
+  }
+}

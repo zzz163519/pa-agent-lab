@@ -2,56 +2,102 @@
 
 Status: LIVE DISCUSSION INDEX. ITEMS ARE NOT APPROVED BY BEING LISTED HERE.
 
-This file prevents unresolved architecture questions from being lost or accidentally treated as accepted decisions.
+This file contains only unresolved decisions. Accepted decisions are recorded in the charter and ADRs.
 
 ## Doctrine corpus
 
-- Which legally held Brooks materials are available: complete course videos, books, transcripts, manuals, or public website only?
-- May private materials be transcribed and indexed locally?
-- What excerpt and citation policy is permitted without redistributing copyrighted content?
-- Which sources are primary authority, commentary, examples, or question-only evidence?
+Accepted source classes are Brooks public materials, direct material from the official Al Brooks YouTube channel, and reviewed third-party Brooks course transcripts such as approved Bilibili sources. ADR-0010 accepts a deliberately simple local Source plus `draft | approved | retired` DoctrineUnit workflow; RAG receives only approved core trading semantics.
 
-## Calvin alignment data
+Still open:
 
-- What exact fields will Calvin label on the first causal case?
-- Which fields may be `uncertain` or abstained?
-- How will repeated blind labels measure Calvin's own judgment stability?
-- How are later corrections stored without overwriting the original label?
+- choose the initial exact source set and create the first approved DoctrineUnits;
+- map selected V6 definition candidates to Brooks semantics before approval.
+
+## Brooks decision and Calvin review
+
+ADR-0003 makes the Brooks Policy Agent the sole first runtime policy and keeps Calvin auxiliary and offline. ADR-0008 fixes scheduling, ADR-0009 fixes five-minute decisions, and ADR-0010 freezes the V1 BrooksDecision, whole-decision CalvinReview, and deterministic Conflict semantics.
+
+Still open:
+
+- decide whether a later version adds calibrated probability output;
+- decide whether a later, separately isolated `activePremiseReview` is useful after the entry-only baseline is evaluated.
+
+## V6 reuse
+
+ADR-0004 and `V6_READ_ONLY_REUSE_INVENTORY_V1.md` approve bounded read-only definition reuse.
+
+Still open:
+
+- pin an immutable source identity for currently untracked V2/V3 working-tree candidates before adaptation;
+- approve the exact Phase 1 subset to re-author locally;
+- produce Brooks provenance for semantic definitions before promotion;
+- define the PA-local import manifest schema.
 
 ## Model and privacy
 
-- Are external model APIs allowed to receive anonymous normalized charts and OHLC?
-- Is a local model required for private Brooks material?
-- Which model capabilities are required: text only, image input, tool use, or structured output?
-- What model/provider versioning and retirement policy is acceptable?
+ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 versus Gemini 3.6 Flash peer bakeoff.
+
+Still open:
+
+- pin exact provider/model versions and retirement behavior;
+- verify provider endpoints accept the approved image and structured-output contract;
+- freeze deterministic retry, timeout, provider-attempt, and invalid-output handling for evaluation;
+- freeze provider rate limits, batching, usage audit, and valid-decision cost without changing logical decision-point symmetry;
+- freeze external retention configuration and local payload audit;
+- define the quality gate and cost calculation before model evaluation.
 
 ## RAG and memory
 
-- Approve or revise the proposed doctrine/case RAG separation.
-- Approve PostgreSQL plus `pgvector` as the first storage/retrieval platform.
-- Define exact retrieval permissions for training, evaluation, and research roles.
-- Define the approval workflow that can promote a candidate interpretation into reviewed doctrine memory.
+Accepted: PostgreSQL plus `pgvector` as the first system of record; doctrine, Brooks cases, Calvin review, working memory, research outcome memory, audit, and model registry remain isolated.
+
+Still open:
+
+- define exact retrieval permissions when an actual RAG service is implemented;
+- populate approved core DoctrineUnits and define a small retrieval-quality check;
+- enforce exclusion of Calvin review and research memory from runtime retrieval.
 
 ## API and user interface
 
-- Freeze the first case, label, policy-decision, citation, and audit schemas.
-- Select chart rendering and annotation interactions.
-- Decide local-only deployment versus authenticated network access.
-- Decide whether the first API is REST/OpenAPI only or also needs event streaming for model runs.
+Still open:
+
+- freeze the remaining Case, ModelRun, Audit, persisted JSON/OpenAPI, and API transport schemas;
+- define annotation interactions for source approval and whole-decision blind review;
+- decide whether REST/OpenAPI is sufficient or model runs also need local event streaming.
+
+Local-only, single-user deployment is accepted for the first version.
 
 ## Evaluation
 
-- Define training, validation, contacted development, and untouched evaluation partitions.
-- Define semantic acceptance criteria before any outcome replay.
-- Define consistency and prefix-invariance thresholds.
-- Define what evidence falsifies the agent approach or requires reverting to a deterministic baseline.
+Detailed partition and contact-state machinery is deferred until Phase 6. When evaluation begins, freeze a simple outcome-blind case list and identical candidate inputs.
+
+Still open:
+
+- define doctrine, abstention, consistency, prefix-invariance, mirror, privacy, and retrieval-isolation thresholds;
+- define evidence that falsifies the model approach or requires a deterministic baseline;
+- define actual valid-decision cost and latency measurement for the model bakeoff.
+
+## Deterministic replay
+
+ADR-0007 accepts NautilusTrader as the first Phase 8 replay sidecar candidate and LEAN only as a bounded conformance challenger. PA Agent Lab will not build a complete replay, matching, portfolio, and accounting engine from scratch. No replay engine installation or execution is authorized before separate Phase 8 approval.
+
+Still open:
+
+- pin the exact NautilusTrader release, image digest, Python/runtime identity, and TypeScript adapter protocol;
+- freeze `ReplayRequest`, `ReplayResult`, raw-artifact, experiment-policy, and canonical replay hash schemas;
+- freeze post-decision execution-data resolution and segment behavior;
+- freeze deterministic sizing, fee, slippage, funding, latency, order, and portfolio assumptions;
+- define affected-path behavior after unresolved same-bar ambiguity or missing execution data;
+- freeze the hand-computed fixtures and tolerances used for the LEAN conformance snapshot;
+- prove offline sandboxing, absence of credentials and Paper/Live configuration, and cross-container reproducibility.
 
 ## Autonomous research
 
-- Define when the aligned Policy Agent is stable enough to freeze.
-- Define what evidence the Research Agent may inspect.
-- Define promotion, rejection, and retirement gates for `researchCandidate` versions.
-- Decide whether any future outcome optimization is permitted and under what bounded contract.
+Still open:
+
+- define when the Brooks baseline is stable enough to freeze;
+- define evidence the Research Agent may inspect;
+- define promotion, rejection, supersession, and retirement gates for `researchCandidate` versions;
+- decide whether any future outcome optimization is permitted and under what separately approved contract.
 
 ## Deployment authority
 

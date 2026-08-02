@@ -12,20 +12,20 @@ The repository is located at `/home/calvin/pa-agent-lab`. The existing `/home/ca
 
 The intended capability develops in two distinct stages:
 
-1. understand source-traceable Al Brooks Price Action doctrine and reproduce Calvin's outcome-blind application judgments with explicit uncertainty and no-trade behavior;
-2. after a frozen first-stage policy is independently evaluated, allow a separate Research Agent to propose improvements and identify new opportunities.
+1. understand source-traceable Al Brooks Price Action doctrine and produce complete causal, evidence-grounded research trade judgments with explicit uncertainty and no-trade behavior;
+2. after a frozen Brooks baseline is independently evaluated, allow a separate Research Agent to propose improvements and identify new opportunities.
 
-The long-term objective is not to defeat Calvin in a human-versus-agent contest. Calvin's judgments are the first-stage alignment reference and an important later review source, not a permanent ceiling on research.
+Calvin is an auxiliary reviewer who helps interpret sources, review applications, and expose ambiguity. The first runtime policy target is Brooks doctrine, not imitation of Calvin's personal policy.
 
 ## Semantic tracks
 
 Every evaluated case preserves three independent tracks:
 
-- `brooksAssessment`: source-grounded doctrine reading;
-- `calvinPolicy`: Calvin-aligned application and trade policy;
+- `brooksDecision`: the Brooks Policy Agent's source-grounded assessment and complete research-only trade judgment;
+- `calvinReview`: Calvin's offline agreement, clarification, disagreement, uncertainty, or application note;
 - `researchCandidate`: an agent hypothesis that has no automatic strategy authority.
 
-The first two remain separate even when their values agree. A Calvin variation does not rewrite Brooks doctrine. A Brooks-compatible setup does not force Calvin to trade. A research candidate cannot overwrite either track without a separate versioned decision and evaluation.
+The tracks remain separate even when their values agree. Calvin review does not rewrite Brooks doctrine or automatically mutate a Brooks decision. A research candidate cannot overwrite the frozen Brooks baseline without a separate versioned decision and evaluation.
 
 ## Intended system boundary
 
@@ -54,4 +54,4 @@ No model output is an exchange order.
 
 ## Current authorization
 
-This charter authorizes architecture discussion, decision records, schema design, source inventory design, and implementation planning only. Repository bootstrap does not authorize model ingestion, API calls, training, historical outcome inspection, replay, or trading.
+This charter authorizes architecture discussion, decision records, schema design, approved public-source inventory design, the V6 read-only reuse inventory under ADR-0004, the implemented Phase 1 model-call scheduling contract slice under ADR-0008, and the implemented BrooksDecision/Doctrine/CalvinReview/Conflict semantic contract slice under ADR-0010. These slices do not authorize external provider calls, historical outcome inspection, replay-engine execution, or other Phase 1 components by implication. Repository bootstrap and source inventory do not authorize model ingestion, training, replay, or trading.

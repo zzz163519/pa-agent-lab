@@ -1,6 +1,8 @@
 # ADR-0002: Separate Semantic Authority Tracks
 
-Status: ACCEPTED
+Status: ACCEPTED, SUPERSEDED IN PART BY ADR-0003
+
+ADR-0003 replaces `calvinPolicy` runtime authority with offline `calvinReview` and makes the Brooks Policy Agent the complete first runtime policy. This record remains historical authority for track separation, provenance, explicit conflicts, and non-overwrite behavior.
 
 ## Decision
 
