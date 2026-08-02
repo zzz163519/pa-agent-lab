@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+var/
+tmp/
+*.db
+*.sqlite
+*.sqlite3
+corpus/private/
+data/private/
+artifacts/private/
