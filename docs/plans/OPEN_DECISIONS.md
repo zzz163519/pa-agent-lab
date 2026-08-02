@@ -35,15 +35,15 @@ Still open:
 
 ## Model and privacy
 
-ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 versus Gemini 3.6 Flash peer bakeoff.
+ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 versus Gemini 3.6 Flash peer bakeoff. ADR-0011 freezes the provider-neutral anonymous payload, ModelRun, terminal provider-attempt, and validation-audit identities without authorizing a provider call.
 
 Still open:
 
 - pin exact provider/model versions and retirement behavior;
 - verify provider endpoints accept the approved image and structured-output contract;
-- freeze deterministic retry, timeout, provider-attempt, and invalid-output handling for evaluation;
-- freeze provider rate limits, batching, usage audit, and valid-decision cost without changing logical decision-point symmetry;
-- freeze external retention configuration and local payload audit;
+- freeze retry counts, timeout policy, rate limits, batching, usage audit, and valid-decision cost without changing logical decision-point symmetry;
+- freeze provider-specific invalid-response codes and external retention configuration;
+- define deterministic chart-byte resolution and provider transport;
 - define the quality gate and cost calculation before model evaluation.
 
 ## RAG and memory
@@ -60,7 +60,7 @@ Still open:
 
 Still open:
 
-- freeze the remaining Case, ModelRun, Audit, persisted JSON/OpenAPI, and API transport schemas;
+- freeze persisted JSON/OpenAPI parsing, database uniqueness, and API transport schemas;
 - define annotation interactions for source approval and whole-decision blind review;
 - decide whether REST/OpenAPI is sufficient or model runs also need local event streaming.
 

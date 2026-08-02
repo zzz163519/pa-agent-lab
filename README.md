@@ -11,7 +11,7 @@ PA Agent Lab 是一个独立的 Price Action agent 研究项目。
 
 ## Current Status
 
-治理仓库和架构记录已经建立。Phase 1 已实现模型调用调度、候选对称性、冻结结果缓存，以及 BrooksDecision、简化 DoctrineUnit、整条决策级 CalvinReview 和确定性 Conflict 合同。完整 Case/API/Audit、前端、实际 RAG、模型 provider、训练和回放仍未实现。
+治理仓库和架构记录已经建立。Phase 1 已实现模型调用调度、候选对称性、冻结结果缓存、因果 Case、匿名 120/40 输入、外发隐私、ModelRun/ProviderAttempt/Audit，以及 BrooksDecision、简化 DoctrineUnit、整条决策级 CalvinReview 和确定性 Conflict 合同。持久化 API、前端、实际 RAG、模型 provider、训练和回放仍未实现。
 
 本项目不具备 Paper、Live、交易所提交、下单或真实资金权限。
 
@@ -31,7 +31,9 @@ PA Agent Lab 是一个独立的 Price Action agent 研究项目。
 - [ADR-0008: 模型调用调度基线](docs/decisions/ADR-0008-MODEL-CALL-SCHEDULING-BASELINE.md)
 - [ADR-0009: 首个 Brooks Policy 周期](docs/decisions/ADR-0009-FIRST-BROOKS-POLICY-TIMEFRAME.md)
 - [ADR-0010: Brooks 决策、Doctrine 与审阅合同](docs/decisions/ADR-0010-BROOKS-DECISION-DOCTRINE-AND-REVIEW-CONTRACTS.md)
+- [ADR-0011: 因果输入与 ModelRun 审计合同](docs/decisions/ADR-0011-CAUSAL-POLICY-INPUT-AND-MODEL-RUN-AUDIT.md)
 - [Phase 1 语义合同 V1](docs/contracts/PHASE_1_SEMANTIC_CONTRACTS_V1.md)
+- [Phase 1 输入与 ModelRun 审计 V1](docs/contracts/POLICY_INPUT_AND_MODEL_RUN_AUDIT_V1.md)
 - [模型调用调度合同 V1](docs/contracts/MODEL_CALL_SCHEDULING_V1.md)
 - [V6 只读复用清单](docs/plans/V6_READ_ONLY_REUSE_INVENTORY_V1.md)
 

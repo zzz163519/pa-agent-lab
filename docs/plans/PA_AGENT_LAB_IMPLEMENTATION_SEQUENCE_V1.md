@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. REPOSITORY BOOTSTRAP AND THE ADR-0008 PHASE 1 SCHEDULING CONTRACT SLICE ARE AUTHORIZED; OTHER STEPS REQUIRE SEPARATE APPROVAL.
+Status: DRAFT SEQUENCE. PHASE 0 AND THE IMPLEMENTED ADR-0008, ADR-0010, AND ADR-0011 PHASE 1 CONTRACT SLICES ARE AUTHORIZED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
 
 ## Delivery model
 
@@ -21,14 +21,14 @@ Exit condition: repository identity, authority tracks, and prohibited inputs are
 
 ## Phase 1: Domain contracts
 
-Current phase. The ADR-0008 scheduling and ADR-0010 semantic contract slices are implemented in `packages/contracts`; Case/payload persistence, remaining audit records, and strict API parsing are not yet frozen.
+Current phase. The ADR-0008 scheduling, ADR-0010 semantic, and ADR-0011 causal-input/privacy/model-run-audit contract slices are implemented in `packages/contracts`; persisted JSON/OpenAPI parsing, database/API storage, chart rendering, and replay request/result boundaries are not yet frozen.
 
 - freeze causal case identity and visible-through boundary;
 - freeze the accepted 120/40 chart/OHLC payload, normalization, bar identity, continuity, left-censoring, anonymity schemas, and the ADR-0009 five-minute (`300` second) V1 decision duration;
 - freeze `brooksDecision`, `calvinReview`, and disagreement schemas;
-- define doctrine source, excerpt, interpretation, and citation records;
+- use the simple ADR-0010 Source and DoctrineUnit records and defer actual ingestion to Phase 4;
 - define policy decision, evidence reference, uncertainty, and validation records;
-- define the deterministic outbound-payload privacy validator and immutable payload audit;
+- define persisted JSON/OpenAPI parsing and database uniqueness for the implemented Case, input, ModelRun, ProviderAttempt, and Audit records;
 - defer detailed dataset partition machinery until Phase 6 needs a frozen evaluation case list;
 - define provider-neutral replay request, result, ambiguity, censoring, and audit identities without implementing or installing a replay engine.
 
@@ -64,7 +64,7 @@ Exit condition: a doctrine query returns bounded approved trading semantics and 
 
 ## Phase 5: Brooks Policy Agent vertical slice
 
-- provide one causal case, bounded doctrine context, and allowed source-grounded examples;
+- provide one causal case and bounded approved DoctrineUnit context;
 - request one schema-constrained complete Brooks research decision;
 - exclude `calvinReview`, evaluation cases, outcomes, and research memory from retrieval;
 - reject invalid citations, future references, track conflation, and invalid geometry;

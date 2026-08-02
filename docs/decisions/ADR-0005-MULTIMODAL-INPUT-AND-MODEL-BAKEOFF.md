@@ -1,6 +1,6 @@
 # ADR-0005: Multimodal Input and Model Bakeoff
 
-Status: ACCEPTED, SPECIALIZED BY ADR-0009
+Status: ACCEPTED, SPECIALIZED BY ADR-0009 AND ADR-0011
 
 ## Decision
 

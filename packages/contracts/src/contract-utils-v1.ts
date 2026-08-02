@@ -71,18 +71,94 @@ export function deepFreeze<T>(value: T): Readonly<T> {
   return value;
 }
 
-function canonicalize(value: unknown): unknown {
-  if (Array.isArray(value)) {
-    return value.map(canonicalize);
+function canonicalize(
+  value: unknown,
+  ancestors: WeakSet<object> = new WeakSet<object>(),
+): unknown {
+  if (value === null || typeof value === "string" || typeof value === "boolean") {
+    return value;
   }
-  if (value !== null && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value)
-        .sort(([left], [right]) =>
-          left < right ? -1 : left > right ? 1 : 0,
-        )
-        .map(([key, nested]) => [key, canonicalize(nested)]),
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) {
+      throw new Error("non-finite number is not canonical JSON");
+    }
+    if (Object.is(value, -0)) {
+      throw new Error("negative zero is not canonical JSON");
+    }
+    return value;
+  }
+  if (value === undefined) {
+    throw new Error("undefined is not canonical JSON");
+  }
+  if (
+    typeof value === "bigint" ||
+    typeof value === "function" ||
+    typeof value === "symbol"
+  ) {
+    throw new Error(`${typeof value} is not canonical JSON`);
+  }
+
+  if (ancestors.has(value)) {
+    throw new Error("cyclic value is not canonical JSON");
+  }
+  ancestors.add(value);
+  try {
+    if (Array.isArray(value)) {
+      assertCanonicalArray(value);
+      return value.map((item) => canonicalize(item, ancestors));
+    }
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) {
+      throw new Error("only plain objects can be canonicalized");
+    }
+    if (Object.getOwnPropertySymbols(value).length !== 0) {
+      throw new Error("symbol fields are not canonical JSON");
+    }
+    const entries = Object.getOwnPropertyNames(value).map((key) => {
+      const descriptor = Object.getOwnPropertyDescriptor(value, key);
+      if (
+        descriptor === undefined ||
+        !("value" in descriptor) ||
+        descriptor.enumerable !== true
+      ) {
+        throw new Error("canonical object fields must be enumerable data properties");
+      }
+      return [key, canonicalize(descriptor.value, ancestors)] as const;
+    });
+    entries.sort(([left], [right]) =>
+      left < right ? -1 : left > right ? 1 : 0,
     );
+    return Object.fromEntries(entries);
+  } finally {
+    ancestors.delete(value);
   }
-  return value;
+}
+
+function assertCanonicalArray(value: unknown[]): void {
+  if (Object.getPrototypeOf(value) !== Array.prototype) {
+    throw new Error("only plain arrays can be canonicalized");
+  }
+  if (Object.getOwnPropertySymbols(value).length !== 0) {
+    throw new Error("symbol fields are not canonical JSON");
+  }
+  const names = Object.getOwnPropertyNames(value);
+  if (
+    names.some(
+      (name) =>
+        name !== "length" &&
+        (!/^(0|[1-9][0-9]*)$/.test(name) || Number(name) >= value.length),
+    )
+  ) {
+    throw new Error("array fields are not canonical JSON");
+  }
+  for (let index = 0; index < value.length; index += 1) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, index);
+    if (
+      descriptor === undefined ||
+      !("value" in descriptor) ||
+      descriptor.enumerable !== true
+    ) {
+      throw new Error("sparse or accessor arrays are not canonical JSON");
+    }
+  }
 }

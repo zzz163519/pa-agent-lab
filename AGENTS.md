@@ -46,6 +46,7 @@ Keep these tracks separate even when they agree:
 - ADR-0008 fixes `evaluation_sampled` and `continuous_every_close` as the only V1 scheduling modes; a future frequency-reduction filter is a separately evaluated research candidate.
 - ADR-0009 fixes the first V1 Brooks policy duration to five-minute closed bars (`barDurationSeconds = 300`); any later timeframe is a separately versioned generalization candidate.
 - ADR-0010 fixes V1 BrooksDecision semantics: no numeric probability/confidence, Scalp has no fixed minimum R:R, Swing requires deterministic `>= 2.0R`, and the model receives no active-position outcomes.
+- ADR-0011 separates local raw-price Case records from exact-whitelist anonymous model payloads and binds ModelRun, provider attempts, and validation audits without authorizing provider calls.
 - RAG uses only approved simplified DoctrineUnits containing core trading semantics; source metadata remains local and outside the RAG record.
 - A logical decision call is distinct from provider retry attempts, and peer evaluation must preserve identical decision-point coverage.
 - Keep PA judgment separate from deterministic validation, execution simulation, risk, and accounting.

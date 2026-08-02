@@ -12,3 +12,4 @@ tmp/
 corpus/private/
 data/private/
 artifacts/private/
+.pi-subagents/

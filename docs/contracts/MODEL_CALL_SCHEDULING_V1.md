@@ -37,7 +37,7 @@ A scheduling service must not derive eligibility from future bars, outcomes, PnL
 
 `createModelCallRecord` validates a closed decision point and returns an immutable `ModelCallRecordV1`. Its SHA-256 `callId` commits to the scheduling mode, decision-point identity, duration, selection policy, input, candidate, model, prompt, output schema, reasoning budget, and repeat index.
 
-The logical `callId` is also the cache key for the frozen result. Its hash preimage is a typed canonical JSON array, so embedded delimiters in opaque identifiers cannot change field boundaries. Provider attempts, retries, timeouts, latency, and billable usage require separate ModelRun attempt records in a later contract.
+The logical `callId` is also the cache key for the frozen result. Its hash preimage is a typed canonical JSON array, so embedded delimiters in opaque identifiers cannot change field boundaries. ADR-0011 adds separate provider-neutral ModelRun and terminal attempt records; retry count, timeout, rate-limit, transport, and billable-usage policy remain deferred.
 
 ## Continuous scheduler
 
@@ -104,7 +104,6 @@ Still unresolved:
 
 - exact sampled selection policies and dataset partitions;
 - exact pinned provider model IDs;
-- retry, timeout, rate-limit, latency, usage, and valid-decision cost records;
+- retry count, timeout, rate-limit, transport, usage, and valid-decision cost policy;
 - persisted JSON/OpenAPI parsing and database uniqueness constraints;
-- full Brooks decision, citation, validation, and audit schemas;
 - exact Phase 8 replay request and result schemas.

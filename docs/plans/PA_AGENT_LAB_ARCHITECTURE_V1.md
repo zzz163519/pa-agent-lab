@@ -118,10 +118,10 @@ The accepted policy input combines:
 
 - a deterministic anonymous 120-bar context chart;
 - a detail panel repeating the final 40 bars with the same closed `lastVisibleBar`;
-- normalized causal OHLC and stable local bar identities for all 120 visible bars;
+- normalized causal OHLC and anonymous relative bar identities for every visible bar;
 - explicit left-censoring when history is insufficient;
 - `barDurationSeconds = 300` for the first V1 Brooks policy stream under ADR-0009, plus per-bar `contiguous | session_boundary | missing_data | unknown` continuity;
-- retrieved Brooks doctrine and allowed source-grounded example evidence.
+- retrieved approved Brooks DoctrineUnit semantics.
 
 Raw prices remain local. External chart and OHLC payloads use `rawPrice / firstVisibleClose * 100` and omit symbol, real timestamp, date, time zone, venue, market class, source/window identity, account information, future bars, outcomes, indicators, and Vegas overlays.
 
@@ -152,7 +152,7 @@ Implementation candidates that do not yet authorize dependencies are:
 - large offline candle analysis: Parquet and DuckDB when needed;
 - model access: a small provider-neutral adapter with structured-output support.
 
-The implemented `@pa-agent-lab/contracts` Phase 1 slice uses pinned TypeScript and Node's built-in test runner with no runtime dependency. ADR-0008 defines its scheduling authority; it does not authorize provider access.
+The implemented `@pa-agent-lab/contracts` Phase 1 slices use pinned TypeScript and Node's built-in test runner with no runtime dependency. ADR-0008 defines scheduling, ADR-0010 defines semantic output, and ADR-0011 defines causal input, outbound privacy, and model-run audit. None authorizes provider access.
 
 Do not introduce SQLite, Qdrant, Chroma, Redis, Neo4j, LangChain, or LlamaIndex initially. Explicit retrieval and orchestration code is easier to audit for leakage, authority, and version identity.
 
@@ -175,7 +175,7 @@ Every evaluated decision should persist at least:
 The following remain unresolved:
 
 - exact public source inventory, media/transcript identity, and permitted local excerpt policy;
-- exact remaining Case, ModelRun, persisted API, and immutable audit schemas;
+- exact persisted JSON/OpenAPI transport and database uniqueness schemas for the implemented Case and audit records;
 - dataset partitions, retrieval permissions, and genuinely untouched evaluation cases;
 - exact semantic, consistency, and prefix-invariance acceptance thresholds;
 - provider-specific pinned model IDs, retirement policy, external data-retention configuration, retry attempts, and rate limits;

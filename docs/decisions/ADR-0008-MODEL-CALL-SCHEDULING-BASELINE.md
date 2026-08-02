@@ -29,7 +29,7 @@ Every scheduled logical call records and hashes at least:
 - prompt hash, output schema version, and reasoning-budget identity;
 - evaluation repeat index.
 
-A logical call is distinct from a provider attempt. Retry, timeout, and provider-attempt records remain part of the later ModelRun contract and must not alter which decision points are scheduled.
+A logical call is distinct from a provider attempt. ADR-0011 defines provider-neutral terminal attempt records; retry count, timeout, rate-limit, and provider transport policy remain open and must not alter which decision points are scheduled.
 
 Hash preimages use typed canonical JSON arrays rather than delimiter-joined free-form text. This keeps identity field boundaries unambiguous even when an opaque local identifier contains whitespace or control characters.
 

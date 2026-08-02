@@ -75,14 +75,13 @@ Public modules:
 
 The builders perform runtime semantic validation, produce canonical SHA-256 identities, and deeply freeze accepted records. They use no runtime dependency.
 
-## Not authorized or implemented
+## Not authorized or implemented by this ADR
 
 This ADR does not authorize or implement:
 
 - database or API persistence;
 - an actual RAG service or corpus ingestion;
-- model-provider calls;
-- provider retry/attempt accounting;
+- model-provider calls or provider retry policy;
 - active-position model management;
 - replay, fills, Paper, Live, exchange, wallet, or real-money activity;
 - probability output or calibration;
