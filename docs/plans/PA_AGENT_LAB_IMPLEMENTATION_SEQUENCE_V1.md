@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, ADR-0015 PHASE 2, ADR-0016/ADR-0018 PHASE 3A, AND ADR-0017 PHASE 3B ARE IMPLEMENTED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, AND PHASE 4A ARE IMPLEMENTED. ADR-0020, THE PHASE 5A CONTRACT, AND ITS IMPLEMENTATION PLAN ARE ACCEPTED, BUT PHASE 5A IMPLEMENTATION HAS NOT STARTED AND REQUIRES SEPARATE EXPLICIT START AUTHORIZATION.
 
 ## Delivery model
 
@@ -118,13 +118,35 @@ Still requires a separate ADR, contract, and implementation approval before addi
 
 ## Phase 5: Brooks Policy Agent vertical slice
 
-- provide one causal case and bounded approved DoctrineUnit context;
-- request one schema-constrained complete Brooks research decision;
-- exclude `calvinReview`, evaluation cases, outcomes, and research memory from retrieval;
-- reject invalid citations, future references, track conflation, and invalid geometry;
-- persist the complete inference audit.
+ADR-0020 splits Phase 5 into an accepted synthetic assembly slice and a separately decided future inference slice.
 
-Exit condition: one Brooks decision is repeatable under a fixed model/prompt identity and fails closed under adversarial causal tests.
+### Phase 5A: explicit corpus rollback and synthetic Policy Assembly
+
+Accepted contract and approved implementation plan; implementation has not started and requires separate explicit Calvin start authorization.
+
+- add one operator-only explicit rollback command that revalidates an earlier ordinary activation and appends a new rollback activation identity;
+- never roll back automatically or search backward from an ineligible current activation;
+- accept only one existing deployment-authorized synthetic `caseHash` per assembly command;
+- reconstruct the exact original Phase 2 CaseBundle for synthetic authorization, but discard its fixture Doctrine from the new input;
+- bind the highest-sequence current ordinary or rollback activation once inside a `SERIALIZABLE` transaction;
+- assemble every RAG record from that activation's complete snapshot in canonical order;
+- fail closed above 32 Doctrine records or 524,288 canonical Doctrine-context UTF-8 bytes, with no truncation;
+- persist complete `PolicyAssemblyV1`, rebuilt `BrooksPolicyInputV1`, assembly-specific Case/input/chart relation, and all authority hashes atomically;
+- keep operator authentication, reviewer isolation, append-only PostgreSQL, and bounded expected-failure evidence;
+- add no Case-derived query, outbound payload, ModelRun, provider, scheduler, Console UI, real data, replay, or trading path.
+
+Exit condition when separately implemented: a still-eligible historical corpus can become current only through a new explicit rollback identity, and one existing synthetic Case can produce an immutable full-current-corpus policy input with complete provenance and no model call.
+
+### Phase 5B: provider-bound Brooks Policy inference
+
+Still requires separate ADRs, contracts, and implementation approvals before any work on:
+
+- prompt and output-schema identity;
+- provider/model selection and image transport;
+- `OutboundModelPayloadV1`, ModelRun, retries, attempts, response validation, and BrooksDecision creation;
+- any Case-aware selector, retrieval query construction, or asynchronous model job.
+
+Future Phase 5B exit direction: one Brooks decision is repeatable under a fixed model/prompt identity and fails closed under adversarial causal tests. This direction grants no present implementation or provider authority.
 
 ## Phase 6: Semantic evaluation
 

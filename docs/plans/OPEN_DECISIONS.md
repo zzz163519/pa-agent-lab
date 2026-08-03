@@ -47,12 +47,14 @@ Still open:
 
 ## RAG and memory
 
-Accepted: ADR-0019 and the Phase 4A contract fix the initial exact six-source public set, complete approved/unretired corpus snapshots, operator-only deterministic PostgreSQL lexical retrieval, outcome-free quality checks, explicit activation, and immutable query evidence. PostgreSQL remains the system of record; doctrine, Brooks cases, Calvin review, working memory, research outcome memory, audit, and model registry remain isolated.
+Accepted: ADR-0019 and the Phase 4A contract fix the initial exact six-source public set, complete approved/unretired corpus snapshots, operator-only deterministic PostgreSQL lexical retrieval, outcome-free quality checks, explicit activation, and immutable query evidence. ADR-0020 and the accepted Phase 5A contract fix operator-only explicit rollback plus synthetic-only full-current-corpus Policy Assembly with no Case-derived query or model call. PostgreSQL remains the system of record; doctrine, Brooks cases, Calvin review, working memory, research outcome memory, audit, and model registry remain isolated.
 
 Still open:
 
+- give separate explicit authorization to start the approved Phase 5A implementation plan;
 - approve Phase 4B embedding runtime, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider/privacy boundaries, and associated quality contract;
-- define Phase 5 deterministic Case-to-query construction and the policy worker's retrieval authority;
+- define and approve any future Selector V2, including deterministic Case-to-query construction, multi-query union/deduplication, RRF, immutable selector evidence, and policy-worker retrieval authority;
+- define Phase 5B prompt/provider/model/transport/validation authority before any outbound payload or ModelRun;
 - expand the exact public source allowlist only through a separately approved versioned decision.
 
 ## API and user interface
