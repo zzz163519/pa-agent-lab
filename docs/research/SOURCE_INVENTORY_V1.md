@@ -1,6 +1,6 @@
 # SOURCE_INVENTORY_V1
 
-Status: `preflight_inventory`, not an approved corpus. Snapshot date: 2026-08-02.
+Status: `preflight_inventory`, not an approved corpus. Initial snapshot date: 2026-08-02. Public URL discovery expanded: 2026-08-04.
 
 ## Scope and method
 
@@ -12,6 +12,21 @@ This is a bounded public-source inventory for the authorized Phase 1 corpus pref
 - Hashes below identify the fetched representation at this snapshot, not an immutable claim about the publisher's future content.
 - `copyrightAvailabilityStatus` is an inventory status only. It does not assert legal permission to redistribute or ingest.
 - Approximate volume is based on visible archive/index metadata, not a complete crawl.
+
+## Expanded public URL snapshot
+
+`BROOKS_PUBLIC_URL_INVENTORY_V1.json` freezes the 2026-08-04 URL-level discovery result without treating every URL as doctrine. Its canonical file SHA-256 is `sha256:96719b9ba2803406fbbea55d6945dbe1127f2ac86869d22d08e12e84db0f31fd`.
+
+- 36 machine sitemap documents produced 5,796 normalized modern-site URLs;
+- the official channel snapshot produced 381 public YouTube video URLs;
+- the public legacy-area landing surface produced 100 normalized non-asset URLs;
+- five directly attributable Al Brooks interviews on Desire To Trade are doctrine candidates after item-level locator review;
+- five Wiley/MoneyShow URLs are publisher or identity metadata only and cannot supply doctrine text;
+- the complete snapshot contains 6,287 unique HTTPS URLs: 182 `doctrine_candidate` and 6,105 `inventory_only`;
+- market metadata covers general material, stocks/ETFs, stock indexes/E-mini, Forex, gold/metals, commodities/rates, and crypto without implying that asset-specific commentary is general doctrine;
+- 130 time-specific market-analysis/video entries identified from sitemap metadata as touching protected months are marked `protectedWindowExcluded`; their page content and titles are not retained or opened.
+
+`doctrine_candidate` means eligible for a later exact proposal and review, not approved. Time-specific market analysis, translations, unverified speaker identity, member/account/user content, and publisher metadata remain `inventory_only`. The inventory stores no full transcript or book text. It must not be used to open, derive from, summarize, embed, or train on the protected `2025-02`, `2025-05`, or `2025-08` market windows.
 
 | sourceId | url | sourceType | approximateVolume | copyrightAvailabilityStatus | contentHash | extractionPriority |
 |---|---|---|---|---|---|---|

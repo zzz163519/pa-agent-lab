@@ -124,7 +124,7 @@ These tests prove software contracts, not Price Action correctness, model qualit
 
 - real Case ingestion and any protected/development/evaluation window;
 - dataset partition or holdout/contact-state machinery;
-- Phase 3B Doctrine source-approval interaction;
+- Phase 4 Doctrine retrieval and embedding;
 - SSE, WebSocket, queues, public listeners, OIDC, and public deployment;
 - Doctrine RAG, provider transport/calls, evaluation, and training;
 - replay engines, order/fill/risk/cost/accounting semantics;

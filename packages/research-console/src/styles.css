@@ -123,7 +123,9 @@ tbody tr:hover td { background: #fafcfb; }
 .status-awaiting_assessment { color: var(--blue); background: var(--blue-soft); }
 .status-awaiting_reveal { color: var(--amber); background: var(--amber-soft); }
 .status-awaiting_final_review { color: var(--violet); background: #f1edf8; }
-.status-completed { color: var(--green-dark); background: var(--green-soft); }
+.status-completed, .status-approved { color: var(--green-dark); background: var(--green-soft); }
+.status-draft { color: var(--blue); background: var(--blue-soft); }
+.status-retired { color: #5f6965; background: #e9eeec; text-decoration: line-through; }
 
 .state-message, .empty-state, .auth-state {
   min-height: 260px;
@@ -241,6 +243,13 @@ tbody tr:hover td { background: #fafcfb; }
 .completion-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; overflow: hidden; margin-top: 14px; background: var(--line); border: 1px solid var(--line); border-radius: 5px; }
 .completion-grid div { min-height: 68px; display: grid; align-content: center; gap: 5px; padding: 10px 12px; background: #fff; }
 .completion-grid strong { font-size: 12px; text-transform: capitalize; overflow-wrap: anywhere; }
+
+.doctrine-source, .doctrine-semantics { padding: 18px 0 24px; border-top: 1px solid var(--line); }
+.doctrine-semantics > .section-heading h2 { max-width: 1000px; font-size: 16px; line-height: 1.5; }
+.doctrine-list { margin-top: 18px; }
+.doctrine-list h3 { margin-bottom: 7px; color: #4f5b56; font-size: 11px; text-transform: uppercase; }
+.doctrine-list ul { margin: 0; padding-left: 20px; color: #34413b; line-height: 1.55; }
+.doctrine-list li + li { margin-top: 4px; }
 
 .dialog-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgb(17 25 21 / 55%); }
 .confirmation-dialog { position: relative; width: min(420px, 100%); padding: 26px; background: #fff; border: 1px solid #cdd5d1; border-radius: 6px; box-shadow: 0 16px 45px rgb(0 0 0 / 22%); text-align: center; }

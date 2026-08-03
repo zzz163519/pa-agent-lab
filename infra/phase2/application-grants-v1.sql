@@ -11,7 +11,10 @@ GRANT SELECT, INSERT ON
   pa_calvin_reviews,
   pa_calvin_independent_assessments,
   pa_decision_reveal_receipts,
-  pa_calvin_review_workflow_bindings
+  pa_calvin_review_workflow_bindings,
+  pa_doctrine_proposals,
+  pa_doctrine_approvals,
+  pa_doctrine_retirements
 TO pa_app;
 GRANT SELECT ON
   pa_model_runs,

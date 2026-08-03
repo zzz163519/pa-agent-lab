@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, THE ADR-0015 SYNTHETIC-ONLY PHASE 2 VERTICAL SLICE, AND ADR-0016 PHASE 3A BLIND REVIEW ARE IMPLEMENTED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, ADR-0015 PHASE 2, ADR-0016 PHASE 3A, AND ADR-0017 PHASE 3B ARE IMPLEMENTED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
 
 ## Delivery model
 
@@ -80,9 +80,19 @@ Implemented by ADR-0016 as a synthetic-only vertical slice:
 
 Exit condition met: Calvin can complete, pause, resume, and audit one immutable outcome-blind review without editing JSON or receiving BrooksDecision content before the frozen assessment.
 
-## Future Phase 3B: Doctrine source approval
+## Phase 3B: Minimal Doctrine source approval
 
-DoctrineUnit source review and approval remains a separately contracted phase. It cannot reuse the whole-decision Calvin workflow to patch Brooks claims or promote draft doctrine implicitly.
+Implemented by ADR-0017 as a local public-source lifecycle:
+
+- freeze a complete URL-level snapshot of the modern official sitemap, official YouTube channel, public legacy surface, and selected directly attributable external interviews;
+- keep `doctrine_candidate` discovery separate from approval and all other URLs `inventory_only`;
+- bind one exact Source, draft DoctrineUnit, locator, and proposal hash;
+- allow one explicit Calvin or authenticated Direct Pi/agent operator approval;
+- persist immutable proposal, approval, and retirement records and derive `draft | approved | retired`;
+- expose five synchronous routes, draft-only CLI seeding, and a minimal Doctrine Console module;
+- keep source content fetching, proposal editing, embeddings, retrieval, providers, real data, replay, and execution absent.
+
+Exit condition met: an exact public-source proposal can be explicitly approved or retired, and draft/retired units cannot enter the approved projection.
 
 ## Phase 4: Doctrine ingestion and RAG
 

@@ -23,6 +23,9 @@ export async function startCaseApiServerV1(
   const authorizedSyntheticBundleHashes = parseHashes(
     required(env, "PA_AUTHORIZED_SYNTHETIC_BUNDLE_HASHES"),
   );
+  const authorizedDoctrineProposalHashes = parseOptionalHashes(
+    env.PA_AUTHORIZED_DOCTRINE_PROPOSAL_HASHES,
+  );
   const port = parsePort(env.PA_API_PORT ?? "3210");
   const database = createPostgresCaseStoreV1({ connectionString: databaseUrl });
   try {
@@ -32,6 +35,7 @@ export async function startCaseApiServerV1(
       localToken,
       reviewerToken,
       authorizedSyntheticBundleHashes,
+      authorizedDoctrineProposalHashes,
       allowedHosts: ["127.0.0.1", "localhost"],
       allowedOrigins: [
         `http://127.0.0.1:${port}`,
@@ -80,6 +84,13 @@ function parseHashes(value: string): readonly ContractSha256[] {
     );
   }
   return hashes as ContractSha256[];
+}
+
+function parseOptionalHashes(
+  value: string | undefined,
+): readonly ContractSha256[] {
+  if (value === undefined || value.trim().length === 0) return [];
+  return parseHashes(value);
 }
 
 function parsePort(value: string): number {

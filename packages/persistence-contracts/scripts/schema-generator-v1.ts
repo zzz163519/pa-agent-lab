@@ -9,6 +9,7 @@ import {
   CASE_API_BODY_LIMIT_BYTES,
   CASE_API_ROUTE_MANIFEST_V1,
 } from "../src/case-store-transport-v1.ts";
+import { DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1 } from "../src/doctrine-approval-transport-v1.ts";
 import { REVIEW_WORKFLOW_ROUTE_MANIFEST_V1 } from "../src/review-workflow-transport-v1.ts";
 import { createGenerator } from "ts-json-schema-generator";
 
@@ -126,6 +127,45 @@ const REVIEW_WORKFLOW_TARGETS = [
   },
 ] as const;
 
+const DOCTRINE_APPROVAL_TARGETS = [
+  {
+    component: "DoctrineProposalBundleV1",
+    source: "../contracts/src/doctrine-approval-v1.ts",
+  },
+  {
+    component: "DoctrineApprovalV1",
+    source: "../contracts/src/doctrine-approval-v1.ts",
+  },
+  {
+    component: "DoctrineRetirementV1",
+    source: "../contracts/src/doctrine-approval-v1.ts",
+  },
+  {
+    component: "DoctrineWorkQueueV1",
+    source: "src/doctrine-approval-transport-v1.ts",
+  },
+  {
+    component: "DoctrineWorkItemV1",
+    source: "src/doctrine-approval-transport-v1.ts",
+  },
+  {
+    component: "ApproveDoctrineCommandV1",
+    source: "src/doctrine-approval-transport-v1.ts",
+  },
+  {
+    component: "RetireDoctrineCommandV1",
+    source: "src/doctrine-approval-transport-v1.ts",
+  },
+  {
+    component: "DoctrineApprovalMutationResultV1",
+    source: "src/doctrine-approval-transport-v1.ts",
+  },
+  {
+    component: "CaseApiErrorV1",
+    source: "src/case-store-transport-v1.ts",
+  },
+] as const;
+
 interface SchemaTargetV1 {
   readonly component: string;
   readonly source: string;
@@ -216,6 +256,140 @@ export function buildCaseStoreTransportDocumentsV1(
       },
       "x-pa-route-manifest": CASE_API_ROUTE_MANIFEST_V1,
     },
+  };
+}
+
+export function buildDoctrineApprovalTransportDocumentsV1(
+  packageRoot: string,
+): GeneratedTransportDocumentsV1 {
+  const documents = buildSchemaDocuments(packageRoot, DOCTRINE_APPROVAL_TARGETS, {
+    schemaId: "https://pa-agent-lab.local/schemas/phase3b-doctrine-approval-v1",
+    title: "PA Agent Lab Phase 3B Doctrine Approval V1",
+    extensions: {
+      "x-pa-phase3b-record-kinds": {
+        doctrine_proposal: "DoctrineProposalBundleV1",
+        doctrine_approval: "DoctrineApprovalV1",
+        doctrine_retirement: "DoctrineRetirementV1",
+      },
+      "x-pa-runtime-authority":
+        "local_public_source_approval_no_rag_model_replay_or_trading_authority",
+    },
+  }, refineDoctrineApprovalComponents);
+  const openapi = asRecord(documents.openapi);
+  const components = asRecord(openapi.components);
+  return {
+    schemaBundle: documents.schemaBundle,
+    openapi: {
+      ...openapi,
+      paths: buildDoctrineApprovalOpenApiPaths(),
+      components: {
+        ...components,
+        securitySchemes: {
+          operatorToken: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "PA-Local-Operator-Token",
+          },
+          reviewerToken: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "PA-Local-Reviewer-Token",
+          },
+        },
+      },
+      "x-pa-route-manifest": DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1,
+    },
+  };
+}
+
+function buildDoctrineApprovalOpenApiPaths(): Record<string, unknown> {
+  const entries: Record<string, Record<string, unknown>> = {};
+  for (const route of DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1) {
+    const path = entries[route.openapiPath] ?? {};
+    path[route.method.toLowerCase()] = {
+      operationId: route.operationId,
+      security:
+        route.authentication === "operator_token"
+          ? [{ operatorToken: [] }]
+          : [{ operatorToken: [] }, { reviewerToken: [] }],
+      ...buildDoctrineApprovalOperation(route.operationId),
+    };
+    entries[route.openapiPath] = path;
+  }
+  return entries;
+}
+
+function buildDoctrineApprovalOperation(operationId: string): Record<string, unknown> {
+  const errorResponse = {
+    description: "Rejected by the local Phase 3B Doctrine approval contract",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/CaseApiErrorV1" },
+      },
+    },
+  };
+  const errors = Object.fromEntries(
+    ["400", "401", "403", "404", "409", "413", "422", "503"].map(
+      (status) => [status, errorResponse],
+    ),
+  );
+  if (operationId === "appendDoctrineProposal") {
+    return doctrineMutationOperation("DoctrineProposalBundleV1", errors);
+  }
+  if (operationId === "listDoctrineProposals") {
+    return { responses: { "200": jsonResponse("DoctrineWorkQueueV1", "Doctrine proposal queue"), ...errors } };
+  }
+  if (operationId === "getDoctrineProposal") {
+    return {
+      parameters: [doctrineIdParameter()],
+      responses: { "200": jsonResponse("DoctrineWorkItemV1", "Doctrine proposal detail"), ...errors },
+    };
+  }
+  const command =
+    operationId === "approveDoctrineProposal"
+      ? "ApproveDoctrineCommandV1"
+      : "RetireDoctrineCommandV1";
+  return {
+    parameters: [doctrineIdParameter()],
+    requestBody: {
+      required: true,
+      content: {
+        "application/json": { schema: { $ref: `#/components/schemas/${command}` } },
+      },
+    },
+    responses: {
+      "200": jsonResponse("DoctrineApprovalMutationResultV1", "Immutable lifecycle record already exists"),
+      "201": jsonResponse("DoctrineApprovalMutationResultV1", "Immutable lifecycle record inserted"),
+      ...errors,
+    },
+  };
+}
+
+function doctrineMutationOperation(
+  component: string,
+  errors: Record<string, unknown>,
+): Record<string, unknown> {
+  return {
+    requestBody: {
+      required: true,
+      content: {
+        "application/json": { schema: { $ref: `#/components/schemas/${component}` } },
+      },
+    },
+    responses: {
+      "200": jsonResponse("DoctrineApprovalMutationResultV1", "Exact proposal already exists"),
+      "201": jsonResponse("DoctrineApprovalMutationResultV1", "Proposal inserted"),
+      ...errors,
+    },
+  };
+}
+
+function doctrineIdParameter(): Record<string, unknown> {
+  return {
+    name: "doctrineId",
+    in: "path",
+    required: true,
+    schema: { type: "string", minLength: 1, maxLength: 200 },
   };
 }
 
@@ -467,6 +641,7 @@ function buildSchemaDocuments(
   packageRoot: string,
   targets: readonly SchemaTargetV1[],
   metadata: SchemaDocumentMetadataV1,
+  refineComponents?: (components: Record<string, unknown>) => void,
 ): GeneratedTransportDocumentsV1 {
   const components: Record<string, unknown> = {};
 
@@ -500,6 +675,7 @@ function buildSchemaDocuments(
   }
 
   refineGeneratedComponents(components);
+  refineComponents?.(components);
 
   const openapiComponents = Object.fromEntries(
     Object.entries(components).map(([name, schema]) => [
@@ -532,6 +708,67 @@ function buildSchemaDocuments(
       ...metadata.extensions,
     },
   };
+}
+
+function refineDoctrineApprovalComponents(
+  components: Record<string, unknown>,
+): void {
+  const source = asRecord(components.SourceV1);
+  const sourceProperties = asRecord(source.properties);
+  boundedString(sourceProperties, "sourceId", 1);
+  boundedString(sourceProperties, "title", 1);
+  boundedString(sourceProperties, "urlOrLocalRef", 1);
+  Object.assign(asRecord(sourceProperties.urlOrLocalRef), {
+    pattern: "^https://[^\\s]+$",
+  });
+  Object.assign(asRecord(sourceProperties.private), { const: false });
+  Object.assign(asRecord(sourceProperties.sourceType), {
+    enum: ["brooks_website", "official_youtube", "reviewed_transcript"],
+  });
+
+  const unit = asRecord(components.DoctrineUnitV1);
+  const unitProperties = asRecord(unit.properties);
+  for (const name of ["doctrineId", "sourceId", "concept", "rule"] as const) {
+    boundedString(unitProperties, name, 1);
+  }
+  Object.assign(asRecord(unitProperties.status), { const: "draft" });
+  for (const name of ["appliesWhen", "avoidWhen", "decisionEffect"] as const) {
+    const list = asRecord(unitProperties[name]);
+    list.minItems = 1;
+    list.maxItems = 12;
+    Object.assign(asRecord(list.items), {
+      minLength: 1,
+      pattern: ".*\\S.*",
+    });
+  }
+
+  const proposal = asRecord(components.DoctrineProposalBundleV1);
+  boundedString(asRecord(proposal.properties), "sourceLocator", 1, 600);
+
+  const approval = asRecord(components.DoctrineApprovalV1);
+  const approvalProperties = asRecord(approval.properties);
+  boundedString(approvalProperties, "doctrineId", 1);
+  boundedString(approvalProperties, "sourceId", 1);
+
+  const retirement = asRecord(components.DoctrineRetirementV1);
+  const retirementProperties = asRecord(retirement.properties);
+  boundedString(retirementProperties, "doctrineId", 1);
+  boundedString(retirementProperties, "reason", 1, 400);
+
+  const retireCommand = asRecord(components.RetireDoctrineCommandV1);
+  boundedString(asRecord(retireCommand.properties), "reason", 1, 400);
+}
+
+function boundedString(
+  properties: Record<string, unknown>,
+  name: string,
+  minimum: number,
+  maximum?: number,
+): void {
+  const property = asRecord(properties[name]);
+  property.minLength = minimum;
+  property.pattern = ".*\\S.*";
+  if (maximum !== undefined) property.maxLength = maximum;
 }
 
 function refineGeneratedComponents(components: Record<string, unknown>): void {

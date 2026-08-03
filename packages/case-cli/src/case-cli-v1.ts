@@ -10,6 +10,7 @@ import {
 } from "@pa-agent-lab/chart-renderer";
 import { assertCaseAuditViewIntegrity } from "@pa-agent-lab/persistence-contracts";
 
+import { createPhase3bPilotDoctrineProposalsV1 } from "./doctrine-pilot-v1.ts";
 import { createPhase2SyntheticFixtureV1 } from "./synthetic-fixture-v1.ts";
 
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
@@ -33,6 +34,7 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
         "api-url": { type: "string", default: "http://127.0.0.1:3210" },
         "artifact-root": { type: "string" },
         output: { type: "string" },
+        reason: { type: "string" },
       },
     });
     const command = parsed.positionals[0];
@@ -43,6 +45,72 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
     }
     const request = createRequest(apiUrl, token, options.fetchImpl ?? fetch);
     const fetchImpl = options.fetchImpl ?? fetch;
+
+    if (command === "seed-doctrine-pilot") {
+      const proposals = createPhase3bPilotDoctrineProposalsV1();
+      const statuses = [];
+      for (const proposal of proposals) {
+        statuses.push({
+          doctrineId: proposal.doctrineUnit.doctrineId,
+          proposalHash: proposal.proposalHash,
+          status: mutationStatus(
+            await request("POST", "/v1/doctrine/proposals", proposal),
+          ),
+        });
+      }
+      options.stdout(
+        JSON.stringify({
+          proposalCount: proposals.length,
+          approvedCount: 0,
+          proposals: statuses,
+        }),
+      );
+      return 0;
+    }
+
+    if (command === "inspect-doctrine") {
+      const doctrineId = requiredDoctrineId(command, parsed.positionals[1]);
+      const value = await request(
+        "GET",
+        `/v1/doctrine/proposals/${encodeURIComponent(doctrineId)}`,
+      );
+      options.stdout(JSON.stringify(value));
+      return 0;
+    }
+
+    if (command === "approve-doctrine") {
+      const doctrineId = requiredDoctrineId(command, parsed.positionals[1]);
+      const proposalHash = requiredSha256(
+        "approve-doctrine requires one proposal SHA-256 identity",
+        parsed.positionals[2],
+      );
+      const value = await request(
+        "POST",
+        `/v1/doctrine/proposals/${encodeURIComponent(doctrineId)}/approve`,
+        { proposalHash },
+      );
+      options.stdout(JSON.stringify(value));
+      return 0;
+    }
+
+    if (command === "retire-doctrine") {
+      const doctrineId = requiredDoctrineId(command, parsed.positionals[1]);
+      const approvalHash = requiredSha256(
+        "retire-doctrine requires one approval SHA-256 identity",
+        parsed.positionals[2],
+      );
+      const reason = parsed.values.reason;
+      if (reason === undefined || reason.trim().length === 0) {
+        throw new Error("retire-doctrine requires --reason <text>");
+      }
+      const value = await request(
+        "POST",
+        `/v1/doctrine/proposals/${encodeURIComponent(doctrineId)}/retire`,
+        { approvalHash, reason },
+      );
+      options.stdout(JSON.stringify(value));
+      return 0;
+    }
 
     if (command === "seed-review-work-item") {
       const artifactRoot =
@@ -230,7 +298,7 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
     }
 
     throw new Error(
-      "command must be seed-review-work-item, seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
+      "command must be seed-doctrine-pilot, inspect-doctrine, approve-doctrine, retire-doctrine, seed-review-work-item, seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
     );
   } catch (error) {
     options.stderr(error instanceof Error ? error.message : String(error));
@@ -268,6 +336,18 @@ function createRequest(
     }
     return value;
   };
+}
+
+function requiredDoctrineId(command: string, value: string | undefined): string {
+  if (
+    value === undefined ||
+    value.length === 0 ||
+    value.length > 200 ||
+    !/^du:[a-z0-9][a-z0-9:_-]*$/.test(value)
+  ) {
+    throw new Error(`${command} requires one Doctrine ID`);
+  }
+  return value;
 }
 
 function requiredCaseHash(command: string, value: string | undefined): string {

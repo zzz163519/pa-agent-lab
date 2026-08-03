@@ -3,19 +3,28 @@ import pg, { type Pool, type PoolClient } from "pg";
 import {
   CALVIN_REVIEW_WORKFLOW_PROTOCOL_VERSION,
   CALVIN_REVIEWER_PRINCIPAL,
+  DoctrineApprovalContractError,
+  DoctrineContractError,
   assertBrooksDecisionIntegrity,
   assertCalvinIndependentAssessmentIntegrity,
   assertCalvinReviewIntegrity,
   assertCalvinReviewWorkflowBindingIntegrity,
   assertDecisionRevealReceiptIntegrity,
+  assertDoctrineApprovalIntegrity,
+  assertDoctrineProposalBundleIntegrity,
+  assertDoctrineRetirementIntegrity,
   canonicalHash,
   canonicalStringify,
   createCalvinIndependentAssessment,
   createCalvinReview,
   createCalvinReviewWorkflowBinding,
   createDecisionRevealReceipt,
+  createDoctrineApproval,
+  createDoctrineRetirement,
   deepFreeze,
   deriveDecisionConflict,
+  deriveDoctrineStatus,
+  toApprovedDoctrineUnit,
   type BrooksDecisionV1,
   type BrooksPolicyCaseV1,
   type CalvinIndependentAssessmentV1,
@@ -23,11 +32,20 @@ import {
   type CalvinReviewWorkflowBindingV1,
   type ContractSha256,
   type DecisionRevealReceiptV1,
+  type DoctrineApprovalV1,
+  type DoctrineApproverPrincipalV1,
+  type DoctrineProposalBundleV1,
+  type DoctrineRetirementV1,
+  type DoctrineUnitV1,
 } from "@pa-agent-lab/contracts";
 import {
   REVIEW_WORK_ITEM_DETAIL_SCHEMA_VERSION,
   REVIEW_WORK_QUEUE_SCHEMA_VERSION,
+  DOCTRINE_WORK_ITEM_SCHEMA_VERSION,
+  DOCTRINE_WORK_QUEUE_SCHEMA_VERSION,
   assertAnonymousChartArtifactMetadataIntegrity,
+  assertApproveDoctrineCommand,
+  assertRetireDoctrineCommand,
   assertRevealDecisionCommand,
   assertSubmitFinalReviewCommand,
   assertSubmitIndependentAssessmentCommand,
@@ -40,6 +58,10 @@ import {
   toFrozenAssessmentView,
   type AnonymousChartArtifactMetadataV1,
   type CaseAuditViewV1,
+  type ApproveDoctrineCommandV1,
+  type DoctrineWorkItemV1,
+  type DoctrineWorkQueueV1,
+  type RetireDoctrineCommandV1,
   type RevealDecisionCommandV1,
   type ReviewWorkItemDetailV1,
   type ReviewWorkQueueV1,
@@ -76,6 +98,24 @@ export interface CaseStoreV1 {
   appendCalvinReview(
     review: CalvinReviewV1,
   ): Promise<Readonly<CaseStoreMutationResultV1>>;
+  appendDoctrineProposal(
+    proposal: DoctrineProposalBundleV1,
+  ): Promise<Readonly<CaseStoreMutationResultV1>>;
+  listDoctrineWorkItems(): Promise<Readonly<DoctrineWorkQueueV1>>;
+  getDoctrineWorkItem(
+    doctrineId: string,
+  ): Promise<Readonly<DoctrineWorkItemV1> | null>;
+  approveDoctrine(
+    doctrineId: string,
+    command: ApproveDoctrineCommandV1,
+    principal: DoctrineApproverPrincipalV1,
+  ): Promise<Readonly<CaseStoreMutationResultV1>>;
+  retireDoctrine(
+    doctrineId: string,
+    command: RetireDoctrineCommandV1,
+    principal: DoctrineApproverPrincipalV1,
+  ): Promise<Readonly<CaseStoreMutationResultV1>>;
+  listApprovedDoctrineUnits(): Promise<readonly Readonly<DoctrineUnitV1>[]>;
   listReviewWorkItems(): Promise<Readonly<ReviewWorkQueueV1>>;
   getReviewWorkItem(
     caseHash: ContractSha256,
@@ -141,6 +181,14 @@ export function createCaseStore(database: CaseStoreDatabaseV1): CaseStoreV1 {
     appendSyntheticCaseBundle: (bundle) => appendBundle(database, bundle),
     appendBrooksDecision: (decision) => appendDecision(database, decision),
     appendCalvinReview: (review) => appendReview(database, review),
+    appendDoctrineProposal: (proposal) => appendDoctrineProposal(database, proposal),
+    listDoctrineWorkItems: () => listDoctrineWorkItems(database),
+    getDoctrineWorkItem: (doctrineId) => getDoctrineWorkItem(database, doctrineId),
+    approveDoctrine: (doctrineId, command, principal) =>
+      approveDoctrine(database, doctrineId, command, principal),
+    retireDoctrine: (doctrineId, command, principal) =>
+      retireDoctrine(database, doctrineId, command, principal),
+    listApprovedDoctrineUnits: () => listApprovedDoctrineUnits(database),
     listReviewWorkItems: () => listReviewWorkItems(database),
     getReviewWorkItem: (caseHash) => getReviewWorkItem(database, caseHash),
     appendIndependentAssessment: (command) =>
@@ -871,6 +919,298 @@ async function insertCaseInputBinding(
   return "existing";
 }
 
+interface DoctrineAggregateRowV1 {
+  readonly proposal_record: unknown;
+  readonly approval_record: unknown | null;
+  readonly retirement_record: unknown | null;
+}
+
+interface DoctrineAggregateV1 {
+  readonly proposal: DoctrineProposalBundleV1;
+  readonly approval: DoctrineApprovalV1 | null;
+  readonly retirement: DoctrineRetirementV1 | null;
+}
+
+async function appendDoctrineProposal(
+  database: CaseStoreDatabaseV1,
+  proposal: DoctrineProposalBundleV1,
+): Promise<Readonly<CaseStoreMutationResultV1>> {
+  try {
+    assertDoctrineProposalBundleIntegrity(proposal);
+    return await database.transaction(async (client) => {
+      const expectedCanonical = canonicalStringify(proposal);
+      const status = await insertImmutableRecord(client, {
+        insertSql: `INSERT INTO pa_doctrine_proposals
+          (proposal_hash, doctrine_id, source_id, source_content_hash, record)
+         VALUES ($1, $2, $3, $4, $5::jsonb)
+         ON CONFLICT DO NOTHING RETURNING proposal_hash AS identity`,
+        insertParams: [
+          proposal.proposalHash,
+          proposal.doctrineUnit.doctrineId,
+          proposal.source.sourceId,
+          proposal.source.contentHash,
+          expectedCanonical,
+        ],
+        existingSql: `SELECT proposal_hash AS identity, record
+          FROM pa_doctrine_proposals
+          WHERE proposal_hash = $1 OR doctrine_id = $2`,
+        existingParams: [proposal.proposalHash, proposal.doctrineUnit.doctrineId],
+        expectedIdentity: proposal.proposalHash,
+        expectedCanonical,
+        parseExisting: parseDoctrineProposal,
+      });
+      return mutationResult(status, proposal.proposalHash);
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function listDoctrineWorkItems(
+  database: CaseStoreDatabaseV1,
+): Promise<Readonly<DoctrineWorkQueueV1>> {
+  try {
+    const rows = await loadDoctrineAggregates(database);
+    return deepFreeze({
+      schemaVersion: DOCTRINE_WORK_QUEUE_SCHEMA_VERSION,
+      items: rows.map((aggregate) => {
+        const item = buildDoctrineWorkItem(aggregate);
+        return {
+          proposalHash: item.proposal.proposalHash,
+          doctrineId: item.proposal.doctrineUnit.doctrineId,
+          sourceId: item.proposal.source.sourceId,
+          concept: item.proposal.doctrineUnit.concept,
+          status: item.status,
+          approverPrincipal: item.approval?.approverPrincipal ?? null,
+        };
+      }),
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function getDoctrineWorkItem(
+  database: CaseStoreDatabaseClientV1,
+  doctrineId: string,
+): Promise<Readonly<DoctrineWorkItemV1> | null> {
+  try {
+    const rows = await loadDoctrineAggregates(database, doctrineId);
+    if (rows.length === 0) return null;
+    if (rows.length !== 1) {
+      fail("INTEGRITY_VIOLATION", "Doctrine proposal identity is not unique");
+    }
+    return buildDoctrineWorkItem(rows[0]!);
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function approveDoctrine(
+  database: CaseStoreDatabaseV1,
+  doctrineId: string,
+  command: ApproveDoctrineCommandV1,
+  principal: DoctrineApproverPrincipalV1,
+): Promise<Readonly<CaseStoreMutationResultV1>> {
+  try {
+    assertApproveDoctrineCommand(command);
+    return await database.transaction(async (client) => {
+      const item = await getDoctrineWorkItem(client, doctrineId);
+      if (item === null) fail("INTEGRITY_VIOLATION", "Doctrine proposal is required");
+      if (item.proposal.proposalHash !== command.proposalHash) {
+        fail("INTEGRITY_VIOLATION", "Doctrine proposal hash does not match the command");
+      }
+      const approval = createDoctrineApproval({
+        proposalHash: item.proposal.proposalHash,
+        doctrineId: item.proposal.doctrineUnit.doctrineId,
+        sourceId: item.proposal.source.sourceId,
+        sourceContentHash: item.proposal.source.contentHash,
+        approverPrincipal: principal,
+      });
+      const expectedCanonical = canonicalStringify(approval);
+      const status = await insertImmutableRecord(client, {
+        insertSql: `INSERT INTO pa_doctrine_approvals
+          (approval_hash, proposal_hash, doctrine_id, source_id,
+           source_content_hash, approver_principal, record)
+         VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+         ON CONFLICT DO NOTHING RETURNING approval_hash AS identity`,
+        insertParams: [
+          approval.approvalHash,
+          approval.proposalHash,
+          approval.doctrineId,
+          approval.sourceId,
+          approval.sourceContentHash,
+          approval.approverPrincipal,
+          expectedCanonical,
+        ],
+        existingSql: `SELECT approval_hash AS identity, record
+          FROM pa_doctrine_approvals
+          WHERE approval_hash = $1 OR proposal_hash = $2 OR doctrine_id = $3`,
+        existingParams: [approval.approvalHash, approval.proposalHash, approval.doctrineId],
+        expectedIdentity: approval.approvalHash,
+        expectedCanonical,
+        parseExisting: (value) => parseDoctrineApproval(value, item.proposal),
+      });
+      return mutationResult(status, approval.approvalHash);
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function retireDoctrine(
+  database: CaseStoreDatabaseV1,
+  doctrineId: string,
+  command: RetireDoctrineCommandV1,
+  principal: DoctrineApproverPrincipalV1,
+): Promise<Readonly<CaseStoreMutationResultV1>> {
+  try {
+    assertRetireDoctrineCommand(command);
+    return await database.transaction(async (client) => {
+      const item = await getDoctrineWorkItem(client, doctrineId);
+      if (item === null) fail("INTEGRITY_VIOLATION", "Doctrine proposal is required");
+      if (item.approval === null) {
+        fail("INTEGRITY_VIOLATION", "Doctrine approval is required before retirement");
+      }
+      if (item.approval.approvalHash !== command.approvalHash) {
+        fail("INTEGRITY_VIOLATION", "Doctrine approval hash does not match the command");
+      }
+      const retirement = createDoctrineRetirement({
+        proposalHash: item.proposal.proposalHash,
+        approvalHash: item.approval.approvalHash,
+        doctrineId: item.proposal.doctrineUnit.doctrineId,
+        retiredByPrincipal: principal,
+        reason: command.reason,
+      });
+      const expectedCanonical = canonicalStringify(retirement);
+      const status = await insertImmutableRecord(client, {
+        insertSql: `INSERT INTO pa_doctrine_retirements
+          (retirement_hash, approval_hash, proposal_hash, doctrine_id,
+           retired_by_principal, record)
+         VALUES ($1, $2, $3, $4, $5, $6::jsonb)
+         ON CONFLICT DO NOTHING RETURNING retirement_hash AS identity`,
+        insertParams: [
+          retirement.retirementHash,
+          retirement.approvalHash,
+          retirement.proposalHash,
+          retirement.doctrineId,
+          retirement.retiredByPrincipal,
+          expectedCanonical,
+        ],
+        existingSql: `SELECT retirement_hash AS identity, record
+          FROM pa_doctrine_retirements
+          WHERE retirement_hash = $1 OR approval_hash = $2
+             OR proposal_hash = $3 OR doctrine_id = $4`,
+        existingParams: [
+          retirement.retirementHash,
+          retirement.approvalHash,
+          retirement.proposalHash,
+          retirement.doctrineId,
+        ],
+        expectedIdentity: retirement.retirementHash,
+        expectedCanonical,
+        parseExisting: (value) =>
+          parseDoctrineRetirement(value, item.proposal, item.approval!),
+      });
+      return mutationResult(status, retirement.retirementHash);
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function listApprovedDoctrineUnits(
+  database: CaseStoreDatabaseClientV1,
+): Promise<readonly Readonly<DoctrineUnitV1>[]> {
+  try {
+    const rows = await loadDoctrineAggregates(database);
+    return deepFreeze(
+      rows.flatMap((aggregate) =>
+        aggregate.approval !== null && aggregate.retirement === null
+          ? [toApprovedDoctrineUnit(aggregate.proposal, aggregate.approval)]
+          : [],
+      ),
+    );
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function loadDoctrineAggregates(
+  database: CaseStoreDatabaseClientV1,
+  doctrineId?: string,
+): Promise<readonly DoctrineAggregateV1[]> {
+  const result = await database.query<DoctrineAggregateRowV1>(
+    `SELECT proposal.record AS proposal_record,
+            approval.record AS approval_record,
+            retirement.record AS retirement_record
+     FROM pa_doctrine_proposals AS proposal
+     LEFT JOIN pa_doctrine_approvals AS approval
+       ON approval.proposal_hash = proposal.proposal_hash
+     LEFT JOIN pa_doctrine_retirements AS retirement
+       ON retirement.approval_hash = approval.approval_hash
+     ${doctrineId === undefined ? "" : "WHERE proposal.doctrine_id = $1"}
+     ORDER BY proposal.doctrine_id COLLATE "C"`,
+    doctrineId === undefined ? [] : [doctrineId],
+  );
+  return result.rows.map((row) => {
+    const proposal = parseDoctrineProposal(row.proposal_record);
+    const approval =
+      row.approval_record === null
+        ? null
+        : parseDoctrineApproval(row.approval_record, proposal);
+    const retirement =
+      row.retirement_record === null
+        ? null
+        : approval === null
+          ? fail("INTEGRITY_VIOLATION", "Doctrine retirement is missing its approval")
+          : parseDoctrineRetirement(row.retirement_record, proposal, approval);
+    deriveDoctrineStatus(proposal, approval, retirement);
+    return { proposal, approval, retirement };
+  });
+}
+
+function buildDoctrineWorkItem(
+  aggregate: DoctrineAggregateV1,
+): Readonly<DoctrineWorkItemV1> {
+  return deepFreeze({
+    schemaVersion: DOCTRINE_WORK_ITEM_SCHEMA_VERSION,
+    proposal: aggregate.proposal,
+    status: deriveDoctrineStatus(
+      aggregate.proposal,
+      aggregate.approval,
+      aggregate.retirement,
+    ),
+    approval: aggregate.approval,
+    retirement: aggregate.retirement,
+  });
+}
+
+function parseDoctrineProposal(value: unknown): DoctrineProposalBundleV1 {
+  const proposal = materialize<DoctrineProposalBundleV1>(value);
+  assertDoctrineProposalBundleIntegrity(proposal);
+  return deepFreeze(proposal);
+}
+
+function parseDoctrineApproval(
+  value: unknown,
+  proposal: DoctrineProposalBundleV1,
+): DoctrineApprovalV1 {
+  const approval = materialize<DoctrineApprovalV1>(value);
+  assertDoctrineApprovalIntegrity(approval, proposal);
+  return deepFreeze(approval);
+}
+
+function parseDoctrineRetirement(
+  value: unknown,
+  proposal: DoctrineProposalBundleV1,
+  approval: DoctrineApprovalV1,
+): DoctrineRetirementV1 {
+  const retirement = materialize<DoctrineRetirementV1>(value);
+  assertDoctrineRetirementIntegrity(retirement, proposal, approval);
+  return deepFreeze(retirement);
+}
+
 interface ImmutableInsertV1<T> {
   readonly insertSql: string;
   readonly insertParams: readonly unknown[];
@@ -1266,6 +1606,14 @@ function fail(code: CaseStoreErrorCodeV1, message: string): never {
 
 function rethrow(error: unknown): never {
   if (error instanceof CaseStoreError) throw error;
+  if (
+    error instanceof DoctrineApprovalContractError ||
+    error instanceof DoctrineContractError
+  ) {
+    throw new CaseStoreError("INTEGRITY_VIOLATION", error.message, {
+      cause: error,
+    });
+  }
   if (error instanceof Error) {
     const code = /conflict|unique constraint/i.test(error.message)
       ? "IDENTITY_CONFLICT"

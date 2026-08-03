@@ -67,7 +67,7 @@ export async function loadChartArtifact(artifactId: string): Promise<string> {
   return URL.createObjectURL(blob);
 }
 
-async function reviewerFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function reviewerFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await authenticatedRequest(path, init);
   if (!response.ok) throw await responseError(response);
   return (await response.json()) as T;

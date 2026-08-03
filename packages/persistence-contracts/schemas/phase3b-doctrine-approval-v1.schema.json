@@ -1,0 +1,474 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pa-agent-lab.local/schemas/phase3b-doctrine-approval-v1",
+  "$defs": {
+    "DoctrineProposalBundleV1": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/SourceV1"
+        },
+        "doctrineUnit": {
+          "$ref": "#/$defs/DoctrineUnitV1"
+        },
+        "sourceLocator": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*",
+          "maxLength": 600
+        },
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-proposal-bundle.v1"
+        },
+        "proposalHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "doctrineUnit",
+        "proposalHash",
+        "schemaVersion",
+        "source",
+        "sourceLocator"
+      ],
+      "additionalProperties": false
+    },
+    "SourceV1": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        "sourceType": {
+          "$ref": "#/$defs/SourceTypeV1",
+          "enum": [
+            "brooks_website",
+            "official_youtube",
+            "reviewed_transcript"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        "urlOrLocalRef": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^https://[^\\s]+$"
+        },
+        "contentHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "private": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "required": [
+        "sourceId",
+        "sourceType",
+        "title",
+        "urlOrLocalRef",
+        "contentHash",
+        "private"
+      ],
+      "additionalProperties": false
+    },
+    "SourceTypeV1": {
+      "type": "string",
+      "enum": [
+        "brooks_website",
+        "official_youtube",
+        "reviewed_transcript",
+        "private_material"
+      ]
+    },
+    "ContractSha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "DoctrineUnitV1": {
+      "type": "object",
+      "properties": {
+        "doctrineId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        "sourceId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        "concept": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        "rule": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        "appliesWhen": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "avoidWhen": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "decisionEffect": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "status": {
+          "$ref": "#/$defs/DoctrineStatusV1",
+          "const": "draft"
+        }
+      },
+      "required": [
+        "doctrineId",
+        "sourceId",
+        "concept",
+        "rule",
+        "appliesWhen",
+        "avoidWhen",
+        "decisionEffect",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineStatusV1": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "approved",
+        "retired"
+      ]
+    },
+    "DoctrineApprovalV1": {
+      "type": "object",
+      "properties": {
+        "proposalHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "doctrineId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        "sourceId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        "sourceContentHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "approverPrincipal": {
+          "$ref": "#/$defs/DoctrineApproverPrincipalV1"
+        },
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-approval.v1"
+        },
+        "approvalHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "approvalHash",
+        "approverPrincipal",
+        "doctrineId",
+        "proposalHash",
+        "schemaVersion",
+        "sourceContentHash",
+        "sourceId"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineApproverPrincipalV1": {
+      "type": "string",
+      "enum": [
+        "local:phase2-operator",
+        "local:calvin-reviewer"
+      ]
+    },
+    "DoctrineRetirementV1": {
+      "type": "object",
+      "properties": {
+        "proposalHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "approvalHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "doctrineId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        "retiredByPrincipal": {
+          "$ref": "#/$defs/DoctrineApproverPrincipalV1"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*",
+          "maxLength": 400
+        },
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-retirement.v1"
+        },
+        "retirementHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "approvalHash",
+        "doctrineId",
+        "proposalHash",
+        "reason",
+        "retiredByPrincipal",
+        "retirementHash",
+        "schemaVersion"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineWorkQueueV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-work-queue.v1"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "proposalHash": {
+                "$ref": "#/$defs/ContractSha256"
+              },
+              "doctrineId": {
+                "type": "string"
+              },
+              "sourceId": {
+                "type": "string"
+              },
+              "concept": {
+                "type": "string"
+              },
+              "status": {
+                "$ref": "#/$defs/DoctrineStatusV1"
+              },
+              "approverPrincipal": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/DoctrineApproverPrincipalV1"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "proposalHash",
+              "doctrineId",
+              "sourceId",
+              "concept",
+              "status",
+              "approverPrincipal"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineWorkItemV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-work-item.v1"
+        },
+        "proposal": {
+          "$ref": "#/$defs/DoctrineProposalBundleV1"
+        },
+        "status": {
+          "$ref": "#/$defs/DoctrineStatusV1"
+        },
+        "approval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DoctrineApprovalV1"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retirement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DoctrineRetirementV1"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "proposal",
+        "status",
+        "approval",
+        "retirement"
+      ],
+      "additionalProperties": false
+    },
+    "ApproveDoctrineCommandV1": {
+      "type": "object",
+      "properties": {
+        "proposalHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "proposalHash"
+      ],
+      "additionalProperties": false
+    },
+    "RetireDoctrineCommandV1": {
+      "type": "object",
+      "properties": {
+        "approvalHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": ".*\\S.*",
+          "maxLength": 400
+        }
+      },
+      "required": [
+        "approvalHash",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineApprovalMutationResultV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-approval-mutation-result.v1"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "inserted",
+            "existing"
+          ]
+        },
+        "resourceKind": {
+          "type": "string",
+          "enum": [
+            "doctrine_proposal",
+            "doctrine_approval",
+            "doctrine_retirement"
+          ]
+        },
+        "resourceHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "workItem": {
+          "$ref": "#/$defs/DoctrineWorkItemV1"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "requestId",
+        "status",
+        "resourceKind",
+        "resourceHash",
+        "workItem"
+      ],
+      "additionalProperties": false
+    },
+    "CaseApiErrorV1": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string"
+        },
+        "code": {
+          "$ref": "#/$defs/CaseApiErrorCodeV1"
+        },
+        "message": {
+          "type": "string"
+        },
+        "schemaVersion": {
+          "type": "string",
+          "const": "case-api-error.v1"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "requestId",
+        "schemaVersion"
+      ],
+      "additionalProperties": false
+    },
+    "CaseApiErrorCodeV1": {
+      "type": "string",
+      "enum": [
+        "INVALID_JSON",
+        "INVALID_RECORD",
+        "UNAUTHORIZED",
+        "FORBIDDEN",
+        "NOT_FOUND",
+        "IDENTITY_CONFLICT",
+        "BODY_TOO_LARGE",
+        "DEPENDENCY_UNAVAILABLE",
+        "INTERNAL_ERROR"
+      ]
+    }
+  }
+}

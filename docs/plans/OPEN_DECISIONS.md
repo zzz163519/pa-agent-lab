@@ -58,11 +58,10 @@ Still open:
 
 ## API and user interface
 
-ADR-0015 fixes the Phase 2 synthetic-only operator REST/OpenAPI and PostgreSQL boundary. ADR-0016 fixes the Phase 3A synthetic-only, backend-enforced two-stage whole-decision review, fixed local Calvin reviewer, immutable assessment/reveal/binding records, same-origin Research Console, and no-streaming decision. Neither ADR authorizes real data, Doctrine approval, provider calls, public deployment, market screening, replay, or execution.
+ADR-0015 fixes the Phase 2 synthetic-only operator REST/OpenAPI and PostgreSQL boundary. ADR-0016 fixes the Phase 3A synthetic-only, backend-enforced two-stage whole-decision review and same-origin Research Console. ADR-0017 fixes one minimal local Doctrine proposal/approval/retirement workflow, with exact proposal allowlists and Calvin-or-Agent principal binding. None authorizes real data, providers, public deployment, market screening, RAG, replay, or execution.
 
 Still open:
 
-- define the separate Doctrine source-review and approval workflow;
 - define the separate real-Case ingestion authorization-before-open contract;
 - define a future public-deployment threat model, TLS/OIDC/session/CSRF/authorization boundary if remote access is approved;
 - reconsider SSE only if Phase 5 durable asynchronous model jobs demonstrate that REST polling is insufficient.

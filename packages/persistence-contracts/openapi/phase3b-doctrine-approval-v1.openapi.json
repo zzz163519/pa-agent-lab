@@ -1,0 +1,1158 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "PA Agent Lab Phase 3B Doctrine Approval V1",
+    "version": "1.0.0"
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "paths": {
+    "/v1/doctrine/proposals": {
+      "post": {
+        "operationId": "appendDoctrineProposal",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctrineProposalBundleV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact proposal already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineApprovalMutationResultV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Proposal inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineApprovalMutationResultV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listDoctrineProposals",
+        "security": [
+          {
+            "operatorToken": []
+          },
+          {
+            "reviewerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Doctrine proposal queue",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineWorkQueueV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/doctrine/proposals/{doctrineId}": {
+      "get": {
+        "operationId": "getDoctrineProposal",
+        "security": [
+          {
+            "operatorToken": []
+          },
+          {
+            "reviewerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "doctrineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Doctrine proposal detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineWorkItemV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/doctrine/proposals/{doctrineId}/approve": {
+      "post": {
+        "operationId": "approveDoctrineProposal",
+        "security": [
+          {
+            "operatorToken": []
+          },
+          {
+            "reviewerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "doctrineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveDoctrineCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Immutable lifecycle record already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineApprovalMutationResultV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Immutable lifecycle record inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineApprovalMutationResultV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/doctrine/proposals/{doctrineId}/retire": {
+      "post": {
+        "operationId": "retireDoctrineProposal",
+        "security": [
+          {
+            "operatorToken": []
+          },
+          {
+            "reviewerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "doctrineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetireDoctrineCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Immutable lifecycle record already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineApprovalMutationResultV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Immutable lifecycle record inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineApprovalMutationResultV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3B Doctrine approval contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DoctrineProposalBundleV1": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/SourceV1"
+          },
+          "doctrineUnit": {
+            "$ref": "#/components/schemas/DoctrineUnitV1"
+          },
+          "sourceLocator": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "maxLength": 600
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "doctrine-proposal-bundle.v1"
+          },
+          "proposalHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "doctrineUnit",
+          "proposalHash",
+          "schemaVersion",
+          "source",
+          "sourceLocator"
+        ],
+        "additionalProperties": false
+      },
+      "SourceV1": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "sourceType": {
+            "$ref": "#/components/schemas/SourceTypeV1",
+            "enum": [
+              "brooks_website",
+              "official_youtube",
+              "reviewed_transcript"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "urlOrLocalRef": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^https://[^\\s]+$"
+          },
+          "contentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "private": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "required": [
+          "sourceId",
+          "sourceType",
+          "title",
+          "urlOrLocalRef",
+          "contentHash",
+          "private"
+        ],
+        "additionalProperties": false
+      },
+      "SourceTypeV1": {
+        "type": "string",
+        "enum": [
+          "brooks_website",
+          "official_youtube",
+          "reviewed_transcript",
+          "private_material"
+        ]
+      },
+      "ContractSha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "DoctrineUnitV1": {
+        "type": "object",
+        "properties": {
+          "doctrineId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "sourceId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "concept": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "rule": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "appliesWhen": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": ".*\\S.*"
+            },
+            "minItems": 1,
+            "maxItems": 12
+          },
+          "avoidWhen": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": ".*\\S.*"
+            },
+            "minItems": 1,
+            "maxItems": 12
+          },
+          "decisionEffect": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": ".*\\S.*"
+            },
+            "minItems": 1,
+            "maxItems": 12
+          },
+          "status": {
+            "$ref": "#/components/schemas/DoctrineStatusV1",
+            "const": "draft"
+          }
+        },
+        "required": [
+          "doctrineId",
+          "sourceId",
+          "concept",
+          "rule",
+          "appliesWhen",
+          "avoidWhen",
+          "decisionEffect",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "DoctrineStatusV1": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "approved",
+          "retired"
+        ]
+      },
+      "DoctrineApprovalV1": {
+        "type": "object",
+        "properties": {
+          "proposalHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "doctrineId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "sourceId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "sourceContentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "approverPrincipal": {
+            "$ref": "#/components/schemas/DoctrineApproverPrincipalV1"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "doctrine-approval.v1"
+          },
+          "approvalHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "approvalHash",
+          "approverPrincipal",
+          "doctrineId",
+          "proposalHash",
+          "schemaVersion",
+          "sourceContentHash",
+          "sourceId"
+        ],
+        "additionalProperties": false
+      },
+      "DoctrineApproverPrincipalV1": {
+        "type": "string",
+        "enum": [
+          "local:phase2-operator",
+          "local:calvin-reviewer"
+        ]
+      },
+      "DoctrineRetirementV1": {
+        "type": "object",
+        "properties": {
+          "proposalHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "approvalHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "doctrineId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
+          },
+          "retiredByPrincipal": {
+            "$ref": "#/components/schemas/DoctrineApproverPrincipalV1"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "maxLength": 400
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "doctrine-retirement.v1"
+          },
+          "retirementHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "approvalHash",
+          "doctrineId",
+          "proposalHash",
+          "reason",
+          "retiredByPrincipal",
+          "retirementHash",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "DoctrineWorkQueueV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "doctrine-work-queue.v1"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "proposalHash": {
+                  "$ref": "#/components/schemas/ContractSha256"
+                },
+                "doctrineId": {
+                  "type": "string"
+                },
+                "sourceId": {
+                  "type": "string"
+                },
+                "concept": {
+                  "type": "string"
+                },
+                "status": {
+                  "$ref": "#/components/schemas/DoctrineStatusV1"
+                },
+                "approverPrincipal": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/DoctrineApproverPrincipalV1"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "proposalHash",
+                "doctrineId",
+                "sourceId",
+                "concept",
+                "status",
+                "approverPrincipal"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "DoctrineWorkItemV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "doctrine-work-item.v1"
+          },
+          "proposal": {
+            "$ref": "#/components/schemas/DoctrineProposalBundleV1"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DoctrineStatusV1"
+          },
+          "approval": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DoctrineApprovalV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "retirement": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DoctrineRetirementV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "proposal",
+          "status",
+          "approval",
+          "retirement"
+        ],
+        "additionalProperties": false
+      },
+      "ApproveDoctrineCommandV1": {
+        "type": "object",
+        "properties": {
+          "proposalHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "proposalHash"
+        ],
+        "additionalProperties": false
+      },
+      "RetireDoctrineCommandV1": {
+        "type": "object",
+        "properties": {
+          "approvalHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "maxLength": 400
+          }
+        },
+        "required": [
+          "approvalHash",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "DoctrineApprovalMutationResultV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "doctrine-approval-mutation-result.v1"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "inserted",
+              "existing"
+            ]
+          },
+          "resourceKind": {
+            "type": "string",
+            "enum": [
+              "doctrine_proposal",
+              "doctrine_approval",
+              "doctrine_retirement"
+            ]
+          },
+          "resourceHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "workItem": {
+            "$ref": "#/components/schemas/DoctrineWorkItemV1"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "status",
+          "resourceKind",
+          "resourceHash",
+          "workItem"
+        ],
+        "additionalProperties": false
+      },
+      "CaseApiErrorV1": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "code": {
+            "$ref": "#/components/schemas/CaseApiErrorCodeV1"
+          },
+          "message": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "case-api-error.v1"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "CaseApiErrorCodeV1": {
+        "type": "string",
+        "enum": [
+          "INVALID_JSON",
+          "INVALID_RECORD",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_FOUND",
+          "IDENTITY_CONFLICT",
+          "BODY_TOO_LARGE",
+          "DEPENDENCY_UNAVAILABLE",
+          "INTERNAL_ERROR"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "operatorToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "PA-Local-Operator-Token"
+      },
+      "reviewerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "PA-Local-Reviewer-Token"
+      }
+    }
+  },
+  "x-pa-phase3b-record-kinds": {
+    "doctrine_proposal": "DoctrineProposalBundleV1",
+    "doctrine_approval": "DoctrineApprovalV1",
+    "doctrine_retirement": "DoctrineRetirementV1"
+  },
+  "x-pa-runtime-authority": "local_public_source_approval_no_rag_model_replay_or_trading_authority",
+  "x-pa-route-manifest": [
+    {
+      "method": "POST",
+      "path": "/v1/doctrine/proposals",
+      "openapiPath": "/v1/doctrine/proposals",
+      "operationId": "appendDoctrineProposal",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/doctrine/proposals",
+      "openapiPath": "/v1/doctrine/proposals",
+      "operationId": "listDoctrineProposals",
+      "authentication": "operator_or_reviewer_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/doctrine/proposals/:doctrineId",
+      "openapiPath": "/v1/doctrine/proposals/{doctrineId}",
+      "operationId": "getDoctrineProposal",
+      "authentication": "operator_or_reviewer_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/doctrine/proposals/:doctrineId/approve",
+      "openapiPath": "/v1/doctrine/proposals/{doctrineId}/approve",
+      "operationId": "approveDoctrineProposal",
+      "authentication": "operator_or_reviewer_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/doctrine/proposals/:doctrineId/retire",
+      "openapiPath": "/v1/doctrine/proposals/{doctrineId}/retire",
+      "operationId": "retireDoctrineProposal",
+      "authentication": "operator_or_reviewer_token",
+      "transport": "request_response"
+    }
+  ]
+}

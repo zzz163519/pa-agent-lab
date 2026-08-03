@@ -15,6 +15,7 @@ import {
 } from "@pa-agent-lab/case-store";
 
 import { runCaseCliV1 } from "../src/case-cli-v1.ts";
+import { createPhase3bPilotDoctrineProposalsV1 } from "../src/doctrine-pilot-v1.ts";
 import { createPhase2SyntheticFixtureV1 } from "../src/synthetic-fixture-v1.ts";
 
 const pgliteModuleName = ["@electric-sql", "pglite"].join("/");
@@ -342,5 +343,66 @@ describe("Phase 2 synthetic Case CLI", () => {
     } finally {
       await rm(root, { recursive: true, force: true });
     }
+  });
+
+  it("seeds nine draft Doctrine proposals and exposes explicit lifecycle commands", async () => {
+    const proposals = createPhase3bPilotDoctrineProposalsV1();
+    assert.equal(proposals.length, 9);
+    const requests: { path: string; body: unknown }[] = [];
+    const fakeFetch = (async (input, init) => {
+      const path = new URL(String(input)).pathname;
+      const body = init?.body === undefined ? null : JSON.parse(String(init.body));
+      requests.push({ path, body });
+      const resourceHash = path.endsWith("/approve")
+        ? `sha256:${"b".repeat(64)}`
+        : path.endsWith("/retire")
+          ? `sha256:${"c".repeat(64)}`
+          : (body as { proposalHash?: string } | null)?.proposalHash ?? proposals[0]!.proposalHash;
+      return new Response(JSON.stringify({
+        status: "inserted",
+        resourceHash,
+        workItem: { proposal: proposals[0], status: "draft", approval: null, retirement: null },
+      }), { status: 201, headers: { "content-type": "application/json" } });
+    }) as typeof fetch;
+
+    const output: string[] = [];
+    const seedExit = await runCaseCliV1({
+      argv: ["seed-doctrine-pilot"],
+      env: { PA_API_TOKEN: localToken },
+      stdout: (line) => output.push(line),
+      stderr: (line) => output.push(`ERROR:${line}`),
+      fetchImpl: fakeFetch,
+    });
+    assert.equal(seedExit, 0, output.join("\n"));
+    assert.equal(requests.filter((item) => item.path === "/v1/doctrine/proposals").length, 9);
+    assert.equal(JSON.parse(output.at(-1)!).approvedCount, 0);
+
+    const doctrineId = proposals[0]!.doctrineUnit.doctrineId;
+    const approveExit = await runCaseCliV1({
+      argv: ["approve-doctrine", doctrineId, proposals[0]!.proposalHash],
+      env: { PA_API_TOKEN: localToken },
+      stdout: (line) => output.push(line),
+      stderr: (line) => output.push(`ERROR:${line}`),
+      fetchImpl: fakeFetch,
+    });
+    assert.equal(approveExit, 0, output.join("\n"));
+    assert.deepEqual(requests.at(-1), {
+      path: `/v1/doctrine/proposals/${encodeURIComponent(doctrineId)}/approve`,
+      body: { proposalHash: proposals[0]!.proposalHash },
+    });
+
+    const retirementHash = `sha256:${"b".repeat(64)}`;
+    const retireExit = await runCaseCliV1({
+      argv: ["retire-doctrine", doctrineId, retirementHash, "--reason", "Superseded source mapping"],
+      env: { PA_API_TOKEN: localToken },
+      stdout: (line) => output.push(line),
+      stderr: (line) => output.push(`ERROR:${line}`),
+      fetchImpl: fakeFetch,
+    });
+    assert.equal(retireExit, 0, output.join("\n"));
+    assert.deepEqual(requests.at(-1), {
+      path: `/v1/doctrine/proposals/${encodeURIComponent(doctrineId)}/retire`,
+      body: { approvalHash: retirementHash, reason: "Superseded source mapping" },
+    });
   });
 });

@@ -10,11 +10,12 @@ import {
   createPostgresCaseStoreV1,
 } from "../src/index.ts";
 import { makePhase3ReviewWorkflowFixture } from "../../persistence-contracts/test/fixtures/phase3a-review-workflow-v1.fixture.ts";
+import { makePhase3bDoctrineApprovalFixture } from "../../persistence-contracts/test/fixtures/phase3b-doctrine-approval-v1.fixture.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const adminUrl = process.env.PA_PHASE2_POSTGRES_ADMIN_URL;
 
-describe("real PostgreSQL Phase 3A integration", () => {
+describe("real PostgreSQL Phase 3B integration", () => {
   it(
     "proves migrations, concurrent idempotency, ownership, and restricted application privileges",
     { skip: adminUrl === undefined },
@@ -40,8 +41,10 @@ describe("real PostgreSQL Phase 3A integration", () => {
         "applied",
         "applied",
         "applied",
+        "applied",
       ]);
       assert.deepEqual(secondMigration.map(({ status }) => status), [
+        "existing",
         "existing",
         "existing",
         "existing",
@@ -110,6 +113,28 @@ describe("real PostgreSQL Phase 3A integration", () => {
           fixture.review.independentVerdict,
         );
 
+        const doctrine = makePhase3bDoctrineApprovalFixture();
+        await handle.store.appendDoctrineProposal(doctrine.proposal);
+        const doctrineApproval = await handle.store.approveDoctrine(
+          doctrine.proposal.doctrineUnit.doctrineId,
+          { proposalHash: doctrine.proposal.proposalHash },
+          "local:phase2-operator",
+        );
+        await handle.store.retireDoctrine(
+          doctrine.proposal.doctrineUnit.doctrineId,
+          {
+            approvalHash: doctrineApproval.resourceHash,
+            reason: doctrine.retirement.reason,
+          },
+          "local:calvin-reviewer",
+        );
+        assert.equal(
+          (await handle.store.getDoctrineWorkItem(
+            doctrine.proposal.doctrineUnit.doctrineId,
+          ))?.status,
+          "retired",
+        );
+
         const owner = await applicationPool.query<{
           readonly owner: string;
           readonly current_user: string;
@@ -127,7 +152,7 @@ describe("real PostgreSQL Phase 3A integration", () => {
             EXISTS (
               SELECT 1 FROM pg_extension WHERE extname = 'vector'
             ) AS vector_installed
-          FROM pg_class WHERE relname = 'pa_calvin_independent_assessments'
+          FROM pg_class WHERE relname = 'pa_doctrine_proposals'
         `);
         assert.deepEqual(owner.rows, [
           {
@@ -138,7 +163,7 @@ describe("real PostgreSQL Phase 3A integration", () => {
           },
         ]);
         await assert.rejects(
-          () => applicationPool.query("UPDATE pa_calvin_independent_assessments SET record = '{}'::jsonb"),
+          () => applicationPool.query("UPDATE pa_doctrine_proposals SET record = '{}'::jsonb"),
           { message: /permission denied/ },
         );
         await assert.rejects(

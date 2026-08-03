@@ -1,7 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { FlaskConical, ListChecks, LockKeyhole } from "lucide-react";
+import { BookOpenCheck, FlaskConical, ListChecks, LockKeyhole } from "lucide-react";
 import { NavLink, Outlet, createBrowserRouter, RouterProvider } from "react-router";
 
+import { DoctrineQueuePage } from "../features/doctrine/doctrine-queue-page.tsx";
+import { DoctrineWorkItemPage } from "../features/doctrine/doctrine-work-item-page.tsx";
 import { ReviewQueuePage } from "../features/review/review-queue-page.tsx";
 import { ReviewWorkItemPage } from "../features/review/review-work-item-page.tsx";
 import { bootstrapReviewerToken } from "../features/review/session-state.ts";
@@ -24,6 +26,8 @@ const router = createBrowserRouter(
       children: [
         { index: true, element: <ReviewQueuePage /> },
         { path: "review/:caseHash", element: <ReviewWorkItemPage /> },
+        { path: "doctrine", element: <DoctrineQueuePage /> },
+        { path: "doctrine/:doctrineId", element: <DoctrineWorkItemPage /> },
       ],
     },
   ],
@@ -49,9 +53,13 @@ function ResearchConsoleShell() {
           <div><strong>PA Agent Lab</strong><span>Research Console</span></div>
         </div>
         <nav aria-label="Research console modules">
-          <NavLink to="/" end>
+          <NavLink to="/" end aria-label="Review" title="Review">
             <ListChecks aria-hidden="true" />
             <span>Review</span>
+          </NavLink>
+          <NavLink to="/doctrine" aria-label="Doctrine" title="Doctrine">
+            <BookOpenCheck aria-hidden="true" />
+            <span>Doctrine</span>
           </NavLink>
         </nav>
         <div className="sidebar-foot">

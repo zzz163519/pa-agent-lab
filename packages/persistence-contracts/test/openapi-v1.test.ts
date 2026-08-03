@@ -6,6 +6,7 @@ import { describe, it } from "node:test";
 
 import {
   buildCaseStoreTransportDocumentsV1,
+  buildDoctrineApprovalTransportDocumentsV1,
   buildReplayBoundaryTransportDocumentsV1,
   buildReviewWorkflowTransportDocumentsV1,
   buildTransportSchemaDocumentsV1,
@@ -14,6 +15,7 @@ import {
   CASE_API_BODY_LIMIT_BYTES,
   CASE_API_ROUTE_MANIFEST_V1,
 } from "../src/case-store-transport-v1.ts";
+import { DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1 } from "../src/doctrine-approval-transport-v1.ts";
 import { REVIEW_WORKFLOW_ROUTE_MANIFEST_V1 } from "../src/review-workflow-transport-v1.ts";
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -292,6 +294,109 @@ describe("generated Phase 1 transport schemas V1", () => {
       };
       assert.equal(schema.additionalProperties, false, component);
     }
+    for (const reference of collectReferences(document)) {
+      assert.match(reference, /^#\/components\/schemas\/[A-Za-z0-9_]+$/);
+      const name = reference.slice("#/components/schemas/".length);
+      assert.ok(document.components.schemas[name], `unresolved schema: ${name}`);
+    }
+  });
+
+  it("publishes Phase 3B minimal Doctrine approval schemas and dual-principal routes", async () => {
+    const generated = buildDoctrineApprovalTransportDocumentsV1(packageRoot);
+    const [schemaBundle, openapi] = await Promise.all([
+      readJson(resolve(packageRoot, "schemas/phase3b-doctrine-approval-v1.schema.json")),
+      readJson(resolve(packageRoot, "openapi/phase3b-doctrine-approval-v1.openapi.json")),
+    ]);
+    assert.deepEqual(schemaBundle, generated.schemaBundle);
+    assert.deepEqual(openapi, generated.openapi);
+    const document = openapi as {
+      readonly paths: Readonly<Record<string, unknown>>;
+      readonly components: {
+        readonly schemas: Readonly<Record<string, unknown>>;
+        readonly securitySchemes: Readonly<Record<string, unknown>>;
+      };
+      readonly "x-pa-phase3b-record-kinds": Readonly<Record<string, string>>;
+      readonly "x-pa-runtime-authority": string;
+    };
+    assert.deepEqual(
+      Object.keys(document.paths),
+      [...new Set(DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1.map((route) => route.openapiPath))],
+    );
+    assert.deepEqual(document["x-pa-phase3b-record-kinds"], {
+      doctrine_proposal: "DoctrineProposalBundleV1",
+      doctrine_approval: "DoctrineApprovalV1",
+      doctrine_retirement: "DoctrineRetirementV1",
+    });
+    assert.equal(
+      document["x-pa-runtime-authority"],
+      "local_public_source_approval_no_rag_model_replay_or_trading_authority",
+    );
+    assert.ok(document.components.securitySchemes.operatorToken);
+    assert.ok(document.components.securitySchemes.reviewerToken);
+    for (const component of [
+      "DoctrineProposalBundleV1",
+      "DoctrineApprovalV1",
+      "DoctrineRetirementV1",
+      "DoctrineWorkQueueV1",
+      "DoctrineWorkItemV1",
+      "ApproveDoctrineCommandV1",
+      "RetireDoctrineCommandV1",
+      "DoctrineApprovalMutationResultV1",
+    ]) {
+      const schema = document.components.schemas[component] as {
+        readonly additionalProperties?: unknown;
+      };
+      assert.equal(schema.additionalProperties, false, component);
+    }
+    const sourceSchema = document.components.schemas.SourceV1 as {
+      readonly properties: {
+        readonly urlOrLocalRef: { readonly pattern?: string; readonly minLength?: number };
+        readonly private: { readonly const?: boolean };
+        readonly sourceType: { readonly enum?: readonly string[] };
+      };
+    };
+    assert.equal(sourceSchema.properties.urlOrLocalRef.pattern, "^https://[^\\s]+$");
+    assert.equal(sourceSchema.properties.urlOrLocalRef.minLength, 1);
+    assert.equal(sourceSchema.properties.private.const, false);
+    assert.deepEqual(sourceSchema.properties.sourceType.enum, [
+      "brooks_website",
+      "official_youtube",
+      "reviewed_transcript",
+    ]);
+    const unitSchema = document.components.schemas.DoctrineUnitV1 as {
+      readonly properties: {
+        readonly status: { readonly const?: string };
+        readonly appliesWhen: {
+          readonly type?: string;
+          readonly minItems?: number;
+          readonly maxItems?: number;
+          readonly items: { readonly type?: string; readonly minLength?: number; readonly pattern?: string };
+        };
+      };
+    };
+    assert.equal(unitSchema.properties.status.const, "draft");
+    assert.deepEqual(unitSchema.properties.appliesWhen, {
+      type: "array",
+      items: { type: "string", minLength: 1, pattern: ".*\\S.*" },
+      maxItems: 12,
+      minItems: 1,
+    });
+    const proposalSchema = document.components.schemas.DoctrineProposalBundleV1 as {
+      readonly properties: {
+        readonly sourceLocator: { readonly minLength?: number; readonly maxLength?: number; readonly pattern?: string };
+      };
+    };
+    assert.equal(proposalSchema.properties.sourceLocator.minLength, 1);
+    assert.equal(proposalSchema.properties.sourceLocator.maxLength, 600);
+    assert.equal(proposalSchema.properties.sourceLocator.pattern, ".*\\S.*");
+    const retirementSchema = document.components.schemas.DoctrineRetirementV1 as {
+      readonly properties: {
+        readonly reason: { readonly minLength?: number; readonly maxLength?: number; readonly pattern?: string };
+      };
+    };
+    assert.equal(retirementSchema.properties.reason.minLength, 1);
+    assert.equal(retirementSchema.properties.reason.maxLength, 400);
+    assert.equal(retirementSchema.properties.reason.pattern, ".*\\S.*");
     for (const reference of collectReferences(document)) {
       assert.match(reference, /^#\/components\/schemas\/[A-Za-z0-9_]+$/);
       const name = reference.slice("#/components/schemas/".length);

@@ -21,18 +21,29 @@ import {
   type BrooksPolicyCaseV1,
   type CalvinReviewV1,
   type ContractSha256,
+  type DoctrineApproverPrincipalV1,
+  type DoctrineProposalBundleV1,
 } from "@pa-agent-lab/contracts";
 import {
   CASE_API_BODY_LIMIT_BYTES,
   CASE_API_ROUTE_MANIFEST_V1,
+  DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1,
   REVIEW_WORKFLOW_ROUTE_MANIFEST_V1,
   PersistenceContractError,
+  assertApproveDoctrineCommand,
+  assertRetireDoctrineCommand,
   createCaseApiError,
   createCaseApiMutationResult,
+  createDoctrineApprovalMutationResult,
   createReviewWorkflowMutationResult,
   parseStrictJsonText,
   type CaseApiErrorCodeV1,
   type CaseAuditViewV1,
+  type ApproveDoctrineCommandV1,
+  type DoctrineApprovalMutationResultV1,
+  type DoctrineWorkItemV1,
+  type DoctrineWorkQueueV1,
+  type RetireDoctrineCommandV1,
   type RevealDecisionCommandV1,
   type ReviewWorkItemDetailV1,
   type SubmitFinalReviewCommandV1,
@@ -44,6 +55,8 @@ const CASE_STORE_SCHEMA_ID =
   "https://pa-agent-lab.local/schemas/phase2-case-store-v1";
 const REVIEW_WORKFLOW_SCHEMA_ID =
   "https://pa-agent-lab.local/schemas/phase3a-review-workflow-v1";
+const DOCTRINE_APPROVAL_SCHEMA_ID =
+  "https://pa-agent-lab.local/schemas/phase3b-doctrine-approval-v1";
 const SHA256_PATTERN = "^sha256:[0-9a-f]{64}$";
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 const schemaBundle = JSON.parse(
@@ -68,6 +81,17 @@ const reviewSchemaBundle = JSON.parse(
 ) as Record<string, unknown>;
 const fastifyReviewSchemaBundle = structuredClone(reviewSchemaBundle);
 delete fastifyReviewSchemaBundle.$schema;
+const doctrineSchemaBundle = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../persistence-contracts/schemas/phase3b-doctrine-approval-v1.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+) as Record<string, unknown>;
+const fastifyDoctrineSchemaBundle = structuredClone(doctrineSchemaBundle);
+delete fastifyDoctrineSchemaBundle.$schema;
 
 export interface OperatorPrincipalV1 {
   readonly principalId: "local:phase2-operator";
@@ -87,6 +111,7 @@ export interface CaseApiOptionsV1 {
   readonly localToken: string;
   readonly reviewerToken: string;
   readonly authorizedSyntheticBundleHashes: readonly ContractSha256[];
+  readonly authorizedDoctrineProposalHashes?: readonly ContractSha256[];
   readonly allowedHosts: readonly string[];
   readonly allowedOrigins: readonly string[];
   readonly consoleRoot?: string;
@@ -125,6 +150,7 @@ export async function createCaseApiV1(
 
   app.addSchema(fastifySchemaBundle);
   app.addSchema(fastifyReviewSchemaBundle);
+  app.addSchema(fastifyDoctrineSchemaBundle);
   await app.register(fastifyHelmet, {
     global: true,
     contentSecurityPolicy: {
@@ -175,13 +201,20 @@ export async function createCaseApiV1(
 
   app.addHook("onRequest", async (request) => {
     enforceLocalOrigin(request, options.allowedHosts, options.allowedOrigins);
+    const doctrineRoute = DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1.find(
+      (entry) =>
+        entry.path === request.routeOptions.url && entry.method === request.method,
+    );
     const workflowRoute = REVIEW_WORKFLOW_ROUTE_MANIFEST_V1.find(
       (entry) => entry.path === request.routeOptions.url,
     );
     const caseRoute = CASE_API_ROUTE_MANIFEST_V1.find(
       (entry) => entry.path === request.routeOptions.url,
     );
-    const authentication = workflowRoute?.authentication ?? caseRoute?.authentication;
+    const authentication =
+      doctrineRoute?.authentication ??
+      workflowRoute?.authentication ??
+      caseRoute?.authentication;
     if (authentication === undefined || authentication === "none") return;
     const authorization = request.headers.authorization;
     const prefix = "Bearer ";
@@ -221,6 +254,7 @@ export async function createCaseApiV1(
   app.addHook("onSend", async (request, reply, payload) => {
     if (
       request.routeOptions.url?.startsWith("/v1/reviewer/") === true ||
+      request.routeOptions.url?.startsWith("/v1/doctrine/") === true ||
       principals.get(request)?.principalId === "local:calvin-reviewer"
     ) {
       void reply.header("Cache-Control", "no-store");
@@ -423,6 +457,135 @@ export async function createCaseApiV1(
       );
     },
   );
+  app.post<{ Body: DoctrineProposalBundleV1 }>(
+    "/v1/doctrine/proposals",
+    {
+      schema: {
+        body: doctrineSchemaRef("DoctrineProposalBundleV1"),
+        response: doctrineMutationResponseSchemas(),
+      },
+    },
+    async (request, reply) => {
+      requirePrincipal(principals, request);
+      if (
+        !(options.authorizedDoctrineProposalHashes ?? []).includes(
+          request.body.proposalHash,
+        )
+      ) {
+        throw new CaseApiHttpError(
+          403,
+          "FORBIDDEN",
+          "Doctrine proposal hash is not authorized for this deployment.",
+        );
+      }
+      const result = await options.store.appendDoctrineProposal(request.body);
+      const workItem = await requireDoctrineWorkItem(
+        options.store,
+        request.body.doctrineUnit.doctrineId,
+      );
+      return sendDoctrineMutation(
+        reply,
+        request.id,
+        result,
+        "doctrine_proposal",
+        workItem,
+      );
+    },
+  );
+  app.get<{ Reply: DoctrineWorkQueueV1 }>(
+    "/v1/doctrine/proposals",
+    { schema: { response: { 200: doctrineSchemaRef("DoctrineWorkQueueV1") } } },
+    async (request, reply) => {
+      requirePrincipal(principals, request);
+      return reply.send(await options.store.listDoctrineWorkItems());
+    },
+  );
+  app.get<{
+    Params: { readonly doctrineId: string };
+    Reply: DoctrineWorkItemV1;
+  }>(
+    "/v1/doctrine/proposals/:doctrineId",
+    {
+      schema: {
+        params: doctrineIdParamsSchema(),
+        response: { 200: doctrineSchemaRef("DoctrineWorkItemV1") },
+      },
+    },
+    async (request, reply) => {
+      requirePrincipal(principals, request);
+      const workItem = await options.store.getDoctrineWorkItem(
+        request.params.doctrineId,
+      );
+      if (workItem === null) throw notFound("Doctrine proposal");
+      return reply.send(workItem);
+    },
+  );
+  app.post<{
+    Params: { readonly doctrineId: string };
+    Body: ApproveDoctrineCommandV1;
+  }>(
+    "/v1/doctrine/proposals/:doctrineId/approve",
+    {
+      schema: {
+        params: doctrineIdParamsSchema(),
+        body: doctrineSchemaRef("ApproveDoctrineCommandV1"),
+        response: doctrineMutationResponseSchemas(),
+      },
+    },
+    async (request, reply) => {
+      assertApproveDoctrineCommand(request.body);
+      const principal = requireDoctrineApproverPrincipal(principals, request);
+      const result = await options.store.approveDoctrine(
+        request.params.doctrineId,
+        request.body,
+        principal,
+      );
+      const workItem = await requireDoctrineWorkItem(
+        options.store,
+        request.params.doctrineId,
+      );
+      return sendDoctrineMutation(
+        reply,
+        request.id,
+        result,
+        "doctrine_approval",
+        workItem,
+      );
+    },
+  );
+  app.post<{
+    Params: { readonly doctrineId: string };
+    Body: RetireDoctrineCommandV1;
+  }>(
+    "/v1/doctrine/proposals/:doctrineId/retire",
+    {
+      schema: {
+        params: doctrineIdParamsSchema(),
+        body: doctrineSchemaRef("RetireDoctrineCommandV1"),
+        response: doctrineMutationResponseSchemas(),
+      },
+    },
+    async (request, reply) => {
+      assertRetireDoctrineCommand(request.body);
+      const principal = requireDoctrineApproverPrincipal(principals, request);
+      const result = await options.store.retireDoctrine(
+        request.params.doctrineId,
+        request.body,
+        principal,
+      );
+      const workItem = await requireDoctrineWorkItem(
+        options.store,
+        request.params.doctrineId,
+      );
+      return sendDoctrineMutation(
+        reply,
+        request.id,
+        result,
+        "doctrine_retirement",
+        workItem,
+      );
+    },
+  );
   app.get("/healthz", async () => ({ status: "ok" as const }));
   app.get("/readyz", async (_request, reply) => {
     if (!(await options.store.checkReadiness())) {
@@ -466,6 +629,13 @@ function validateOptions(options: CaseApiOptionsV1): void {
   ) {
     throw new Error("Phase 2 API requires exact authorized synthetic bundle hashes");
   }
+  const doctrineHashes = options.authorizedDoctrineProposalHashes ?? [];
+  if (
+    doctrineHashes.some((hash) => !/^sha256:[0-9a-f]{64}$/.test(hash)) ||
+    new Set(doctrineHashes).size !== doctrineHashes.length
+  ) {
+    throw new Error("Phase 3B API requires unique exact Doctrine proposal hashes");
+  }
 }
 
 function enforceLocalOrigin(
@@ -506,6 +676,22 @@ function requireReviewerPrincipal(
   return principal;
 }
 
+function requireDoctrineApproverPrincipal(
+  principals: WeakMap<object, RequestPrincipalV1>,
+  request: FastifyRequest,
+): DoctrineApproverPrincipalV1 {
+  return requirePrincipal(principals, request).principalId;
+}
+
+async function requireDoctrineWorkItem(
+  store: CaseStoreV1,
+  doctrineId: string,
+): Promise<Readonly<DoctrineWorkItemV1>> {
+  const workItem = await store.getDoctrineWorkItem(doctrineId);
+  if (workItem === null) throw notFound("Doctrine proposal");
+  return workItem;
+}
+
 async function requireReviewWorkItem(
   store: CaseStoreV1,
   caseHash: ContractSha256,
@@ -526,6 +712,15 @@ function sameSecret(actual: string, expected: string): boolean {
 
 function schemaRef(component: string): { readonly $ref: string } {
   return { $ref: `${CASE_STORE_SCHEMA_ID}#/$defs/${component}` };
+}
+
+function doctrineSchemaRef(component: string): { readonly $ref: string } {
+  return { $ref: `${DOCTRINE_APPROVAL_SCHEMA_ID}#/$defs/${component}` };
+}
+
+function doctrineMutationResponseSchemas(): Record<number, unknown> {
+  const result = doctrineSchemaRef("DoctrineApprovalMutationResultV1");
+  return { 200: result, 201: result };
 }
 
 function reviewSchemaRef(component: string): { readonly $ref: string } {
@@ -584,6 +779,17 @@ function assertReviewWorkItemResponseBoundary(
   }
 }
 
+function doctrineIdParamsSchema(): Record<string, unknown> {
+  return {
+    type: "object",
+    additionalProperties: false,
+    required: ["doctrineId"],
+    properties: {
+      doctrineId: { type: "string", minLength: 1, maxLength: 200 },
+    },
+  };
+}
+
 function hashParamsSchema(name: string): Record<string, unknown> {
   return {
     type: "object",
@@ -609,6 +815,27 @@ function sendMutation(
     resourceHash,
   });
   return reply.code(status === "inserted" ? 201 : 200).send(body);
+}
+
+function sendDoctrineMutation(
+  reply: FastifyReply,
+  requestId: string,
+  result: {
+    readonly status: "inserted" | "existing";
+    readonly resourceHash: ContractSha256;
+  },
+  resourceKind: DoctrineApprovalMutationResultV1["resourceKind"],
+  workItem: DoctrineWorkItemV1,
+) {
+  return reply.code(result.status === "inserted" ? 201 : 200).send(
+    createDoctrineApprovalMutationResult({
+      requestId,
+      status: result.status,
+      resourceKind,
+      resourceHash: result.resourceHash,
+      workItem,
+    }),
+  );
 }
 
 function sendReviewMutation(

@@ -17,6 +17,7 @@ import {
 } from "@pa-agent-lab/case-store/migration-runner-v1";
 import { createCaseApiV1 } from "@pa-agent-lab/case-api";
 import { makePhase3ReviewWorkflowFixture } from "../../../persistence-contracts/test/fixtures/phase3a-review-workflow-v1.fixture.ts";
+import { makePhase3bDoctrineApprovalFixture } from "../../../persistence-contracts/test/fixtures/phase3b-doctrine-approval-v1.fixture.ts";
 
 const pgliteModuleName = ["@electric-sql", "pglite"].join("/");
 const { PGlite } = (await import(pgliteModuleName)) as unknown as {
@@ -111,6 +112,34 @@ test("completes the backend-enforced blind review without pre-reveal decision le
   }
 });
 
+test("approves and retires one exact source-mapped Doctrine proposal", async ({ page }, testInfo) => {
+  const harness = await createHarness();
+  try {
+    await page.goto(`${harness.url}/console/#token=${reviewerToken}`);
+    await page.getByRole("link", { name: "Doctrine" }).click();
+    await expect(page.getByRole("heading", { name: "Doctrine approval queue" })).toBeVisible();
+    await expect(page.getByText(harness.doctrine.proposal.doctrineUnit.concept)).toBeVisible();
+    await page.getByRole("link", { name: /Open breakout_context/ }).click();
+    await expect(page.getByRole("heading", { name: harness.doctrine.proposal.doctrineUnit.concept })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Open source" })).toHaveAttribute("href", harness.doctrine.proposal.source.urlOrLocalRef);
+    await page.getByRole("button", { name: "Approve" }).click();
+    await expect(page.getByText("approved", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "local:calvin-reviewer" })).toBeVisible();
+    await page.getByLabel("Reason").fill("Superseded by corrected wording.");
+    await page.getByRole("button", { name: "Retire" }).click();
+    await expect(page.getByText("retired", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Superseded by corrected wording." })).toBeVisible();
+    const dimensions = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+    }));
+    expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 1);
+    await page.screenshot({ path: testInfo.outputPath("phase3b-doctrine-retired.png"), fullPage: true });
+  } finally {
+    await harness.close();
+  }
+});
+
 async function createHarness() {
   const db = new PGlite();
   await applyContentHashedMigrations(db, migrations);
@@ -133,10 +162,12 @@ async function createHarness() {
   };
   const store = createCaseStore(database);
   const fixture = makePhase3ReviewWorkflowFixture();
+  const doctrine = makePhase3bDoctrineApprovalFixture();
   const artifactRoot = await mkdtemp(resolve(tmpdir(), "pa-phase3a-playwright-"));
   await persistAnonymousChartArtifacts(fixture.charts, artifactRoot);
   await store.appendSyntheticCaseBundle(fixture.caseBundle);
   await store.appendBrooksDecision(fixture.decision);
+  await store.appendDoctrineProposal(doctrine.proposal);
   const port = await availablePort();
   const boundApp = await createCaseApiV1({
     store,
@@ -145,6 +176,7 @@ async function createHarness() {
     localToken: operatorToken,
     reviewerToken,
     authorizedSyntheticBundleHashes: [fixture.caseBundle.bundleHash],
+    authorizedDoctrineProposalHashes: [doctrine.proposal.proposalHash],
     allowedHosts: ["127.0.0.1", "localhost"],
     allowedOrigins: [`http://127.0.0.1:${port}`],
   });
@@ -152,6 +184,7 @@ async function createHarness() {
   return {
     url: boundUrl,
     fixture,
+    doctrine,
     close: async () => {
       await boundApp.close();
       await db.close();

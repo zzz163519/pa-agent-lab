@@ -159,11 +159,12 @@ Implemented infrastructure under ADR-0015:
 - database: `pgvector/pgvector:0.8.6-pg18-trixie` pinned to the accepted Linux amd64 manifest, with vector extension creation deferred to Phase 4;
 - CLI: Node `parseArgs` and `fetch`, with no CLI framework dependency.
 
-Implemented Research Console infrastructure under ADR-0016:
+Implemented Research Console infrastructure under ADR-0016 and ADR-0017:
 
 - UI: React 19, Vite 8, React Router 8, TanStack Query 5, Lucide, and strict TypeScript;
 - serving: Fastify static assets and Helmet CSP on the same loopback origin;
-- workflow: backend-derived blind review state over immutable assessment, reveal receipt, review, and binding records;
+- review workflow: backend-derived blind review state over immutable assessment, reveal receipt, review, and binding records;
+- Doctrine workflow: one exact proposal, one explicit operator-or-reviewer approval, optional retirement, and an approved-only projection;
 - browser verification: Vitest/Testing Library and Chromium Playwright on desktop/mobile.
 
 Implementation candidates that do not yet authorize dependencies are:
@@ -193,8 +194,8 @@ Every evaluated decision should persist at least:
 
 The following remain unresolved:
 
-- exact public source inventory, media/transcript identity, and permitted local excerpt policy;
-- Doctrine source-review interaction and any separately authorized real-Case ingestion adapter;
+- exact public source inventory, media/transcript identity, and permitted local excerpt policy beyond the frozen ADR-0017 URL snapshot;
+- any separately authorized real-Case ingestion adapter;
 - any future public-deployment TLS/OIDC/session/CSRF/authorization and security-log contract;
 - dataset partitions, retrieval permissions, and genuinely untouched evaluation cases;
 - exact semantic, consistency, and prefix-invariance acceptance thresholds;

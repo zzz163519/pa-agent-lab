@@ -14,7 +14,8 @@
     "phase2:cli": "node packages/case-cli/src/main.ts",
     "build:console": "pnpm --filter @pa-agent-lab/research-console build",
     "test:browser": "pnpm --filter @pa-agent-lab/research-console test:browser",
-    "phase3a:server": "pnpm build:console && PA_CONSOLE_ROOT=packages/research-console/dist node packages/case-api/src/server.ts"
+    "phase3a:server": "pnpm build:console && PA_CONSOLE_ROOT=packages/research-console/dist node packages/case-api/src/server.ts",
+    "phase3b:server": "pnpm build:console && PA_CONSOLE_ROOT=packages/research-console/dist node packages/case-api/src/server.ts"
   },
   "devDependencies": {
     "@types/node": "24.13.3",

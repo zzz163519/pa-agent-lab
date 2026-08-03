@@ -11,7 +11,7 @@ PA Agent Lab 是一个独立的 Price Action agent 研究项目。
 
 ## Current Status
 
-治理仓库和架构记录已经建立。Phase 1 已实现模型调用调度、候选对称性、冻结结果缓存、因果 Case、匿名 120/40 输入、确定性 PNG 图表 artifact、严格持久化 JSON/OpenAPI、PostgreSQL 不可变唯一约束、外发隐私、ModelRun/ProviderAttempt/Audit、provider-neutral replay boundary，以及 BrooksDecision、简化 DoctrineUnit、整条决策级 CalvinReview 和确定性 Conflict 合同。ADR-0015 Phase 2 已实现 synthetic-only Case Store/API/CLI。ADR-0016 Phase 3A 已实现 backend-enforced 两阶段盲审、不可变 assessment/reveal/binding、operator/reviewer 权限隔离和同源 React Research Console。真实数据 ingestion、Doctrine approval、市场发现、实际 RAG、模型 provider、训练、replay engine 和执行 mechanics 仍未实现。
+治理仓库和架构记录已经建立。Phase 1 已实现模型调用调度、候选对称性、冻结结果缓存、因果 Case、匿名 120/40 输入、确定性 PNG 图表 artifact、严格持久化 JSON/OpenAPI、PostgreSQL 不可变唯一约束、外发隐私、ModelRun/ProviderAttempt/Audit、provider-neutral replay boundary，以及 BrooksDecision、简化 DoctrineUnit、整条决策级 CalvinReview 和确定性 Conflict 合同。ADR-0015 Phase 2 已实现 synthetic-only Case Store/API/CLI。ADR-0016 Phase 3A 已实现 backend-enforced 两阶段盲审、不可变 assessment/reveal/binding、operator/reviewer 权限隔离和同源 React Research Console。ADR-0017 Phase 3B 已实现完整公共 URL snapshot 与最小 Doctrine proposal/approve/retire 路径。真实数据 ingestion、市场发现、实际 RAG、模型 provider、训练、replay engine 和执行 mechanics 仍未实现。
 
 本项目不具备 Paper、Live、交易所提交、下单或真实资金权限。
 
@@ -37,6 +37,7 @@ PA Agent Lab 是一个独立的 Price Action agent 研究项目。
 - [ADR-0014: Provider-neutral replay boundary](docs/decisions/ADR-0014-PROVIDER-NEUTRAL-REPLAY-BOUNDARY.md)
 - [ADR-0015: Synthetic Case Store and local REST API](docs/decisions/ADR-0015-SYNTHETIC-CASE-STORE-AND-LOCAL-REST-API.md)
 - [ADR-0016: Synthetic blind review and Research Console](docs/decisions/ADR-0016-SYNTHETIC-BLIND-REVIEW-AND-RESEARCH-CONSOLE.md)
+- [ADR-0017: Minimal Doctrine source approval](docs/decisions/ADR-0017-MINIMAL-DOCTRINE-SOURCE-APPROVAL.md)
 - [Phase 1 语义合同 V1](docs/contracts/PHASE_1_SEMANTIC_CONTRACTS_V1.md)
 - [Phase 1 输入与 ModelRun 审计 V1](docs/contracts/POLICY_INPUT_AND_MODEL_RUN_AUDIT_V1.md)
 - [匿名图表 Artifact V1](docs/contracts/ANONYMOUS_CHART_ARTIFACT_V1.md)
@@ -44,10 +45,13 @@ PA Agent Lab 是一个独立的 Price Action agent 研究项目。
 - [Replay Boundary V1](docs/contracts/REPLAY_BOUNDARY_V1.md)
 - [Phase 2 Synthetic Case Store and local API V1](docs/contracts/PHASE2_CASE_STORE_AND_LOCAL_API_V1.md)
 - [Phase 3A Synthetic Blind Review Workflow V1](docs/contracts/PHASE3A_SYNTHETIC_BLIND_REVIEW_WORKFLOW_V1.md)
+- [Phase 3B Minimal Doctrine Approval V1](docs/contracts/PHASE3B_MINIMAL_DOCTRINE_APPROVAL_V1.md)
 - [图表 Skill/MCP/开源复用扫描](docs/research/CHART_RENDERER_SKILL_MCP_REUSE_SCAN_V1.md)
 - [持久化合同复用扫描](docs/research/PERSISTENCE_CONTRACT_REUSE_SCAN_V1.md)
 - [Phase 2 Case Store/API 复用扫描](docs/research/PHASE2_CASE_STORE_API_REUSE_SCAN_V1.md)
 - [Phase 3A Research Console 复用扫描](docs/research/PHASE3A_RESEARCH_CONSOLE_REUSE_SCAN_V1.md)
+- [Phase 3B Doctrine Approval 复用扫描](docs/research/PHASE3B_DOCTRINE_APPROVAL_REUSE_SCAN_V1.md)
+- [Brooks 公共 URL Inventory V1](docs/research/BROOKS_PUBLIC_URL_INVENTORY_V1.json)
 - [第三方依赖声明](THIRD_PARTY_NOTICES.md)
 - [模型调用调度合同 V1](docs/contracts/MODEL_CALL_SCHEDULING_V1.md)
 - [V6 只读复用清单](docs/plans/V6_READ_ONLY_REUSE_INVENTORY_V1.md)
@@ -65,3 +69,5 @@ pnpm typecheck
 pnpm build:console
 pnpm test:browser
 ```
+
+`pnpm phase3b:server` builds and serves the same loopback Research Console with both Review and Doctrine modules. Doctrine proposal insertion requires `PA_AUTHORIZED_DOCTRINE_PROPOSAL_HASHES`; use `pnpm phase2:cli -- seed-doctrine-pilot` with the existing operator token to insert the nine draft pilots. Seeding does not approve them. `approve-doctrine`, `retire-doctrine`, and the Console perform the explicit lifecycle commands.
