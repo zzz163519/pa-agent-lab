@@ -8,7 +8,10 @@ GRANT SELECT, INSERT ON
   pa_chart_artifact_metadata,
   pa_case_policy_inputs,
   pa_brooks_decisions,
-  pa_calvin_reviews
+  pa_calvin_reviews,
+  pa_calvin_independent_assessments,
+  pa_decision_reveal_receipts,
+  pa_calvin_review_workflow_bindings
 TO pa_app;
 GRANT SELECT ON
   pa_model_runs,
@@ -17,4 +20,5 @@ GRANT SELECT ON
 TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_is_sha256(text) TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_required_text_equal(text, text) TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_canonical_json(jsonb) TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_reject_immutable_mutation() TO pa_app;

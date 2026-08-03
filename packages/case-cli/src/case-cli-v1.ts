@@ -44,6 +44,46 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
     const request = createRequest(apiUrl, token, options.fetchImpl ?? fetch);
     const fetchImpl = options.fetchImpl ?? fetch;
 
+    if (command === "seed-review-work-item") {
+      const artifactRoot =
+        parsed.values["artifact-root"] ?? options.env.PA_CHART_ARTIFACT_ROOT;
+      if (artifactRoot === undefined || artifactRoot.trim().length === 0) {
+        throw new Error(
+          "seed-review-work-item requires --artifact-root or PA_CHART_ARTIFACT_ROOT",
+        );
+      }
+      const fixture = createPhase2SyntheticFixtureV1();
+      await persistAnonymousChartArtifacts(fixture.charts, artifactRoot);
+      const caseBundleStatus = mutationStatus(
+        await request("POST", "/v1/synthetic-case-bundles", fixture.caseBundle),
+      );
+      const brooksDecisionStatus = mutationStatus(
+        await request("POST", "/v1/brooks-decisions", fixture.decision),
+      );
+      options.stdout(
+        JSON.stringify({
+          caseHash: fixture.caseBundle.policyCase.caseHash,
+          decisionHash: fixture.decision.decisionHash,
+          reviewState: "awaiting_assessment",
+          mutations: {
+            caseBundle: caseBundleStatus,
+            brooksDecision: brooksDecisionStatus,
+          },
+          chartArtifacts: {
+            context: {
+              artifactId: fixture.caseBundle.chartMetadata.context.artifactId,
+              contentHash: fixture.caseBundle.chartMetadata.context.contentHash,
+            },
+            detail: {
+              artifactId: fixture.caseBundle.chartMetadata.detail.artifactId,
+              contentHash: fixture.caseBundle.chartMetadata.detail.contentHash,
+            },
+          },
+        }),
+      );
+      return 0;
+    }
+
     if (command === "seed-synthetic") {
       const artifactRoot =
         parsed.values["artifact-root"] ?? options.env.PA_CHART_ARTIFACT_ROOT;
@@ -190,7 +230,7 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
     }
 
     throw new Error(
-      "command must be seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
+      "command must be seed-review-work-item, seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
     );
   } catch (error) {
     options.stderr(error instanceof Error ? error.message : String(error));

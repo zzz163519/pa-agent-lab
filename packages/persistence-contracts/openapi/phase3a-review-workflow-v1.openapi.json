@@ -1,0 +1,2553 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "PA Agent Lab Phase 3A Blind Review Workflow V1",
+    "version": "1.0.0"
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "paths": {
+    "/v1/reviewer/work-items": {
+      "get": {
+        "operationId": "listReviewerWorkItems",
+        "security": [
+          {
+            "reviewerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Blind review queue",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewWorkQueueV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/reviewer/work-items/{caseHash}": {
+      "get": {
+        "operationId": "getReviewerWorkItem",
+        "security": [
+          {
+            "reviewerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "caseHash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ContractSha256"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Derived blind review work item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewWorkItemDetailV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/reviewer/independent-assessments": {
+      "post": {
+        "operationId": "submitIndependentAssessment",
+        "security": [
+          {
+            "reviewerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitIndependentAssessmentCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact immutable workflow record already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewWorkflowMutationResultV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Immutable workflow record inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewWorkflowMutationResultV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/reviewer/work-items/{caseHash}/reveal": {
+      "post": {
+        "operationId": "revealBrooksDecision",
+        "security": [
+          {
+            "reviewerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "caseHash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ContractSha256"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevealDecisionCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact immutable workflow record already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewWorkflowMutationResultV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Immutable workflow record inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewWorkflowMutationResultV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/reviewer/final-reviews": {
+      "post": {
+        "operationId": "submitFinalReview",
+        "security": [
+          {
+            "reviewerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitFinalReviewCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact immutable workflow record already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewWorkflowMutationResultV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Immutable workflow record inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewWorkflowMutationResultV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 3A blind-review contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CalvinIndependentAssessmentV1": {
+        "type": "object",
+        "properties": {
+          "assessmentId": {
+            "type": "string"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "caseId": {
+            "type": "string"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "lastVisibleBarId": {
+            "type": "string"
+          },
+          "barDurationSeconds": {
+            "type": "integer",
+            "const": 300,
+            "minimum": 0
+          },
+          "brooksDecisionId": {
+            "type": "string"
+          },
+          "brooksDecisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "independentVerdict": {
+            "$ref": "#/components/schemas/BrooksVerdictV1"
+          },
+          "blindSummary": {
+            "type": "string"
+          },
+          "outcomeBlind": {
+            "type": "boolean",
+            "const": true
+          },
+          "brooksDecisionContentSeen": {
+            "type": "boolean",
+            "const": false
+          },
+          "reviewerPrincipal": {
+            "$ref": "#/components/schemas/CalvinReviewerPrincipalV1"
+          },
+          "protocolVersion": {
+            "$ref": "#/components/schemas/CalvinReviewWorkflowProtocolVersionV1"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "calvin-independent-assessment.v1"
+          },
+          "assessmentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "assessmentHash",
+          "assessmentId",
+          "barDurationSeconds",
+          "blindSummary",
+          "brooksDecisionContentSeen",
+          "brooksDecisionHash",
+          "brooksDecisionId",
+          "caseHash",
+          "caseId",
+          "independentVerdict",
+          "inputHash",
+          "lastVisibleBarId",
+          "outcomeBlind",
+          "protocolVersion",
+          "reviewerPrincipal",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "ContractSha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "BrooksVerdictV1": {
+        "type": "string",
+        "enum": [
+          "long",
+          "short",
+          "no_trade",
+          "uncertain"
+        ]
+      },
+      "CalvinReviewerPrincipalV1": {
+        "type": "string",
+        "const": "local:calvin-reviewer"
+      },
+      "CalvinReviewWorkflowProtocolVersionV1": {
+        "type": "string",
+        "const": "calvin-review-workflow.v1"
+      },
+      "DecisionRevealReceiptV1": {
+        "type": "object",
+        "properties": {
+          "receiptId": {
+            "type": "string"
+          },
+          "assessmentId": {
+            "type": "string"
+          },
+          "assessmentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "brooksDecisionId": {
+            "type": "string"
+          },
+          "brooksDecisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "reviewerPrincipal": {
+            "$ref": "#/components/schemas/CalvinReviewerPrincipalV1"
+          },
+          "protocolVersion": {
+            "$ref": "#/components/schemas/CalvinReviewWorkflowProtocolVersionV1"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "decision-reveal-receipt.v1"
+          },
+          "receiptHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "assessmentHash",
+          "assessmentId",
+          "brooksDecisionHash",
+          "brooksDecisionId",
+          "protocolVersion",
+          "receiptHash",
+          "receiptId",
+          "reviewerPrincipal",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "CalvinReviewWorkflowBindingV1": {
+        "type": "object",
+        "properties": {
+          "bindingId": {
+            "type": "string"
+          },
+          "assessmentId": {
+            "type": "string"
+          },
+          "assessmentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "revealReceiptId": {
+            "type": "string"
+          },
+          "revealReceiptHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "brooksDecisionId": {
+            "type": "string"
+          },
+          "brooksDecisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "calvinReviewId": {
+            "type": "string"
+          },
+          "calvinReviewHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "reviewerPrincipal": {
+            "$ref": "#/components/schemas/CalvinReviewerPrincipalV1"
+          },
+          "protocolVersion": {
+            "$ref": "#/components/schemas/CalvinReviewWorkflowProtocolVersionV1"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "calvin-review-workflow-binding.v1"
+          },
+          "bindingHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "assessmentHash",
+          "assessmentId",
+          "bindingHash",
+          "bindingId",
+          "brooksDecisionHash",
+          "brooksDecisionId",
+          "calvinReviewHash",
+          "calvinReviewId",
+          "protocolVersion",
+          "revealReceiptHash",
+          "revealReceiptId",
+          "reviewerPrincipal",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewWorkQueueV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "review-work-queue.v1"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "caseHash": {
+                  "$ref": "#/components/schemas/ContractSha256"
+                },
+                "anonymousId": {
+                  "type": "string"
+                },
+                "draftIdentityHash": {
+                  "$ref": "#/components/schemas/ContractSha256"
+                },
+                "visibleBarCount": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 120
+                },
+                "barDurationSeconds": {
+                  "type": "integer",
+                  "const": 300,
+                  "minimum": 0
+                },
+                "lastVisibleBarId": {
+                  "type": "string"
+                },
+                "isLeftCensored": {
+                  "type": "boolean"
+                },
+                "hasMissingData": {
+                  "type": "boolean"
+                },
+                "state": {
+                  "$ref": "#/components/schemas/ReviewWorkflowStateV1"
+                }
+              },
+              "required": [
+                "caseHash",
+                "anonymousId",
+                "draftIdentityHash",
+                "visibleBarCount",
+                "barDurationSeconds",
+                "lastVisibleBarId",
+                "isLeftCensored",
+                "hasMissingData",
+                "state"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewWorkflowStateV1": {
+        "type": "string",
+        "enum": [
+          "awaiting_assessment",
+          "awaiting_reveal",
+          "awaiting_final_review",
+          "completed"
+        ]
+      },
+      "ReviewWorkItemDetailV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "review-work-item-detail.v1"
+          },
+          "sourceScope": {
+            "type": "string",
+            "const": "synthetic_fixture_only"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "anonymousId": {
+            "type": "string"
+          },
+          "draftIdentityHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "state": {
+            "$ref": "#/components/schemas/ReviewWorkflowStateV1"
+          },
+          "market": {
+            "$ref": "#/components/schemas/AnonymousMarketInputV1"
+          },
+          "charts": {
+            "type": "object",
+            "properties": {
+              "context": {
+                "$ref": "#/components/schemas/BlindReviewChartV1"
+              },
+              "detail": {
+                "$ref": "#/components/schemas/BlindReviewChartV1"
+              }
+            },
+            "required": [
+              "context",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "assessment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FrozenIndependentAssessmentViewV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BrooksDecisionV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "revealReceipt": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DecisionRevealReceiptV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "review": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CalvinReviewV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workflowBinding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CalvinReviewWorkflowBindingV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "decisionConflict": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DecisionConflictV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "sourceScope",
+          "caseHash",
+          "anonymousId",
+          "draftIdentityHash",
+          "state",
+          "market",
+          "charts",
+          "assessment",
+          "decision",
+          "revealReceipt",
+          "review",
+          "workflowBinding",
+          "decisionConflict"
+        ],
+        "additionalProperties": false
+      },
+      "AnonymousMarketInputV1": {
+        "type": "object",
+        "properties": {
+          "barDurationSeconds": {
+            "type": "integer",
+            "const": 300,
+            "minimum": 0
+          },
+          "lastVisibleBarId": {
+            "type": "string"
+          },
+          "visibleBarCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 120
+          },
+          "isLeftCensored": {
+            "type": "boolean"
+          },
+          "leftCensoredBarsMissing": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 80
+          },
+          "normalization": {
+            "type": "object",
+            "properties": {
+              "method": {
+                "type": "string",
+                "const": "first_visible_close_equals_100"
+              },
+              "base": {
+                "type": "number",
+                "const": 100
+              },
+              "anchorBarId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "method",
+              "base",
+              "anchorBarId"
+            ],
+            "additionalProperties": false
+          },
+          "bars": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "barId": {
+                  "type": "string"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "open": {
+                  "type": "number"
+                },
+                "high": {
+                  "type": "number"
+                },
+                "low": {
+                  "type": "number"
+                },
+                "close": {
+                  "type": "number"
+                },
+                "continuityFromPrevious": {
+                  "$ref": "#/components/schemas/BarContinuityStateV1"
+                }
+              },
+              "required": [
+                "barId",
+                "sequence",
+                "open",
+                "high",
+                "low",
+                "close",
+                "continuityFromPrevious"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 40,
+            "maxItems": 120
+          }
+        },
+        "required": [
+          "barDurationSeconds",
+          "lastVisibleBarId",
+          "visibleBarCount",
+          "isLeftCensored",
+          "leftCensoredBarsMissing",
+          "normalization",
+          "bars"
+        ],
+        "additionalProperties": false
+      },
+      "BarContinuityStateV1": {
+        "type": "string",
+        "enum": [
+          "contiguous",
+          "session_boundary",
+          "missing_data",
+          "unknown"
+        ]
+      },
+      "BlindReviewChartV1": {
+        "type": "object",
+        "properties": {
+          "panel": {
+            "type": "string",
+            "enum": [
+              "context",
+              "detail"
+            ]
+          },
+          "artifactId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "contentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "panel",
+          "artifactId",
+          "contentHash",
+          "width",
+          "height"
+        ],
+        "additionalProperties": false
+      },
+      "FrozenIndependentAssessmentViewV1": {
+        "type": "object",
+        "properties": {
+          "assessmentId": {
+            "type": "string"
+          },
+          "assessmentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "independentVerdict": {
+            "$ref": "#/components/schemas/BrooksVerdictV1"
+          },
+          "blindSummary": {
+            "type": "string"
+          },
+          "outcomeBlind": {
+            "type": "boolean",
+            "const": true
+          },
+          "brooksDecisionContentSeen": {
+            "type": "boolean",
+            "const": false
+          },
+          "reviewerPrincipal": {
+            "type": "string",
+            "const": "local:calvin-reviewer"
+          },
+          "protocolVersion": {
+            "type": "string",
+            "const": "calvin-review-workflow.v1"
+          }
+        },
+        "required": [
+          "assessmentId",
+          "assessmentHash",
+          "independentVerdict",
+          "blindSummary",
+          "outcomeBlind",
+          "brooksDecisionContentSeen",
+          "reviewerPrincipal",
+          "protocolVersion"
+        ],
+        "additionalProperties": false
+      },
+      "BrooksDecisionV1": {
+        "type": "object",
+        "properties": {
+          "decisionId": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": "string"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "lastVisibleBarId": {
+            "type": "string"
+          },
+          "barDurationSeconds": {
+            "type": "integer",
+            "minimum": 0,
+            "const": 300
+          },
+          "verdict": {
+            "$ref": "#/components/schemas/BrooksVerdictV1"
+          },
+          "evidenceBalance": {
+            "$ref": "#/components/schemas/EvidenceBalanceV1"
+          },
+          "broadContext": {
+            "$ref": "#/components/schemas/BroadContextV1"
+          },
+          "currentLeg": {
+            "$ref": "#/components/schemas/CurrentLegV1"
+          },
+          "alwaysIn": {
+            "$ref": "#/components/schemas/AlwaysInV1"
+          },
+          "pressure": {
+            "$ref": "#/components/schemas/PressureAssessmentV1"
+          },
+          "breakoutLifecycle": {
+            "$ref": "#/components/schemas/BreakoutLifecycleV1"
+          },
+          "reversalLifecycle": {
+            "$ref": "#/components/schemas/ReversalLifecycleV1"
+          },
+          "structures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketStructureV1"
+            }
+          },
+          "magnets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MagnetV1"
+            }
+          },
+          "marketEvidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketEvidenceV1"
+            }
+          },
+          "claims": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DecisionClaimV1"
+            }
+          },
+          "longCase": {
+            "$ref": "#/components/schemas/DirectionalCaseV1"
+          },
+          "shortCase": {
+            "$ref": "#/components/schemas/DirectionalCaseV1"
+          },
+          "tradePlan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TradePlanV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "noTrade": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NoTradeDecisionV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "uncertainty": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UncertainDecisionV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "humanSummary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-decision.v1"
+          },
+          "decisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "alwaysIn",
+          "barDurationSeconds",
+          "breakoutLifecycle",
+          "broadContext",
+          "caseId",
+          "claims",
+          "currentLeg",
+          "decisionHash",
+          "decisionId",
+          "evidenceBalance",
+          "humanSummary",
+          "inputHash",
+          "lastVisibleBarId",
+          "longCase",
+          "magnets",
+          "marketEvidence",
+          "noTrade",
+          "pressure",
+          "reversalLifecycle",
+          "schemaVersion",
+          "shortCase",
+          "structures",
+          "tradePlan",
+          "uncertainty",
+          "verdict"
+        ],
+        "additionalProperties": false
+      },
+      "EvidenceBalanceV1": {
+        "type": "string",
+        "enum": [
+          "favors_long",
+          "favors_short",
+          "balanced",
+          "insufficient",
+          "conflicting"
+        ]
+      },
+      "BroadContextV1": {
+        "type": "object",
+        "properties": {
+          "marketState": {
+            "type": "string",
+            "enum": [
+              "trend",
+              "trading_range",
+              "breakout_mode",
+              "transition",
+              "uncertain"
+            ]
+          },
+          "trendDirection": {
+            "type": "string",
+            "enum": [
+              "bull",
+              "bear",
+              "none",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "marketState",
+          "trendDirection",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "CurrentLegV1": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down",
+              "sideways",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "direction",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "AlwaysInV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "long",
+              "short",
+              "not_established",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "PressureAssessmentV1": {
+        "type": "object",
+        "properties": {
+          "buying": {
+            "$ref": "#/components/schemas/PressureSideV1"
+          },
+          "selling": {
+            "$ref": "#/components/schemas/PressureSideV1"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/EvidenceBalanceV1"
+          }
+        },
+        "required": [
+          "buying",
+          "selling",
+          "balance"
+        ],
+        "additionalProperties": false
+      },
+      "PressureSideV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "absent",
+              "present",
+              "dominant",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "BreakoutLifecycleV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "none",
+              "attempt",
+              "provisional",
+              "confirmed",
+              "failed",
+              "testing",
+              "uncertain"
+            ]
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down",
+              "both",
+              "none",
+              "uncertain"
+            ]
+          },
+          "structureId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "direction",
+          "structureId",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "ReversalLifecycleV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "none",
+              "potential",
+              "transitioning",
+              "confirmed",
+              "failed",
+              "uncertain"
+            ]
+          },
+          "fromDirection": {
+            "type": "string",
+            "enum": [
+              "bull",
+              "bear",
+              "none",
+              "uncertain"
+            ]
+          },
+          "toDirection": {
+            "type": "string",
+            "enum": [
+              "bull",
+              "bear",
+              "none",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "fromDirection",
+          "toDirection",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "MarketStructureV1": {
+        "type": "object",
+        "properties": {
+          "structureId": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "prior_high",
+              "prior_low",
+              "trading_range_high",
+              "trading_range_low",
+              "trading_range_midpoint",
+              "breakout_point",
+              "gap_boundary",
+              "trend_channel_boundary",
+              "measured_move_structure"
+            ]
+          },
+          "anchors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PriceAnchorV1"
+            }
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "structureId",
+          "kind",
+          "anchors",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "PriceAnchorV1": {
+        "type": "object",
+        "properties": {
+          "barId": {
+            "type": "string"
+          },
+          "field": {
+            "$ref": "#/components/schemas/PriceFieldV1"
+          },
+          "normalizedReferencePrice": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "barId",
+          "field",
+          "normalizedReferencePrice"
+        ],
+        "additionalProperties": false
+      },
+      "PriceFieldV1": {
+        "type": "string",
+        "enum": [
+          "open",
+          "high",
+          "low",
+          "close"
+        ]
+      },
+      "MagnetV1": {
+        "type": "object",
+        "properties": {
+          "magnetId": {
+            "type": "string"
+          },
+          "structureId": {
+            "type": "string"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "above",
+              "below"
+            ]
+          },
+          "relevance": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "secondary"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "magnetId",
+          "structureId",
+          "side",
+          "relevance",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "MarketEvidenceV1": {
+        "type": "object",
+        "properties": {
+          "evidenceId": {
+            "type": "string"
+          },
+          "barIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "observedFields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "open",
+                "high",
+                "low",
+                "close",
+                "relationship"
+              ]
+            }
+          },
+          "observationCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidenceId",
+          "barIds",
+          "observedFields",
+          "observationCode"
+        ],
+        "additionalProperties": false
+      },
+      "DecisionClaimV1": {
+        "type": "object",
+        "properties": {
+          "claimId": {
+            "type": "string"
+          },
+          "statementCode": {
+            "type": "string"
+          },
+          "marketEvidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "doctrineIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "claimId",
+          "statementCode",
+          "marketEvidenceIds",
+          "doctrineIds"
+        ],
+        "additionalProperties": false
+      },
+      "DirectionalCaseV1": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "long",
+              "short"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "absent",
+              "forming",
+              "actionable",
+              "invalidated",
+              "uncertain"
+            ]
+          },
+          "evidenceBalance": {
+            "$ref": "#/components/schemas/EvidenceBalanceV1"
+          },
+          "setupCandidates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetupCandidateV1"
+            }
+          },
+          "signalBasis": {
+            "$ref": "#/components/schemas/SignalBasisV1"
+          },
+          "triggerState": {
+            "type": "string",
+            "enum": [
+              "not_applicable",
+              "pending",
+              "triggered",
+              "cancelled",
+              "expired",
+              "ambiguous"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "direction",
+          "state",
+          "evidenceBalance",
+          "setupCandidates",
+          "signalBasis",
+          "triggerState",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "SetupCandidateV1": {
+        "type": "object",
+        "properties": {
+          "setupId": {
+            "type": "string"
+          },
+          "doctrineId": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "forming",
+              "confirmed",
+              "invalidated",
+              "expired",
+              "uncertain"
+            ]
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "confluence"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "setupId",
+          "doctrineId",
+          "state",
+          "role",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "SignalBasisV1": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "discrete_bar",
+              "multi_bar_structure",
+              "no_separate_signal"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "absent",
+              "forming",
+              "confirmed",
+              "rejected",
+              "expired",
+              "uncertain"
+            ]
+          },
+          "signalBarIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "doctrineIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "state",
+          "signalBarIds",
+          "doctrineIds",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "TradePlanV1": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "long",
+              "short"
+            ]
+          },
+          "setupId": {
+            "type": "string"
+          },
+          "entry": {
+            "$ref": "#/components/schemas/EntryPlanV1"
+          },
+          "entryCancellation": {
+            "$ref": "#/components/schemas/StructuralConditionV1"
+          },
+          "premiseInvalidation": {
+            "$ref": "#/components/schemas/StructuralConditionV1"
+          },
+          "protection": {
+            "$ref": "#/components/schemas/ProtectionV1"
+          },
+          "holdingIntent": {
+            "type": "string",
+            "enum": [
+              "scalp",
+              "swing"
+            ]
+          },
+          "objective": {
+            "$ref": "#/components/schemas/TradeObjectiveV1"
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "direction",
+          "setupId",
+          "entry",
+          "entryCancellation",
+          "premiseInvalidation",
+          "protection",
+          "holdingIntent",
+          "objective",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "EntryPlanV1": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/StopEntryV1"
+          },
+          {
+            "$ref": "#/components/schemas/LimitEntryV1"
+          },
+          {
+            "$ref": "#/components/schemas/MarketNextEventEntryV1"
+          }
+        ]
+      },
+      "StopEntryV1": {
+        "type": "object",
+        "properties": {
+          "validAfterBarId": {
+            "type": "string"
+          },
+          "validForClosedBars": {
+            "type": "number",
+            "const": 1
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "entryType": {
+            "type": "string",
+            "const": "stop"
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "break_above",
+              "break_below"
+            ]
+          },
+          "anchor": {
+            "$ref": "#/components/schemas/PriceAnchorV1"
+          }
+        },
+        "required": [
+          "anchor",
+          "claimIds",
+          "entryType",
+          "relation",
+          "validAfterBarId",
+          "validForClosedBars"
+        ],
+        "additionalProperties": false
+      },
+      "LimitEntryV1": {
+        "type": "object",
+        "properties": {
+          "validAfterBarId": {
+            "type": "string"
+          },
+          "validForClosedBars": {
+            "type": "number",
+            "const": 1
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "entryType": {
+            "type": "string",
+            "const": "limit"
+          },
+          "relation": {
+            "type": "string",
+            "const": "pullback_to"
+          },
+          "structureId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claimIds",
+          "entryType",
+          "relation",
+          "structureId",
+          "validAfterBarId",
+          "validForClosedBars"
+        ],
+        "additionalProperties": false
+      },
+      "MarketNextEventEntryV1": {
+        "type": "object",
+        "properties": {
+          "validAfterBarId": {
+            "type": "string"
+          },
+          "validForClosedBars": {
+            "type": "number",
+            "const": 1
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "entryType": {
+            "type": "string",
+            "const": "market_next_event"
+          }
+        },
+        "required": [
+          "claimIds",
+          "entryType",
+          "validAfterBarId",
+          "validForClosedBars"
+        ],
+        "additionalProperties": false
+      },
+      "StructuralConditionV1": {
+        "type": "object",
+        "properties": {
+          "conditionCode": {
+            "type": "string"
+          },
+          "anchor": {
+            "$ref": "#/components/schemas/PriceAnchorV1"
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "conditionCode",
+          "anchor",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "ProtectionV1": {
+        "type": "object",
+        "properties": {
+          "relation": {
+            "type": "string",
+            "enum": [
+              "below",
+              "above"
+            ]
+          },
+          "anchor": {
+            "$ref": "#/components/schemas/PriceAnchorV1"
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "relation",
+          "anchor",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "TradeObjectiveV1": {
+        "type": "object",
+        "properties": {
+          "magnetId": {
+            "type": "string"
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "magnetId",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "NoTradeDecisionV1": {
+        "type": "object",
+        "properties": {
+          "reasonCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NoTradeReasonCodeV1"
+            }
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nextObservableCondition": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reasonCodes",
+          "claimIds",
+          "nextObservableCondition"
+        ],
+        "additionalProperties": false
+      },
+      "NoTradeReasonCodeV1": {
+        "type": "string",
+        "enum": [
+          "no_setup",
+          "setup_forming",
+          "signal_absent",
+          "signal_rejected",
+          "poor_location",
+          "opposing_pressure",
+          "balanced_evidence",
+          "breakout_unconfirmed",
+          "reversal_unconfirmed",
+          "entry_condition_not_permitted",
+          "trade_plan_incomplete",
+          "doctrine_prohibits_entry",
+          "swing_reward_insufficient"
+        ]
+      },
+      "UncertainDecisionV1": {
+        "type": "object",
+        "properties": {
+          "reasonCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UncertaintyReasonCodeV1"
+            }
+          },
+          "conflictingClaimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missingEvidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resolutionCondition": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reasonCodes",
+          "conflictingClaimIds",
+          "missingEvidence",
+          "resolutionCondition"
+        ],
+        "additionalProperties": false
+      },
+      "UncertaintyReasonCodeV1": {
+        "type": "string",
+        "enum": [
+          "insufficient_causal_evidence",
+          "missing_data",
+          "continuity_unknown",
+          "left_censored_context",
+          "same_bar_order_unknown",
+          "market_structure_conflict",
+          "doctrine_evidence_conflict",
+          "source_provenance_uncertain"
+        ]
+      },
+      "CalvinReviewV1": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string"
+          },
+          "brooksDecisionId": {
+            "type": "string"
+          },
+          "reviewedDecisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "scope": {
+            "type": "string",
+            "const": "whole_decision"
+          },
+          "disposition": {
+            "$ref": "#/components/schemas/CalvinReviewDispositionV1"
+          },
+          "independentVerdict": {
+            "$ref": "#/components/schemas/BrooksVerdictV1"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "outcomeBlind": {
+            "type": "boolean"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "calvin-review.v1"
+          },
+          "reviewHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "brooksDecisionId",
+          "disposition",
+          "independentVerdict",
+          "outcomeBlind",
+          "reviewHash",
+          "reviewId",
+          "reviewedDecisionHash",
+          "schemaVersion",
+          "scope",
+          "summary"
+        ],
+        "additionalProperties": false
+      },
+      "CalvinReviewDispositionV1": {
+        "type": "string",
+        "enum": [
+          "agree",
+          "disagree",
+          "clarify",
+          "uncertain"
+        ]
+      },
+      "DecisionConflictV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "decision-conflict.v1"
+          },
+          "conflictId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "brooksDecisionId": {
+            "type": "string"
+          },
+          "brooksDecisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "calvinReviewId": {
+            "type": "string"
+          },
+          "calvinReviewHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "kinds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DecisionConflictKindV1"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed"
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "conflictId",
+          "brooksDecisionId",
+          "brooksDecisionHash",
+          "calvinReviewId",
+          "calvinReviewHash",
+          "kinds",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "DecisionConflictKindV1": {
+        "type": "string",
+        "enum": [
+          "none",
+          "whole_decision_disagreement",
+          "verdict_disagreement",
+          "clarification_required",
+          "reviewer_uncertain"
+        ]
+      },
+      "SubmitIndependentAssessmentCommandV1": {
+        "type": "object",
+        "properties": {
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "draftIdentityHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "independentVerdict": {
+            "$ref": "#/components/schemas/BrooksVerdictV1"
+          },
+          "blindSummary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "caseHash",
+          "draftIdentityHash",
+          "independentVerdict",
+          "blindSummary"
+        ],
+        "additionalProperties": false
+      },
+      "RevealDecisionCommandV1": {
+        "type": "object",
+        "properties": {
+          "assessmentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "assessmentHash"
+        ],
+        "additionalProperties": false
+      },
+      "SubmitFinalReviewCommandV1": {
+        "type": "object",
+        "properties": {
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "assessmentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "revealReceiptHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "disposition": {
+            "$ref": "#/components/schemas/CalvinReviewDispositionV1"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "caseHash",
+          "assessmentHash",
+          "revealReceiptHash",
+          "disposition",
+          "summary"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewWorkflowMutationResultV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "review-workflow-mutation-result.v1"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "inserted",
+              "existing"
+            ]
+          },
+          "resourceKind": {
+            "type": "string",
+            "enum": [
+              "calvin_independent_assessment",
+              "decision_reveal_receipt",
+              "calvin_review_workflow"
+            ]
+          },
+          "resourceHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "workItem": {
+            "$ref": "#/components/schemas/ReviewWorkItemDetailV1"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "status",
+          "resourceKind",
+          "resourceHash",
+          "workItem"
+        ],
+        "additionalProperties": false
+      },
+      "CaseApiErrorV1": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "code": {
+            "$ref": "#/components/schemas/CaseApiErrorCodeV1"
+          },
+          "message": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "case-api-error.v1"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "CaseApiErrorCodeV1": {
+        "type": "string",
+        "enum": [
+          "INVALID_JSON",
+          "INVALID_RECORD",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_FOUND",
+          "IDENTITY_CONFLICT",
+          "BODY_TOO_LARGE",
+          "DEPENDENCY_UNAVAILABLE",
+          "INTERNAL_ERROR"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "reviewerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "PA-Local-Reviewer-Token"
+      }
+    }
+  },
+  "x-pa-phase3a-record-kinds": {
+    "calvin_independent_assessment": "CalvinIndependentAssessmentV1",
+    "decision_reveal_receipt": "DecisionRevealReceiptV1",
+    "calvin_review_workflow_binding": "CalvinReviewWorkflowBindingV1"
+  },
+  "x-pa-runtime-authority": "synthetic_only_local_blind_review_no_model_replay_or_trading_authority",
+  "x-pa-route-manifest": [
+    {
+      "method": "GET",
+      "path": "/v1/reviewer/work-items",
+      "openapiPath": "/v1/reviewer/work-items",
+      "operationId": "listReviewerWorkItems",
+      "authentication": "reviewer_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/reviewer/work-items/:caseHash",
+      "openapiPath": "/v1/reviewer/work-items/{caseHash}",
+      "operationId": "getReviewerWorkItem",
+      "authentication": "reviewer_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/reviewer/independent-assessments",
+      "openapiPath": "/v1/reviewer/independent-assessments",
+      "operationId": "submitIndependentAssessment",
+      "authentication": "reviewer_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/reviewer/work-items/:caseHash/reveal",
+      "openapiPath": "/v1/reviewer/work-items/{caseHash}/reveal",
+      "operationId": "revealBrooksDecision",
+      "authentication": "reviewer_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/reviewer/final-reviews",
+      "openapiPath": "/v1/reviewer/final-reviews",
+      "operationId": "submitFinalReview",
+      "authentication": "reviewer_token",
+      "transport": "request_response"
+    }
+  ]
+}

@@ -112,21 +112,24 @@ export interface CaseApiRouteManifestEntryV1 {
   readonly path: string;
   readonly openapiPath: string;
   readonly operationId: string;
-  readonly authentication: "local_token" | "none";
+  readonly authentication:
+    | "operator_token"
+    | "operator_or_reviewer_token"
+    | "none";
   readonly transport: "request_response";
 }
 
 export const CASE_API_ROUTE_MANIFEST_V1 = deepFreeze([
-  route("POST", "/v1/synthetic-case-bundles", "createSyntheticCaseBundle", "local_token"),
-  route("POST", "/v1/brooks-decisions", "appendBrooksDecision", "local_token"),
-  route("POST", "/v1/calvin-reviews", "appendCalvinReview", "local_token"),
-  route("GET", "/v1/cases/:caseHash", "getCase", "local_token"),
-  route("GET", "/v1/cases/:caseHash/audit", "getCaseAudit", "local_token"),
+  route("POST", "/v1/synthetic-case-bundles", "createSyntheticCaseBundle", "operator_token"),
+  route("POST", "/v1/brooks-decisions", "appendBrooksDecision", "operator_token"),
+  route("POST", "/v1/calvin-reviews", "appendCalvinReview", "operator_token"),
+  route("GET", "/v1/cases/:caseHash", "getCase", "operator_token"),
+  route("GET", "/v1/cases/:caseHash/audit", "getCaseAudit", "operator_token"),
   route(
     "GET",
     "/v1/chart-artifacts/:artifactId/content",
     "getChartArtifactContent",
-    "local_token",
+    "operator_or_reviewer_token",
   ),
   route("GET", "/healthz", "getHealth", "none"),
   route("GET", "/readyz", "getReadiness", "none"),
@@ -347,7 +350,7 @@ function route(
   method: "GET" | "POST",
   path: string,
   operationId: string,
-  authentication: "local_token" | "none",
+  authentication: "operator_token" | "operator_or_reviewer_token" | "none",
 ): CaseApiRouteManifestEntryV1 {
   return {
     method,

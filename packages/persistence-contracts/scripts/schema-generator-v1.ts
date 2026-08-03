@@ -9,6 +9,7 @@ import {
   CASE_API_BODY_LIMIT_BYTES,
   CASE_API_ROUTE_MANIFEST_V1,
 } from "../src/case-store-transport-v1.ts";
+import { REVIEW_WORKFLOW_ROUTE_MANIFEST_V1 } from "../src/review-workflow-transport-v1.ts";
 import { createGenerator } from "ts-json-schema-generator";
 
 const PERSISTED_TARGETS = [
@@ -79,6 +80,49 @@ const CASE_STORE_TARGETS = [
   {
     component: "CalvinReviewV1",
     source: "../contracts/src/calvin-review-v1.ts",
+  },
+] as const;
+
+const REVIEW_WORKFLOW_TARGETS = [
+  {
+    component: "CalvinIndependentAssessmentV1",
+    source: "../contracts/src/calvin-review-workflow-v1.ts",
+  },
+  {
+    component: "DecisionRevealReceiptV1",
+    source: "../contracts/src/calvin-review-workflow-v1.ts",
+  },
+  {
+    component: "CalvinReviewWorkflowBindingV1",
+    source: "../contracts/src/calvin-review-workflow-v1.ts",
+  },
+  {
+    component: "ReviewWorkQueueV1",
+    source: "src/review-workflow-transport-v1.ts",
+  },
+  {
+    component: "ReviewWorkItemDetailV1",
+    source: "src/review-workflow-transport-v1.ts",
+  },
+  {
+    component: "SubmitIndependentAssessmentCommandV1",
+    source: "src/review-workflow-transport-v1.ts",
+  },
+  {
+    component: "RevealDecisionCommandV1",
+    source: "src/review-workflow-transport-v1.ts",
+  },
+  {
+    component: "SubmitFinalReviewCommandV1",
+    source: "src/review-workflow-transport-v1.ts",
+  },
+  {
+    component: "ReviewWorkflowMutationResultV1",
+    source: "src/review-workflow-transport-v1.ts",
+  },
+  {
+    component: "CaseApiErrorV1",
+    source: "src/case-store-transport-v1.ts",
   },
 ] as const;
 
@@ -158,14 +202,119 @@ export function buildCaseStoreTransportDocumentsV1(
       components: {
         ...components,
         securitySchemes: {
-          localToken: {
+          operatorToken: {
             type: "http",
             scheme: "bearer",
-            bearerFormat: "PA-Local-Token",
+            bearerFormat: "PA-Local-Operator-Token",
+          },
+          reviewerToken: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "PA-Local-Reviewer-Token",
           },
         },
       },
       "x-pa-route-manifest": CASE_API_ROUTE_MANIFEST_V1,
+    },
+  };
+}
+
+export function buildReviewWorkflowTransportDocumentsV1(
+  packageRoot: string,
+): GeneratedTransportDocumentsV1 {
+  const documents = buildSchemaDocuments(packageRoot, REVIEW_WORKFLOW_TARGETS, {
+    schemaId: "https://pa-agent-lab.local/schemas/phase3a-review-workflow-v1",
+    title: "PA Agent Lab Phase 3A Blind Review Workflow V1",
+    extensions: {
+      "x-pa-phase3a-record-kinds": {
+        calvin_independent_assessment: "CalvinIndependentAssessmentV1",
+        decision_reveal_receipt: "DecisionRevealReceiptV1",
+        calvin_review_workflow_binding: "CalvinReviewWorkflowBindingV1",
+      },
+      "x-pa-runtime-authority":
+        "synthetic_only_local_blind_review_no_model_replay_or_trading_authority",
+    },
+  });
+  const openapi = asRecord(documents.openapi);
+  const components = asRecord(openapi.components);
+  return {
+    schemaBundle: documents.schemaBundle,
+    openapi: {
+      ...openapi,
+      paths: buildReviewWorkflowOpenApiPaths(),
+      components: {
+        ...components,
+        securitySchemes: {
+          reviewerToken: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "PA-Local-Reviewer-Token",
+          },
+        },
+      },
+      "x-pa-route-manifest": REVIEW_WORKFLOW_ROUTE_MANIFEST_V1,
+    },
+  };
+}
+
+function buildReviewWorkflowOpenApiPaths(): Record<string, unknown> {
+  return Object.fromEntries(
+    REVIEW_WORKFLOW_ROUTE_MANIFEST_V1.map((route) => [
+      route.openapiPath,
+      {
+        [route.method.toLowerCase()]: {
+          operationId: route.operationId,
+          security: [{ reviewerToken: [] }],
+          ...buildReviewWorkflowOperation(route.operationId),
+        },
+      },
+    ]),
+  );
+}
+
+function buildReviewWorkflowOperation(operationId: string): Record<string, unknown> {
+  const errorResponse = {
+    description: "Rejected by the local Phase 3A blind-review contract",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/CaseApiErrorV1" },
+      },
+    },
+  };
+  const errors = Object.fromEntries(
+    ["400", "401", "403", "404", "409", "413", "422", "503"].map(
+      (status) => [status, errorResponse],
+    ),
+  );
+  if (operationId === "listReviewerWorkItems") {
+    return { responses: { "200": jsonResponse("ReviewWorkQueueV1", "Blind review queue"), ...errors } };
+  }
+  if (operationId === "getReviewerWorkItem") {
+    return {
+      parameters: [pathHashParameter("caseHash")],
+      responses: { "200": jsonResponse("ReviewWorkItemDetailV1", "Derived blind review work item"), ...errors },
+    };
+  }
+  const command =
+    operationId === "submitIndependentAssessment"
+      ? "SubmitIndependentAssessmentCommandV1"
+      : operationId === "revealBrooksDecision"
+        ? "RevealDecisionCommandV1"
+        : "SubmitFinalReviewCommandV1";
+  return {
+    ...(operationId === "revealBrooksDecision"
+      ? { parameters: [pathHashParameter("caseHash")] }
+      : {}),
+    requestBody: {
+      required: true,
+      content: {
+        "application/json": { schema: { $ref: `#/components/schemas/${command}` } },
+      },
+    },
+    responses: {
+      "200": jsonResponse("ReviewWorkflowMutationResultV1", "Exact immutable workflow record already exists"),
+      "201": jsonResponse("ReviewWorkflowMutationResultV1", "Immutable workflow record inserted"),
+      ...errors,
     },
   };
 }
@@ -178,9 +327,11 @@ function buildCaseStoreOpenApiPaths(): Record<string, unknown> {
       {
         [route.method.toLowerCase()]: {
           operationId: route.operationId,
-          ...(route.authentication === "local_token"
-            ? { security: [{ localToken: [] }] }
-            : { security: [] }),
+          ...(route.authentication === "operator_token"
+            ? { security: [{ operatorToken: [] }] }
+            : route.authentication === "operator_or_reviewer_token"
+              ? { security: [{ operatorToken: [] }, { reviewerToken: [] }] }
+              : { security: [] }),
           ...operation,
         },
       },

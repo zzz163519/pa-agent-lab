@@ -1,24 +1,50 @@
 import pg, { type Pool, type PoolClient } from "pg";
 
 import {
+  CALVIN_REVIEW_WORKFLOW_PROTOCOL_VERSION,
+  CALVIN_REVIEWER_PRINCIPAL,
   assertBrooksDecisionIntegrity,
+  assertCalvinIndependentAssessmentIntegrity,
   assertCalvinReviewIntegrity,
+  assertCalvinReviewWorkflowBindingIntegrity,
+  assertDecisionRevealReceiptIntegrity,
+  canonicalHash,
   canonicalStringify,
+  createCalvinIndependentAssessment,
+  createCalvinReview,
+  createCalvinReviewWorkflowBinding,
+  createDecisionRevealReceipt,
   deepFreeze,
+  deriveDecisionConflict,
   type BrooksDecisionV1,
   type BrooksPolicyCaseV1,
+  type CalvinIndependentAssessmentV1,
   type CalvinReviewV1,
+  type CalvinReviewWorkflowBindingV1,
   type ContractSha256,
+  type DecisionRevealReceiptV1,
 } from "@pa-agent-lab/contracts";
 import {
+  REVIEW_WORK_ITEM_DETAIL_SCHEMA_VERSION,
+  REVIEW_WORK_QUEUE_SCHEMA_VERSION,
   assertAnonymousChartArtifactMetadataIntegrity,
+  assertRevealDecisionCommand,
+  assertSubmitFinalReviewCommand,
+  assertSubmitIndependentAssessmentCommand,
   assertSyntheticCaseBundleIntegrity,
   createCaseAuditView,
   createSyntheticCaseBundle,
   parsePersistedRecordJson,
   serializePersistedRecord,
+  toBlindReviewChart,
+  toFrozenAssessmentView,
   type AnonymousChartArtifactMetadataV1,
   type CaseAuditViewV1,
+  type RevealDecisionCommandV1,
+  type ReviewWorkItemDetailV1,
+  type ReviewWorkQueueV1,
+  type SubmitFinalReviewCommandV1,
+  type SubmitIndependentAssessmentCommandV1,
   type SyntheticCaseBundleV1,
 } from "@pa-agent-lab/persistence-contracts";
 
@@ -49,6 +75,20 @@ export interface CaseStoreV1 {
   ): Promise<Readonly<CaseStoreMutationResultV1>>;
   appendCalvinReview(
     review: CalvinReviewV1,
+  ): Promise<Readonly<CaseStoreMutationResultV1>>;
+  listReviewWorkItems(): Promise<Readonly<ReviewWorkQueueV1>>;
+  getReviewWorkItem(
+    caseHash: ContractSha256,
+  ): Promise<Readonly<ReviewWorkItemDetailV1> | null>;
+  appendIndependentAssessment(
+    command: SubmitIndependentAssessmentCommandV1,
+  ): Promise<Readonly<CaseStoreMutationResultV1>>;
+  appendDecisionRevealReceipt(
+    caseHash: ContractSha256,
+    command: RevealDecisionCommandV1,
+  ): Promise<Readonly<CaseStoreMutationResultV1>>;
+  appendFinalReview(
+    command: SubmitFinalReviewCommandV1,
   ): Promise<Readonly<CaseStoreMutationResultV1>>;
   getCase(caseHash: ContractSha256): Promise<Readonly<BrooksPolicyCaseV1> | null>;
   getCaseAudit(caseHash: ContractSha256): Promise<Readonly<CaseAuditViewV1> | null>;
@@ -101,6 +141,13 @@ export function createCaseStore(database: CaseStoreDatabaseV1): CaseStoreV1 {
     appendSyntheticCaseBundle: (bundle) => appendBundle(database, bundle),
     appendBrooksDecision: (decision) => appendDecision(database, decision),
     appendCalvinReview: (review) => appendReview(database, review),
+    listReviewWorkItems: () => listReviewWorkItems(database),
+    getReviewWorkItem: (caseHash) => getReviewWorkItem(database, caseHash),
+    appendIndependentAssessment: (command) =>
+      appendIndependentAssessment(database, command),
+    appendDecisionRevealReceipt: (caseHash, command) =>
+      appendDecisionRevealReceipt(database, caseHash, command),
+    appendFinalReview: (command) => appendFinalReview(database, command),
     getCase: (caseHash) => getCase(database, caseHash),
     getCaseAudit: (caseHash) => getAudit(database, caseHash),
     getChartArtifact: (artifactId) => getChartArtifact(database, artifactId),
@@ -326,6 +373,333 @@ async function appendReview(
   } catch (error) {
     rethrow(error);
   }
+}
+
+async function listReviewWorkItems(
+  database: CaseStoreDatabaseV1,
+): Promise<Readonly<ReviewWorkQueueV1>> {
+  try {
+    return await database.transaction(async (client) => {
+      const rows = await client.query<{ readonly case_hash: ContractSha256 }>(
+        "SELECT case_hash FROM pa_brooks_decisions ORDER BY case_hash",
+      );
+      const items = [];
+      for (const row of rows.rows) {
+        const aggregate = await loadReviewAggregate(client, row.case_hash);
+        if (aggregate === null) {
+          fail("INTEGRITY_VIOLATION", "review queue decision parent is incomplete");
+        }
+        const state = deriveReviewState(aggregate);
+        const market = aggregate.bundle.policyInput.market;
+        items.push({
+          caseHash: aggregate.bundle.policyCase.caseHash,
+          anonymousId: anonymousCaseId(aggregate.bundle.policyCase.caseHash),
+          draftIdentityHash: reviewDraftIdentity(aggregate),
+          visibleBarCount: market.visibleBarCount,
+          barDurationSeconds: market.barDurationSeconds,
+          lastVisibleBarId: market.lastVisibleBarId,
+          isLeftCensored: market.isLeftCensored,
+          hasMissingData: market.bars.some(
+            (bar) => bar.continuityFromPrevious === "missing_data",
+          ),
+          state,
+        });
+      }
+      return deepFreeze({
+        schemaVersion: REVIEW_WORK_QUEUE_SCHEMA_VERSION,
+        items,
+      });
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function getReviewWorkItem(
+  database: CaseStoreDatabaseV1,
+  caseHash: ContractSha256,
+): Promise<Readonly<ReviewWorkItemDetailV1> | null> {
+  try {
+    return await database.transaction(async (client) => {
+      const aggregate = await loadReviewAggregate(client, caseHash);
+      return aggregate === null ? null : buildReviewWorkItem(aggregate);
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function appendIndependentAssessment(
+  database: CaseStoreDatabaseV1,
+  command: SubmitIndependentAssessmentCommandV1,
+): Promise<Readonly<CaseStoreMutationResultV1>> {
+  try {
+    assertSubmitIndependentAssessmentCommand(command);
+    return await database.transaction(async (client) => {
+      const aggregate = await requireReviewAggregate(client, command.caseHash);
+      if (command.draftIdentityHash !== reviewDraftIdentity(aggregate)) {
+        fail("IDENTITY_CONFLICT", "blind draft identity does not match the exact work item");
+      }
+      if (aggregate.review !== null || aggregate.binding !== null) {
+        fail("IDENTITY_CONFLICT", "completed review cannot accept another assessment");
+      }
+      const record = createCalvinIndependentAssessment({
+        assessmentId: deterministicId("assessment", aggregate.decision.decisionHash),
+        caseHash: aggregate.bundle.policyCase.caseHash,
+        caseId: aggregate.bundle.policyCase.caseId,
+        inputHash: aggregate.bundle.policyInput.inputHash,
+        lastVisibleBarId: aggregate.bundle.policyInput.market.lastVisibleBarId,
+        barDurationSeconds: aggregate.bundle.policyCase.barDurationSeconds,
+        brooksDecisionId: aggregate.decision.decisionId,
+        brooksDecisionHash: aggregate.decision.decisionHash,
+        independentVerdict: command.independentVerdict,
+        blindSummary: command.blindSummary,
+        outcomeBlind: true,
+        brooksDecisionContentSeen: false,
+        reviewerPrincipal: CALVIN_REVIEWER_PRINCIPAL,
+        protocolVersion: CALVIN_REVIEW_WORKFLOW_PROTOCOL_VERSION,
+      });
+      const canonical = canonicalStringify(record);
+      const status = await insertImmutableRecord(client, {
+        insertSql: `INSERT INTO pa_calvin_independent_assessments
+          (assessment_hash, assessment_id, decision_hash, decision_id,
+           case_hash, case_id, input_hash, last_visible_bar_id,
+           bar_duration_seconds, independent_verdict,
+           reviewer_principal, protocol_version, record)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13::jsonb)
+         ON CONFLICT DO NOTHING RETURNING assessment_hash AS identity`,
+        insertParams: [
+          record.assessmentHash,
+          record.assessmentId,
+          record.brooksDecisionHash,
+          record.brooksDecisionId,
+          record.caseHash,
+          record.caseId,
+          record.inputHash,
+          record.lastVisibleBarId,
+          record.barDurationSeconds,
+          record.independentVerdict,
+          record.reviewerPrincipal,
+          record.protocolVersion,
+          canonical,
+        ],
+        existingSql: `SELECT assessment_hash AS identity, record
+          FROM pa_calvin_independent_assessments
+          WHERE assessment_hash = $1 OR assessment_id = $2 OR decision_hash = $3`,
+        existingParams: [
+          record.assessmentHash,
+          record.assessmentId,
+          record.brooksDecisionHash,
+        ],
+        expectedIdentity: record.assessmentHash,
+        expectedCanonical: canonical,
+        parseExisting: parseAssessment,
+      });
+      return mutationResult(status, record.assessmentHash);
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function appendDecisionRevealReceipt(
+  database: CaseStoreDatabaseV1,
+  caseHash: ContractSha256,
+  command: RevealDecisionCommandV1,
+): Promise<Readonly<CaseStoreMutationResultV1>> {
+  try {
+    assertRevealDecisionCommand(command);
+    return await database.transaction(async (client) => {
+      const aggregate = await requireReviewAggregate(client, caseHash);
+      const assessment = aggregate.assessment;
+      if (assessment === null) {
+        fail("INTEGRITY_VIOLATION", "frozen independent assessment is required before reveal");
+      }
+      if (assessment.assessmentHash !== command.assessmentHash) {
+        fail("IDENTITY_CONFLICT", "reveal command names a different assessment");
+      }
+      const record = createDecisionRevealReceipt({
+        receiptId: deterministicId("reveal", assessment.assessmentHash),
+        assessmentId: assessment.assessmentId,
+        assessmentHash: assessment.assessmentHash,
+        brooksDecisionId: assessment.brooksDecisionId,
+        brooksDecisionHash: assessment.brooksDecisionHash,
+        reviewerPrincipal: assessment.reviewerPrincipal,
+        protocolVersion: assessment.protocolVersion,
+      });
+      const canonical = canonicalStringify(record);
+      const status = await insertImmutableRecord(client, {
+        insertSql: `INSERT INTO pa_decision_reveal_receipts
+          (receipt_hash, receipt_id, assessment_hash, assessment_id,
+           decision_hash, decision_id, reviewer_principal, protocol_version, record)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
+         ON CONFLICT DO NOTHING RETURNING receipt_hash AS identity`,
+        insertParams: [
+          record.receiptHash,
+          record.receiptId,
+          record.assessmentHash,
+          record.assessmentId,
+          record.brooksDecisionHash,
+          record.brooksDecisionId,
+          record.reviewerPrincipal,
+          record.protocolVersion,
+          canonical,
+        ],
+        existingSql: `SELECT receipt_hash AS identity, record
+          FROM pa_decision_reveal_receipts
+          WHERE receipt_hash = $1 OR receipt_id = $2
+             OR assessment_hash = $3 OR decision_hash = $4`,
+        existingParams: [
+          record.receiptHash,
+          record.receiptId,
+          record.assessmentHash,
+          record.brooksDecisionHash,
+        ],
+        expectedIdentity: record.receiptHash,
+        expectedCanonical: canonical,
+        parseExisting: (value) => parseReceipt(value, assessment),
+      });
+      return mutationResult(status, record.receiptHash);
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function appendFinalReview(
+  database: CaseStoreDatabaseV1,
+  command: SubmitFinalReviewCommandV1,
+): Promise<Readonly<CaseStoreMutationResultV1>> {
+  try {
+    assertSubmitFinalReviewCommand(command);
+    return await database.transaction(async (client) => {
+      const aggregate = await requireReviewAggregate(client, command.caseHash);
+      const assessment = aggregate.assessment;
+      const receipt = aggregate.receipt;
+      if (assessment === null) {
+        fail("INTEGRITY_VIOLATION", "frozen independent assessment is required before final review");
+      }
+      if (receipt === null) {
+        fail("INTEGRITY_VIOLATION", "decision reveal receipt is required before final review");
+      }
+      if (
+        assessment.assessmentHash !== command.assessmentHash ||
+        receipt.receiptHash !== command.revealReceiptHash
+      ) {
+        fail("IDENTITY_CONFLICT", "final review command names a different workflow");
+      }
+      const review = createCalvinReview(
+        {
+          reviewId: deterministicId("review", aggregate.decision.decisionHash),
+          brooksDecisionId: aggregate.decision.decisionId,
+          reviewedDecisionHash: aggregate.decision.decisionHash,
+          scope: "whole_decision",
+          disposition: command.disposition,
+          independentVerdict: assessment.independentVerdict,
+          summary: command.summary,
+          outcomeBlind: true,
+        },
+        aggregate.decision,
+      );
+      const binding = createCalvinReviewWorkflowBinding({
+        bindingId: deterministicId("binding", review.reviewHash),
+        assessmentId: assessment.assessmentId,
+        assessmentHash: assessment.assessmentHash,
+        revealReceiptId: receipt.receiptId,
+        revealReceiptHash: receipt.receiptHash,
+        brooksDecisionId: aggregate.decision.decisionId,
+        brooksDecisionHash: aggregate.decision.decisionHash,
+        calvinReviewId: review.reviewId,
+        calvinReviewHash: review.reviewHash,
+        reviewerPrincipal: assessment.reviewerPrincipal,
+        protocolVersion: assessment.protocolVersion,
+      });
+      const reviewStatus = await insertReviewRecord(client, review, aggregate);
+      const bindingCanonical = canonicalStringify(binding);
+      const bindingStatus = await insertImmutableRecord(client, {
+        insertSql: `INSERT INTO pa_calvin_review_workflow_bindings
+          (binding_hash, binding_id, assessment_hash, assessment_id,
+           receipt_hash, receipt_id, decision_hash, decision_id,
+           review_hash, review_id, independent_verdict,
+           reviewer_principal, protocol_version, record)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14::jsonb)
+         ON CONFLICT DO NOTHING RETURNING binding_hash AS identity`,
+        insertParams: [
+          binding.bindingHash,
+          binding.bindingId,
+          binding.assessmentHash,
+          binding.assessmentId,
+          binding.revealReceiptHash,
+          binding.revealReceiptId,
+          binding.brooksDecisionHash,
+          binding.brooksDecisionId,
+          binding.calvinReviewHash,
+          binding.calvinReviewId,
+          assessment.independentVerdict,
+          binding.reviewerPrincipal,
+          binding.protocolVersion,
+          bindingCanonical,
+        ],
+        existingSql: `SELECT binding_hash AS identity, record
+          FROM pa_calvin_review_workflow_bindings
+          WHERE binding_hash = $1 OR binding_id = $2 OR assessment_hash = $3
+             OR receipt_hash = $4 OR decision_hash = $5 OR review_hash = $6`,
+        existingParams: [
+          binding.bindingHash,
+          binding.bindingId,
+          binding.assessmentHash,
+          binding.revealReceiptHash,
+          binding.brooksDecisionHash,
+          binding.calvinReviewHash,
+        ],
+        expectedIdentity: binding.bindingHash,
+        expectedCanonical: bindingCanonical,
+        parseExisting: (value) =>
+          parseWorkflowBinding(value, assessment, receipt, review),
+      });
+      return mutationResult(
+        reviewStatus === "existing" && bindingStatus === "existing"
+          ? "existing"
+          : "inserted",
+        binding.bindingHash,
+      );
+    });
+  } catch (error) {
+    rethrow(error);
+  }
+}
+
+async function insertReviewRecord(
+  client: CaseStoreDatabaseClientV1,
+  review: CalvinReviewV1,
+  aggregate: ReviewAggregateV1,
+): Promise<"inserted" | "existing"> {
+  assertCalvinReviewIntegrity(review, aggregate.decision);
+  const canonical = canonicalStringify(review);
+  return insertImmutableRecord(client, {
+    insertSql: `INSERT INTO pa_calvin_reviews
+      (review_hash, review_id, decision_hash, decision_id, record)
+     VALUES ($1, $2, $3, $4, $5::jsonb)
+     ON CONFLICT DO NOTHING RETURNING review_hash AS identity`,
+    insertParams: [
+      review.reviewHash,
+      review.reviewId,
+      review.reviewedDecisionHash,
+      review.brooksDecisionId,
+      canonical,
+    ],
+    existingSql: `SELECT review_hash AS identity, record
+      FROM pa_calvin_reviews
+      WHERE review_hash = $1 OR review_id = $2 OR decision_hash = $3`,
+    existingParams: [
+      review.reviewHash,
+      review.reviewId,
+      review.reviewedDecisionHash,
+    ],
+    expectedIdentity: review.reviewHash,
+    expectedCanonical: canonical,
+    parseExisting: (value) => parseReview(value, aggregate.decision),
+  });
 }
 
 async function getCase(
@@ -622,6 +996,203 @@ async function loadDecisionByIdentity(
     fail("INTEGRITY_VIOLATION", "BrooksDecision parent binding is incomplete");
   }
   return { decision: parseDecision(row.record, bundle), bundle };
+}
+
+interface ReviewAggregateV1 {
+  readonly bundle: SyntheticCaseBundleV1;
+  readonly decision: BrooksDecisionV1;
+  readonly assessment: CalvinIndependentAssessmentV1 | null;
+  readonly receipt: DecisionRevealReceiptV1 | null;
+  readonly review: CalvinReviewV1 | null;
+  readonly binding: CalvinReviewWorkflowBindingV1 | null;
+}
+
+async function requireReviewAggregate(
+  client: CaseStoreDatabaseClientV1,
+  caseHash: ContractSha256,
+): Promise<ReviewAggregateV1> {
+  const aggregate = await loadReviewAggregate(client, caseHash);
+  if (aggregate === null) {
+    fail("INTEGRITY_VIOLATION", "synthetic CaseBundle and BrooksDecision are required");
+  }
+  deriveReviewState(aggregate);
+  return aggregate;
+}
+
+async function loadReviewAggregate(
+  client: CaseStoreDatabaseClientV1,
+  caseHash: ContractSha256,
+): Promise<ReviewAggregateV1 | null> {
+  const bundle = await loadBundleByCaseHash(client, caseHash);
+  if (bundle === null) return null;
+  const decisionRows = await client.query<{ readonly record: unknown }>(
+    `SELECT record FROM pa_brooks_decisions
+     WHERE case_hash = $1 AND input_hash = $2`,
+    [caseHash, bundle.policyInput.inputHash],
+  );
+  if (decisionRows.rows.length === 0) return null;
+  if (decisionRows.rows.length !== 1) {
+    fail("INTEGRITY_VIOLATION", "review Case has multiple BrooksDecision records");
+  }
+  const decision = parseDecision(decisionRows.rows[0]!.record, bundle);
+  const assessmentRows = await client.query<{ readonly record: unknown }>(
+    "SELECT record FROM pa_calvin_independent_assessments WHERE decision_hash = $1",
+    [decision.decisionHash],
+  );
+  if (assessmentRows.rows.length > 1) {
+    fail("INTEGRITY_VIOLATION", "BrooksDecision has multiple independent assessments");
+  }
+  const assessment =
+    assessmentRows.rows.length === 0
+      ? null
+      : parseAssessment(assessmentRows.rows[0]!.record);
+  const receiptRows = await client.query<{ readonly record: unknown }>(
+    "SELECT record FROM pa_decision_reveal_receipts WHERE decision_hash = $1",
+    [decision.decisionHash],
+  );
+  if (receiptRows.rows.length > 1) {
+    fail("INTEGRITY_VIOLATION", "BrooksDecision has multiple reveal receipts");
+  }
+  const receipt =
+    receiptRows.rows.length === 0
+      ? null
+      : assessment === null
+        ? fail("INTEGRITY_VIOLATION", "reveal receipt is missing its assessment")
+        : parseReceipt(receiptRows.rows[0]!.record, assessment);
+  const reviewRows = await client.query<{ readonly record: unknown }>(
+    "SELECT record FROM pa_calvin_reviews WHERE decision_hash = $1",
+    [decision.decisionHash],
+  );
+  if (reviewRows.rows.length > 1) {
+    fail("INTEGRITY_VIOLATION", "BrooksDecision has multiple CalvinReview records");
+  }
+  const review =
+    reviewRows.rows.length === 0
+      ? null
+      : parseReview(reviewRows.rows[0]!.record, decision);
+  const bindingRows = await client.query<{ readonly record: unknown }>(
+    "SELECT record FROM pa_calvin_review_workflow_bindings WHERE decision_hash = $1",
+    [decision.decisionHash],
+  );
+  if (bindingRows.rows.length > 1) {
+    fail("INTEGRITY_VIOLATION", "BrooksDecision has multiple workflow bindings");
+  }
+  const binding =
+    bindingRows.rows.length === 0
+      ? null
+      : assessment === null || receipt === null || review === null
+        ? fail("INTEGRITY_VIOLATION", "workflow binding is missing an immutable parent")
+        : parseWorkflowBinding(bindingRows.rows[0]!.record, assessment, receipt, review);
+  return { bundle, decision, assessment, receipt, review, binding };
+}
+
+function deriveReviewState(
+  aggregate: ReviewAggregateV1,
+): ReviewWorkItemDetailV1["state"] {
+  if (aggregate.assessment === null) {
+    if (
+      aggregate.receipt !== null ||
+      aggregate.review !== null ||
+      aggregate.binding !== null
+    ) {
+      fail("INTEGRITY_VIOLATION", "review workflow evidence begins without assessment");
+    }
+    return "awaiting_assessment";
+  }
+  if (aggregate.receipt === null) {
+    if (aggregate.review !== null || aggregate.binding !== null) {
+      fail("INTEGRITY_VIOLATION", "review workflow evidence skips reveal receipt");
+    }
+    return "awaiting_reveal";
+  }
+  if (aggregate.review === null && aggregate.binding === null) {
+    return "awaiting_final_review";
+  }
+  if (aggregate.review !== null && aggregate.binding !== null) {
+    return "completed";
+  }
+  fail("INTEGRITY_VIOLATION", "final review and workflow binding must be complete");
+}
+
+function buildReviewWorkItem(
+  aggregate: ReviewAggregateV1,
+): Readonly<ReviewWorkItemDetailV1> {
+  const state = deriveReviewState(aggregate);
+  const revealed = aggregate.receipt !== null;
+  const completed = state === "completed";
+  return deepFreeze({
+    schemaVersion: REVIEW_WORK_ITEM_DETAIL_SCHEMA_VERSION,
+    sourceScope: "synthetic_fixture_only",
+    caseHash: aggregate.bundle.policyCase.caseHash,
+    anonymousId: anonymousCaseId(aggregate.bundle.policyCase.caseHash),
+    draftIdentityHash: reviewDraftIdentity(aggregate),
+    state,
+    market: aggregate.bundle.policyInput.market,
+    charts: {
+      context: toBlindReviewChart(aggregate.bundle.chartMetadata.context),
+      detail: toBlindReviewChart(aggregate.bundle.chartMetadata.detail),
+    },
+    assessment:
+      aggregate.assessment === null
+        ? null
+        : toFrozenAssessmentView(aggregate.assessment),
+    decision: revealed ? aggregate.decision : null,
+    revealReceipt: revealed ? aggregate.receipt : null,
+    review: completed ? aggregate.review : null,
+    workflowBinding: completed ? aggregate.binding : null,
+    decisionConflict:
+      completed && aggregate.review !== null
+        ? deriveDecisionConflict(aggregate.decision, aggregate.review)
+        : null,
+  });
+}
+
+function reviewDraftIdentity(aggregate: ReviewAggregateV1): ContractSha256 {
+  return canonicalHash({
+    protocolVersion: CALVIN_REVIEW_WORKFLOW_PROTOCOL_VERSION,
+    caseHash: aggregate.bundle.policyCase.caseHash,
+    inputHash: aggregate.bundle.policyInput.inputHash,
+    brooksDecisionHash: aggregate.decision.decisionHash,
+  });
+}
+
+function anonymousCaseId(caseHash: ContractSha256): string {
+  return `case-${caseHash.slice("sha256:".length, "sha256:".length + 10)}`;
+}
+
+function deterministicId(prefix: string, hash: ContractSha256): string {
+  return `${prefix}:${hash.slice("sha256:".length)}`;
+}
+
+function parseAssessment(value: unknown): CalvinIndependentAssessmentV1 {
+  const assessment = materialize<CalvinIndependentAssessmentV1>(value);
+  assertCalvinIndependentAssessmentIntegrity(assessment);
+  return deepFreeze(assessment);
+}
+
+function parseReceipt(
+  value: unknown,
+  assessment: CalvinIndependentAssessmentV1,
+): DecisionRevealReceiptV1 {
+  const receipt = materialize<DecisionRevealReceiptV1>(value);
+  assertDecisionRevealReceiptIntegrity(receipt, assessment);
+  return deepFreeze(receipt);
+}
+
+function parseWorkflowBinding(
+  value: unknown,
+  assessment: CalvinIndependentAssessmentV1,
+  receipt: DecisionRevealReceiptV1,
+  review: CalvinReviewV1,
+): CalvinReviewWorkflowBindingV1 {
+  const binding = materialize<CalvinReviewWorkflowBindingV1>(value);
+  assertCalvinReviewWorkflowBindingIntegrity(binding, assessment, receipt, {
+    reviewId: review.reviewId,
+    reviewHash: review.reviewHash,
+    decisionId: review.brooksDecisionId,
+    decisionHash: review.reviewedDecisionHash,
+  });
+  return deepFreeze(binding);
 }
 
 function parseRecord<K extends "policy_case" | "policy_input">(

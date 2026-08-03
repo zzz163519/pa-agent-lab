@@ -60,6 +60,30 @@ PA Agent Lab does not copy or modify resvg-js source files. Installed packages r
 - License: [MIT](https://github.com/brianc/node-postgres/blob/master/LICENSE)
 - Use: ADR-0015 PostgreSQL Pool/client access, parameterized SQL, transactions, and SQLSTATE handling
 
+## Phase 3A Research Console runtime
+
+The following MIT-licensed packages are used unmodified for the ADR-0016 local Research Console:
+
+- `react@19.2.8` and `react-dom@19.2.8`: component and browser rendering runtime;
+- `react-router@8.3.0`: SPA module routing;
+- `@tanstack/react-query@5.101.4`: reviewer API server-state synchronization;
+- `lucide-react@1.28.0`: accessible command icons;
+- `vite@8.2.0` and `@vitejs/plugin-react@6.0.5`: production SPA build tooling;
+- `@fastify/static@10.1.2`: same-origin hashed asset and SPA index serving;
+- `@fastify/helmet@13.1.0`: CSP and local HTTP security headers.
+
+Official projects and licenses are distributed in each installed package and are pinned by `pnpm-lock.yaml`. PA Agent Lab does not modify or redistribute their source.
+
+## Phase 3A frontend verification
+
+The following MIT-licensed packages are dev-only:
+
+- `vitest@4.1.10` and `jsdom@30.0.1`;
+- `@testing-library/react@16.3.2`, `@testing-library/dom@10.4.1`, and `@testing-library/user-event@14.6.1`;
+- `@playwright/test@1.62.1`.
+
+They verify tab-local state, user-visible components, actual loopback HTTP workflows, PNG rendering, responsive layouts, and screenshots. Browser binaries are external test artifacts and are not committed.
+
 ## pgvector PostgreSQL image
 
 - Image: `pgvector/pgvector:0.8.6-pg18-trixie`

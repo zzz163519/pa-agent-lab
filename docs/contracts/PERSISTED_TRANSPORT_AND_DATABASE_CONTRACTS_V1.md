@@ -159,7 +159,7 @@ These tests prove the Phase 1 transport and persistence contracts, not PostgreSQ
 
 ## Implemented separately by ADR-0015
 
-ADR-0015 adds a separate generated Phase 2 schema/OpenAPI document, a forward migration for BrooksDecision and CalvinReview, a content-hashed migration runner, restricted real PostgreSQL roles, a deep Case Store, loopback Fastify REST API, deterministic audit views, and a synthetic CLI. It consumes this Phase 1 migration and strict parser rather than replacing them.
+ADR-0015 adds a separate generated Phase 2 schema/OpenAPI document, a forward migration for BrooksDecision and CalvinReview, a content-hashed migration runner, restricted real PostgreSQL roles, a deep Case Store, loopback Fastify REST API, deterministic audit views, and a synthetic CLI. ADR-0016 adds separate Phase 3A generated workflow artifacts and migration `0003` without changing the six Phase 1 record kinds. Both later slices consume this Phase 1 migration and strict parser rather than replacing them.
 
 The Phase 2 service accepts only complete `synthetic_fixture_only` CaseBundles. Real data ingestion, event streaming, and public deployment remain deferred.
 

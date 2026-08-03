@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
+import fastifyHelmet from "@fastify/helmet";
+import fastifyStatic from "@fastify/static";
 import Fastify, {
   type FastifyInstance,
   type FastifyReply,
@@ -23,17 +25,25 @@ import {
 import {
   CASE_API_BODY_LIMIT_BYTES,
   CASE_API_ROUTE_MANIFEST_V1,
+  REVIEW_WORKFLOW_ROUTE_MANIFEST_V1,
   PersistenceContractError,
   createCaseApiError,
   createCaseApiMutationResult,
+  createReviewWorkflowMutationResult,
   parseStrictJsonText,
   type CaseApiErrorCodeV1,
   type CaseAuditViewV1,
+  type RevealDecisionCommandV1,
+  type ReviewWorkItemDetailV1,
+  type SubmitFinalReviewCommandV1,
+  type SubmitIndependentAssessmentCommandV1,
   type SyntheticCaseBundleV1,
 } from "@pa-agent-lab/persistence-contracts";
 
 const CASE_STORE_SCHEMA_ID =
   "https://pa-agent-lab.local/schemas/phase2-case-store-v1";
+const REVIEW_WORKFLOW_SCHEMA_ID =
+  "https://pa-agent-lab.local/schemas/phase3a-review-workflow-v1";
 const SHA256_PATTERN = "^sha256:[0-9a-f]{64}$";
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 const schemaBundle = JSON.parse(
@@ -47,19 +57,39 @@ const schemaBundle = JSON.parse(
 ) as Record<string, unknown>;
 const fastifySchemaBundle = structuredClone(schemaBundle);
 delete fastifySchemaBundle.$schema;
+const reviewSchemaBundle = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../persistence-contracts/schemas/phase3a-review-workflow-v1.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+) as Record<string, unknown>;
+const fastifyReviewSchemaBundle = structuredClone(reviewSchemaBundle);
+delete fastifyReviewSchemaBundle.$schema;
 
-export interface RequestPrincipalV1 {
+export interface OperatorPrincipalV1 {
   readonly principalId: "local:phase2-operator";
   readonly authenticationMethod: "local_token";
 }
+
+export interface ReviewerPrincipalV1 {
+  readonly principalId: "local:calvin-reviewer";
+  readonly authenticationMethod: "local_reviewer_token";
+}
+
+export type RequestPrincipalV1 = OperatorPrincipalV1 | ReviewerPrincipalV1;
 
 export interface CaseApiOptionsV1 {
   readonly store: CaseStoreV1;
   readonly artifactRoot: string;
   readonly localToken: string;
+  readonly reviewerToken: string;
   readonly authorizedSyntheticBundleHashes: readonly ContractSha256[];
   readonly allowedHosts: readonly string[];
   readonly allowedOrigins: readonly string[];
+  readonly consoleRoot?: string;
 }
 
 class CaseApiHttpError extends Error {
@@ -94,6 +124,48 @@ export async function createCaseApiV1(
   });
 
   app.addSchema(fastifySchemaBundle);
+  app.addSchema(fastifyReviewSchemaBundle);
+  await app.register(fastifyHelmet, {
+    global: true,
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'"],
+        imgSrc: ["'self'", "blob:", "data:"],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        baseUri: ["'none'"],
+        frameAncestors: ["'none'"],
+        formAction: ["'self'"],
+      },
+    },
+    hsts: false,
+    referrerPolicy: { policy: "no-referrer" },
+  });
+  if (options.consoleRoot !== undefined) {
+    const consoleRoot = resolve(options.consoleRoot);
+    await app.register(fastifyStatic, {
+      root: consoleRoot,
+      prefix: "/console/",
+      wildcard: false,
+      maxAge: "30d",
+      immutable: true,
+      setHeaders: (reply, path) => {
+        if (path.endsWith("index.html")) {
+          void reply.header("Cache-Control", "no-store");
+        }
+      },
+    });
+    const sendConsoleIndex = (_request: FastifyRequest, reply: FastifyReply) =>
+      reply
+        .header("Cache-Control", "no-store")
+        .sendFile("index.html", { cacheControl: false, immutable: false });
+    app.get("/console", sendConsoleIndex);
+    app.get("/console/*", sendConsoleIndex);
+  }
   app.removeContentTypeParser("application/json");
   app.addContentTypeParser(
     "application/json",
@@ -103,27 +175,57 @@ export async function createCaseApiV1(
 
   app.addHook("onRequest", async (request) => {
     enforceLocalOrigin(request, options.allowedHosts, options.allowedOrigins);
-    const route = CASE_API_ROUTE_MANIFEST_V1.find(
+    const workflowRoute = REVIEW_WORKFLOW_ROUTE_MANIFEST_V1.find(
       (entry) => entry.path === request.routeOptions.url,
     );
-    if (route?.authentication !== "local_token") return;
+    const caseRoute = CASE_API_ROUTE_MANIFEST_V1.find(
+      (entry) => entry.path === request.routeOptions.url,
+    );
+    const authentication = workflowRoute?.authentication ?? caseRoute?.authentication;
+    if (authentication === undefined || authentication === "none") return;
     const authorization = request.headers.authorization;
     const prefix = "Bearer ";
-    if (
-      typeof authorization !== "string" ||
-      !authorization.startsWith(prefix) ||
-      !sameSecret(authorization.slice(prefix.length), options.localToken)
-    ) {
+    const token =
+      typeof authorization === "string" && authorization.startsWith(prefix)
+        ? authorization.slice(prefix.length)
+        : null;
+    const operatorAccepted =
+      token !== null &&
+      authentication !== "reviewer_token" &&
+      sameSecret(token, options.localToken);
+    const reviewerAccepted =
+      token !== null &&
+      authentication !== "operator_token" &&
+      sameSecret(token, options.reviewerToken);
+    if (!operatorAccepted && !reviewerAccepted) {
       throw new CaseApiHttpError(
         401,
         "UNAUTHORIZED",
-        "A valid local Phase 2 token is required.",
+        "A valid token for this local route is required.",
       );
     }
-    principals.set(request, {
-      principalId: "local:phase2-operator",
-      authenticationMethod: "local_token",
-    });
+    principals.set(
+      request,
+      operatorAccepted
+        ? {
+            principalId: "local:phase2-operator",
+            authenticationMethod: "local_token",
+          }
+        : {
+            principalId: "local:calvin-reviewer",
+            authenticationMethod: "local_reviewer_token",
+          },
+    );
+  });
+
+  app.addHook("onSend", async (request, reply, payload) => {
+    if (
+      request.routeOptions.url?.startsWith("/v1/reviewer/") === true ||
+      principals.get(request)?.principalId === "local:calvin-reviewer"
+    ) {
+      void reply.header("Cache-Control", "no-store");
+    }
+    return payload;
   });
 
   app.addHook("preValidation", async (request) => {
@@ -221,6 +323,106 @@ export async function createCaseApiV1(
       return reply.type("image/png").send(bytes);
     },
   );
+  app.get(
+    "/v1/reviewer/work-items",
+    {
+      schema: {
+        response: { 200: reviewSchemaRef("ReviewWorkQueueV1") },
+      },
+    },
+    async (request, reply) => {
+      requireReviewerPrincipal(principals, request);
+      return reply.send(await options.store.listReviewWorkItems());
+    },
+  );
+  app.get<{ Params: { readonly caseHash: ContractSha256 } }>(
+    "/v1/reviewer/work-items/:caseHash",
+    {
+      schema: {
+        params: hashParamsSchema("caseHash"),
+        response: { 200: reviewSchemaRef("ReviewWorkItemDetailV1") },
+      },
+    },
+    async (request, reply) => {
+      requireReviewerPrincipal(principals, request);
+      const workItem = await options.store.getReviewWorkItem(
+        request.params.caseHash,
+      );
+      if (workItem === null) throw notFound("Review work item");
+      assertReviewWorkItemResponseBoundary(workItem);
+      return reply.send(workItem);
+    },
+  );
+  app.post<{ Body: SubmitIndependentAssessmentCommandV1 }>(
+    "/v1/reviewer/independent-assessments",
+    {
+      schema: {
+        body: reviewSchemaRef("SubmitIndependentAssessmentCommandV1"),
+        response: reviewMutationResponseSchemas(),
+      },
+    },
+    async (request, reply) => {
+      requireReviewerPrincipal(principals, request);
+      const result = await options.store.appendIndependentAssessment(request.body);
+      const workItem = await requireReviewWorkItem(options.store, request.body.caseHash);
+      return sendReviewMutation(
+        reply,
+        request.id,
+        result,
+        "calvin_independent_assessment",
+        workItem,
+      );
+    },
+  );
+  app.post<{
+    Params: { readonly caseHash: ContractSha256 };
+    Body: RevealDecisionCommandV1;
+  }>(
+    "/v1/reviewer/work-items/:caseHash/reveal",
+    {
+      schema: {
+        params: hashParamsSchema("caseHash"),
+        body: reviewSchemaRef("RevealDecisionCommandV1"),
+        response: reviewMutationResponseSchemas(),
+      },
+    },
+    async (request, reply) => {
+      requireReviewerPrincipal(principals, request);
+      const result = await options.store.appendDecisionRevealReceipt(
+        request.params.caseHash,
+        request.body,
+      );
+      const workItem = await requireReviewWorkItem(options.store, request.params.caseHash);
+      return sendReviewMutation(
+        reply,
+        request.id,
+        result,
+        "decision_reveal_receipt",
+        workItem,
+      );
+    },
+  );
+  app.post<{ Body: SubmitFinalReviewCommandV1 }>(
+    "/v1/reviewer/final-reviews",
+    {
+      schema: {
+        body: reviewSchemaRef("SubmitFinalReviewCommandV1"),
+        response: reviewMutationResponseSchemas(),
+      },
+    },
+    async (request, reply) => {
+      requireReviewerPrincipal(principals, request);
+      const result = await options.store.appendFinalReview(request.body);
+      const workItem = await requireReviewWorkItem(options.store, request.body.caseHash);
+      return sendReviewMutation(
+        reply,
+        request.id,
+        result,
+        "calvin_review_workflow",
+        workItem,
+      );
+    },
+  );
   app.get("/healthz", async () => ({ status: "ok" as const }));
   app.get("/readyz", async (_request, reply) => {
     if (!(await options.store.checkReadiness())) {
@@ -241,8 +443,17 @@ export async function createCaseApiV1(
 
 function validateOptions(options: CaseApiOptionsV1): void {
   assertNonEmpty("artifactRoot", options.artifactRoot);
+  if (options.consoleRoot !== undefined) {
+    assertNonEmpty("consoleRoot", options.consoleRoot);
+  }
   if (options.localToken.length < 32) {
     throw new Error("Phase 2 local token must contain at least 32 characters");
+  }
+  if (options.reviewerToken.length < 32) {
+    throw new Error("Phase 3A reviewer token must contain at least 32 characters");
+  }
+  if (sameSecret(options.localToken, options.reviewerToken)) {
+    throw new Error("operator and reviewer tokens must be distinct");
   }
   if (options.allowedHosts.length === 0 || options.allowedOrigins.length === 0) {
     throw new Error("Phase 2 API requires explicit Host and Origin allowlists");
@@ -284,6 +495,26 @@ function requirePrincipal(
   return principal;
 }
 
+function requireReviewerPrincipal(
+  principals: WeakMap<object, RequestPrincipalV1>,
+  request: FastifyRequest,
+): ReviewerPrincipalV1 {
+  const principal = requirePrincipal(principals, request);
+  if (principal.principalId !== "local:calvin-reviewer") {
+    throw new CaseApiHttpError(403, "FORBIDDEN", "Reviewer principal is required.");
+  }
+  return principal;
+}
+
+async function requireReviewWorkItem(
+  store: CaseStoreV1,
+  caseHash: ContractSha256,
+) {
+  const workItem = await store.getReviewWorkItem(caseHash);
+  if (workItem === null) throw notFound("Review work item");
+  return workItem;
+}
+
 function sameSecret(actual: string, expected: string): boolean {
   const actualBytes = Buffer.from(actual, "utf8");
   const expectedBytes = Buffer.from(expected, "utf8");
@@ -295,6 +526,62 @@ function sameSecret(actual: string, expected: string): boolean {
 
 function schemaRef(component: string): { readonly $ref: string } {
   return { $ref: `${CASE_STORE_SCHEMA_ID}#/$defs/${component}` };
+}
+
+function reviewSchemaRef(component: string): { readonly $ref: string } {
+  return { $ref: `${REVIEW_WORKFLOW_SCHEMA_ID}#/$defs/${component}` };
+}
+
+function reviewMutationResponseSchemas(): Record<number, unknown> {
+  const result = reviewSchemaRef("ReviewWorkflowMutationResultV1");
+  return { 200: result, 201: result };
+}
+
+function assertReviewWorkItemResponseBoundary(
+  workItem: ReviewWorkItemDetailV1,
+): void {
+  const hasAssessment = workItem.assessment !== null;
+  const hasReveal = workItem.revealReceipt !== null;
+  const hasDecision = workItem.decision !== null;
+  const hasReview = workItem.review !== null;
+  const hasBinding = workItem.workflowBinding !== null;
+  const hasConflict = workItem.decisionConflict !== null;
+  const valid =
+    (workItem.state === "awaiting_assessment" &&
+      !hasAssessment &&
+      !hasReveal &&
+      !hasDecision &&
+      !hasReview &&
+      !hasBinding &&
+      !hasConflict) ||
+    (workItem.state === "awaiting_reveal" &&
+      hasAssessment &&
+      !hasReveal &&
+      !hasDecision &&
+      !hasReview &&
+      !hasBinding &&
+      !hasConflict) ||
+    (workItem.state === "awaiting_final_review" &&
+      hasAssessment &&
+      hasReveal &&
+      hasDecision &&
+      !hasReview &&
+      !hasBinding &&
+      !hasConflict) ||
+    (workItem.state === "completed" &&
+      hasAssessment &&
+      hasReveal &&
+      hasDecision &&
+      hasReview &&
+      hasBinding &&
+      hasConflict);
+  if (!valid) {
+    throw new CaseApiHttpError(
+      500,
+      "INTERNAL_ERROR",
+      "Reviewer response violated the backend blind-review state boundary.",
+    );
+  }
 }
 
 function hashParamsSchema(name: string): Record<string, unknown> {
@@ -322,6 +609,31 @@ function sendMutation(
     resourceHash,
   });
   return reply.code(status === "inserted" ? 201 : 200).send(body);
+}
+
+function sendReviewMutation(
+  reply: FastifyReply,
+  requestId: string,
+  result: {
+    readonly status: "inserted" | "existing";
+    readonly resourceHash: ContractSha256;
+  },
+  resourceKind:
+    | "calvin_independent_assessment"
+    | "decision_reveal_receipt"
+    | "calvin_review_workflow",
+  workItem: ReviewWorkItemDetailV1,
+) {
+  assertReviewWorkItemResponseBoundary(workItem);
+  return reply.code(result.status === "inserted" ? 201 : 200).send(
+    createReviewWorkflowMutationResult({
+      requestId,
+      status: result.status,
+      resourceKind,
+      resourceHash: result.resourceHash,
+      workItem,
+    }),
+  );
 }
 
 function sendError(

@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, AND THE ADR-0015 SYNTHETIC-ONLY PHASE 2 VERTICAL SLICE ARE IMPLEMENTED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, THE ADR-0015 SYNTHETIC-ONLY PHASE 2 VERTICAL SLICE, AND ADR-0016 PHASE 3A BLIND REVIEW ARE IMPLEMENTED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
 
 ## Delivery model
 
@@ -64,15 +64,25 @@ Implemented by ADR-0015 as a synthetic-only vertical slice:
 
 Exit condition met: one deterministic synthetic causal case can be created, reviewed, immutably retrieved, and audited without model involvement. Real Case ingestion and detailed dataset partitions remain separately deferred.
 
-## Phase 3: Thin annotation UI
+## Phase 3A: Synthetic blind review Research Console
 
-- render only the anonymous causal prefix through R;
-- collect approved core DoctrineUnits and whole-decision offline `calvinReview` records separately;
-- support `agree`, `clarify`, `disagree`, and `uncertain` for the complete decision;
-- hide agent proposals until the whole-decision review record is frozen when anchoring would bias evidence;
-- display the immutable BrooksDecision, CalvinReview, and derived whole-decision conflict after freeze.
+Implemented by ADR-0016 as a synthetic-only vertical slice:
 
-Exit condition: Calvin can produce one complete, immutable, outcome-blind review without editing JSON manually. The review cannot patch Brooks fields or enter runtime retrieval automatically.
+- render only anonymous 120/40 PNG and normalized causal OHLC through the cutoff;
+- freeze one immutable independent verdict and blind summary before reveal;
+- persist one reveal receipt before returning BrooksDecision content;
+- collect only whole-decision `agree`, `clarify`, `disagree`, or `uncertain` after reveal;
+- construct `CalvinReviewV1` server-side and atomically bind assessment, receipt, decision, review, reviewer, and protocol;
+- derive four workflow states without a mutable status table;
+- separate operator and reviewer principals and serve the React Research Console on the same loopback origin;
+- auto-save only the unsubmitted exact-identity draft in tab-local session storage;
+- keep Doctrine approval, real ingestion, market modules, provider, replay, and execution absent.
+
+Exit condition met: Calvin can complete, pause, resume, and audit one immutable outcome-blind review without editing JSON or receiving BrooksDecision content before the frozen assessment.
+
+## Future Phase 3B: Doctrine source approval
+
+DoctrineUnit source review and approval remains a separately contracted phase. It cannot reuse the whole-decision Calvin workflow to patch Brooks claims or promote draft doctrine implicitly.
 
 ## Phase 4: Doctrine ingestion and RAG
 
@@ -151,7 +161,8 @@ Exit condition: a candidate can be accepted, rejected, or retired without changi
 ```text
 Domain contracts
   -> Case API and audit store
-  -> Thin annotation UI
+  -> Synthetic blind-review Research Console
+  -> Separately approved Doctrine review
   -> Doctrine RAG API
   -> Brooks Policy inference API
   -> Evaluation surfaces

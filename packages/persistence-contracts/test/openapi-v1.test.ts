@@ -7,12 +7,14 @@ import { describe, it } from "node:test";
 import {
   buildCaseStoreTransportDocumentsV1,
   buildReplayBoundaryTransportDocumentsV1,
+  buildReviewWorkflowTransportDocumentsV1,
   buildTransportSchemaDocumentsV1,
 } from "../scripts/schema-generator-v1.ts";
 import {
   CASE_API_BODY_LIMIT_BYTES,
   CASE_API_ROUTE_MANIFEST_V1,
 } from "../src/case-store-transport-v1.ts";
+import { REVIEW_WORKFLOW_ROUTE_MANIFEST_V1 } from "../src/review-workflow-transport-v1.ts";
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -211,10 +213,10 @@ describe("generated Phase 1 transport schemas V1", () => {
       document["x-pa-runtime-authority"],
       "synthetic_only_local_case_store_no_model_or_trading_authority",
     );
-    assert.deepEqual(document.components.securitySchemes.localToken, {
+    assert.deepEqual(document.components.securitySchemes.operatorToken, {
       type: "http",
       scheme: "bearer",
-      bearerFormat: "PA-Local-Token",
+      bearerFormat: "PA-Local-Operator-Token",
     });
     for (const component of [
       "SyntheticCaseBundleV1",
@@ -232,6 +234,64 @@ describe("generated Phase 1 transport schemas V1", () => {
     assert.equal(document.components.schemas.CaseLabelV1, undefined);
     assert.equal(document.components.schemas.CaseCommitmentV1, undefined);
     assert.equal(document.components.schemas.DecisionConflictV1 !== undefined, true);
+    for (const reference of collectReferences(document)) {
+      assert.match(reference, /^#\/components\/schemas\/[A-Za-z0-9_]+$/);
+      const name = reference.slice("#/components/schemas/".length);
+      assert.ok(document.components.schemas[name], `unresolved schema: ${name}`);
+    }
+  });
+  it("publishes Phase 3A blind review schemas and reviewer-only routes separately", async () => {
+    const generated = buildReviewWorkflowTransportDocumentsV1(packageRoot);
+    const [schemaBundle, openapi] = await Promise.all([
+      readJson(resolve(packageRoot, "schemas/phase3a-review-workflow-v1.schema.json")),
+      readJson(resolve(packageRoot, "openapi/phase3a-review-workflow-v1.openapi.json")),
+    ]);
+    assert.deepEqual(schemaBundle, generated.schemaBundle);
+    assert.deepEqual(openapi, generated.openapi);
+
+    const document = openapi as {
+      readonly paths: Readonly<Record<string, unknown>>;
+      readonly components: {
+        readonly schemas: Readonly<Record<string, unknown>>;
+        readonly securitySchemes: Readonly<Record<string, unknown>>;
+      };
+      readonly "x-pa-phase3a-record-kinds": Readonly<Record<string, string>>;
+      readonly "x-pa-runtime-authority": string;
+    };
+    assert.deepEqual(
+      Object.keys(document.paths),
+      REVIEW_WORKFLOW_ROUTE_MANIFEST_V1.map((route) => route.openapiPath),
+    );
+    assert.deepEqual(document["x-pa-phase3a-record-kinds"], {
+      calvin_independent_assessment: "CalvinIndependentAssessmentV1",
+      decision_reveal_receipt: "DecisionRevealReceiptV1",
+      calvin_review_workflow_binding: "CalvinReviewWorkflowBindingV1",
+    });
+    assert.equal(
+      document["x-pa-runtime-authority"],
+      "synthetic_only_local_blind_review_no_model_replay_or_trading_authority",
+    );
+    assert.deepEqual(document.components.securitySchemes.reviewerToken, {
+      type: "http",
+      scheme: "bearer",
+      bearerFormat: "PA-Local-Reviewer-Token",
+    });
+    for (const component of [
+      "CalvinIndependentAssessmentV1",
+      "DecisionRevealReceiptV1",
+      "CalvinReviewWorkflowBindingV1",
+      "ReviewWorkQueueV1",
+      "ReviewWorkItemDetailV1",
+      "SubmitIndependentAssessmentCommandV1",
+      "RevealDecisionCommandV1",
+      "SubmitFinalReviewCommandV1",
+      "ReviewWorkflowMutationResultV1",
+    ]) {
+      const schema = document.components.schemas[component] as {
+        readonly additionalProperties?: unknown;
+      };
+      assert.equal(schema.additionalProperties, false, component);
+    }
     for (const reference of collectReferences(document)) {
       assert.match(reference, /^#\/components\/schemas\/[A-Za-z0-9_]+$/);
       const name = reference.slice("#/components/schemas/".length);

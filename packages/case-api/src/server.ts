@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { pathToFileURL } from "node:url";
 
 import { createPostgresCaseStoreV1 } from "@pa-agent-lab/case-store";
@@ -7,6 +8,7 @@ import { createCaseApiV1 } from "./case-api-v1.ts";
 
 export interface StartedCaseApiServerV1 {
   readonly url: string;
+  readonly reviewerUrl: string | null;
   close(): Promise<void>;
 }
 
@@ -16,6 +18,8 @@ export async function startCaseApiServerV1(
   const databaseUrl = required(env, "PA_DATABASE_URL");
   const artifactRoot = required(env, "PA_CHART_ARTIFACT_ROOT");
   const localToken = required(env, "PA_API_TOKEN");
+  const reviewerToken = randomBytes(32).toString("hex");
+  const consoleRoot = env.PA_CONSOLE_ROOT;
   const authorizedSyntheticBundleHashes = parseHashes(
     required(env, "PA_AUTHORIZED_SYNTHETIC_BUNDLE_HASHES"),
   );
@@ -26,16 +30,22 @@ export async function startCaseApiServerV1(
       store: database.store,
       artifactRoot,
       localToken,
+      reviewerToken,
       authorizedSyntheticBundleHashes,
       allowedHosts: ["127.0.0.1", "localhost"],
       allowedOrigins: [
         `http://127.0.0.1:${port}`,
         `http://localhost:${port}`,
       ],
+      ...(consoleRoot === undefined ? {} : { consoleRoot }),
     });
     const url = await app.listen({ host: "127.0.0.1", port });
     return {
       url,
+      reviewerUrl:
+        consoleRoot === undefined
+          ? null
+          : `${url}/console/#token=${reviewerToken}`,
       close: async () => {
         await app.close();
         await database.close();
@@ -85,7 +95,7 @@ if (
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
   const server = await startCaseApiServerV1();
-  console.log(server.url);
+  console.log(server.reviewerUrl ?? server.url);
   for (const signal of ["SIGINT", "SIGTERM"] as const) {
     process.once(signal, () => {
       void server.close().finally(() => {

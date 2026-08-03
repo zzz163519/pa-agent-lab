@@ -69,7 +69,7 @@ JSON request bodies are limited to 512 KiB. Fastify receives raw UTF-8 before `j
 
 ## Local authentication
 
-The server host is fixed to `127.0.0.1`; no configuration can bind it to `0.0.0.0`. Business routes require a per-launch bearer token and an accepted Host/Origin through the authentication hook. The resulting `RequestPrincipalV1` is local-only. Token material is not logged or persisted. Health and readiness are the only unauthenticated paths.
+The server host is fixed to `127.0.0.1`; no configuration can bind it to `0.0.0.0`. Operator business routes require the Phase 2 bearer token. ADR-0016 specializes the anonymous PNG route to accept either the operator or reviewer principal while complete Case/audit routes remain operator-only. Host and Origin checks remain mandatory. Health and readiness are the only unauthenticated paths.
 
 This token is not public authentication. Remote or public deployment requires a separate ADR covering TLS termination, OIDC/session behavior, CSRF, authorization, rate limits, private database networking, and security-log retention.
 
@@ -124,7 +124,7 @@ These tests prove software contracts, not Price Action correctness, model qualit
 
 - real Case ingestion and any protected/development/evaluation window;
 - dataset partition or holdout/contact-state machinery;
-- Phase 3 blind annotation interaction and UI;
+- Phase 3B Doctrine source-approval interaction;
 - SSE, WebSocket, queues, public listeners, OIDC, and public deployment;
 - Doctrine RAG, provider transport/calls, evaluation, and training;
 - replay engines, order/fill/risk/cost/accounting semantics;

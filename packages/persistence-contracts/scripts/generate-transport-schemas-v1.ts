@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import {
   buildCaseStoreTransportDocumentsV1,
   buildReplayBoundaryTransportDocumentsV1,
+  buildReviewWorkflowTransportDocumentsV1,
   buildTransportSchemaDocumentsV1,
 } from "./schema-generator-v1.ts";
 
@@ -14,6 +15,7 @@ const openapiDirectory = resolve(packageRoot, "openapi");
 const documents = buildTransportSchemaDocumentsV1(packageRoot);
 const replayDocuments = buildReplayBoundaryTransportDocumentsV1(packageRoot);
 const caseStoreDocuments = buildCaseStoreTransportDocumentsV1(packageRoot);
+const reviewWorkflowDocuments = buildReviewWorkflowTransportDocumentsV1(packageRoot);
 
 await mkdir(schemasDirectory, { recursive: true });
 await mkdir(openapiDirectory, { recursive: true });
@@ -41,6 +43,14 @@ await Promise.all([
   writeJson(
     resolve(openapiDirectory, "phase2-case-store-v1.openapi.json"),
     caseStoreDocuments.openapi,
+  ),
+  writeJson(
+    resolve(schemasDirectory, "phase3a-review-workflow-v1.schema.json"),
+    reviewWorkflowDocuments.schemaBundle,
+  ),
+  writeJson(
+    resolve(openapiDirectory, "phase3a-review-workflow-v1.openapi.json"),
+    reviewWorkflowDocuments.openapi,
   ),
 ]);
 

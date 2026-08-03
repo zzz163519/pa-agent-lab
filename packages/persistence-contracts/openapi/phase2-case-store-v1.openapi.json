@@ -11,7 +11,7 @@
         "operationId": "createSyntheticCaseBundle",
         "security": [
           {
-            "localToken": []
+            "operatorToken": []
           }
         ],
         "requestBody": {
@@ -133,7 +133,7 @@
         "operationId": "appendBrooksDecision",
         "security": [
           {
-            "localToken": []
+            "operatorToken": []
           }
         ],
         "requestBody": {
@@ -255,7 +255,7 @@
         "operationId": "appendCalvinReview",
         "security": [
           {
-            "localToken": []
+            "operatorToken": []
           }
         ],
         "requestBody": {
@@ -377,7 +377,7 @@
         "operationId": "getCase",
         "security": [
           {
-            "localToken": []
+            "operatorToken": []
           }
         ],
         "parameters": [
@@ -489,7 +489,7 @@
         "operationId": "getCaseAudit",
         "security": [
           {
-            "localToken": []
+            "operatorToken": []
           }
         ],
         "parameters": [
@@ -601,7 +601,10 @@
         "operationId": "getChartArtifactContent",
         "security": [
           {
-            "localToken": []
+            "operatorToken": []
+          },
+          {
+            "reviewerToken": []
           }
         ],
         "parameters": [
@@ -2758,10 +2761,15 @@
       }
     },
     "securitySchemes": {
-      "localToken": {
+      "operatorToken": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "PA-Local-Token"
+        "bearerFormat": "PA-Local-Operator-Token"
+      },
+      "reviewerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "PA-Local-Reviewer-Token"
       }
     }
   },
@@ -2778,7 +2786,7 @@
       "path": "/v1/synthetic-case-bundles",
       "openapiPath": "/v1/synthetic-case-bundles",
       "operationId": "createSyntheticCaseBundle",
-      "authentication": "local_token",
+      "authentication": "operator_token",
       "transport": "request_response"
     },
     {
@@ -2786,7 +2794,7 @@
       "path": "/v1/brooks-decisions",
       "openapiPath": "/v1/brooks-decisions",
       "operationId": "appendBrooksDecision",
-      "authentication": "local_token",
+      "authentication": "operator_token",
       "transport": "request_response"
     },
     {
@@ -2794,7 +2802,7 @@
       "path": "/v1/calvin-reviews",
       "openapiPath": "/v1/calvin-reviews",
       "operationId": "appendCalvinReview",
-      "authentication": "local_token",
+      "authentication": "operator_token",
       "transport": "request_response"
     },
     {
@@ -2802,7 +2810,7 @@
       "path": "/v1/cases/:caseHash",
       "openapiPath": "/v1/cases/{caseHash}",
       "operationId": "getCase",
-      "authentication": "local_token",
+      "authentication": "operator_token",
       "transport": "request_response"
     },
     {
@@ -2810,7 +2818,7 @@
       "path": "/v1/cases/:caseHash/audit",
       "openapiPath": "/v1/cases/{caseHash}/audit",
       "operationId": "getCaseAudit",
-      "authentication": "local_token",
+      "authentication": "operator_token",
       "transport": "request_response"
     },
     {
@@ -2818,7 +2826,7 @@
       "path": "/v1/chart-artifacts/:artifactId/content",
       "openapiPath": "/v1/chart-artifacts/{artifactId}/content",
       "operationId": "getChartArtifactContent",
-      "authentication": "local_token",
+      "authentication": "operator_or_reviewer_token",
       "transport": "request_response"
     },
     {

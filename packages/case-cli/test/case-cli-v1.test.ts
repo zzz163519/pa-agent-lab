@@ -61,6 +61,7 @@ describe("Phase 2 synthetic Case CLI", () => {
       store: createCaseStore(database),
       artifactRoot,
       localToken,
+      reviewerToken: "phase3a-reviewer-token-for-cli-test-0123456789",
       authorizedSyntheticBundleHashes: [authorizedFixture.caseBundle.bundleHash],
       allowedHosts: ["127.0.0.1", "localhost"],
       allowedOrigins: ["http://127.0.0.1"],
@@ -267,6 +268,46 @@ describe("Phase 2 synthetic Case CLI", () => {
     } finally {
       await app.close();
       await db.close();
+      await rm(artifactRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("seeds one blind-review work item without creating a CalvinReview", async () => {
+    const artifactRoot = await mkdtemp(resolve(tmpdir(), "pa-phase3a-cli-seed-"));
+    const requestedPaths: string[] = [];
+    const fakeFetch = (async (input, init) => {
+      requestedPaths.push(new URL(String(input)).pathname);
+      assert.equal(init?.method, "POST");
+      return new Response(
+        JSON.stringify({ status: "inserted" }),
+        { status: 201, headers: { "content-type": "application/json" } },
+      );
+    }) as typeof fetch;
+    const output: string[] = [];
+    try {
+      const exitCode = await runCaseCliV1({
+        argv: ["seed-review-work-item", "--artifact-root", artifactRoot],
+        env: { PA_API_TOKEN: localToken },
+        stdout: (line) => output.push(line),
+        stderr: (line) => output.push(`ERROR:${line}`),
+        fetchImpl: fakeFetch,
+      });
+      assert.equal(exitCode, 0, output.join("\n"));
+      assert.deepEqual(requestedPaths, [
+        "/v1/synthetic-case-bundles",
+        "/v1/brooks-decisions",
+      ]);
+      const result = JSON.parse(output.at(-1)!) as {
+        readonly mutations: Readonly<Record<string, string>>;
+        readonly reviewState: string;
+      };
+      assert.deepEqual(result.mutations, {
+        caseBundle: "inserted",
+        brooksDecision: "inserted",
+      });
+      assert.equal(result.reviewState, "awaiting_assessment");
+      assert.equal((await readdir(artifactRoot)).length, 2);
+    } finally {
       await rm(artifactRoot, { recursive: true, force: true });
     }
   });

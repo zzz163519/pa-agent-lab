@@ -36,6 +36,7 @@ const migrations = await loadContentHashedMigrations(
   resolve(root, "persistence-contracts/sql"),
 );
 const localToken = "phase2-local-token-0123456789abcdef";
+const reviewerToken = "phase3a-reviewer-token-0123456789abcdef";
 
 function authorizedHeaders() {
   return {
@@ -296,6 +297,7 @@ async function createHarness() {
     store: createCaseStore(database),
     artifactRoot,
     localToken,
+    reviewerToken,
     authorizedSyntheticBundleHashes: [authorizedFixture.caseBundle.bundleHash],
     allowedHosts: ["127.0.0.1", "localhost"],
     allowedOrigins: ["http://127.0.0.1"],
