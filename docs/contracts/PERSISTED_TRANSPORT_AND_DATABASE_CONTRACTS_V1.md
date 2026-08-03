@@ -155,12 +155,17 @@ Synthetic tests prove:
 - timeout and transport-error attempts persist a `NULL` response but cannot acquire a ModelRunAudit;
 - all seven record/relation tables install both row-mutation and statement-truncation triggers; updates, deletes, and truncation fail atomically.
 
-These tests prove transport and persistence contracts, not PostgreSQL deployment, provider behavior, Price Action quality, model quality, replay correctness, or profitability.
+These tests prove the Phase 1 transport and persistence contracts, not PostgreSQL deployment, provider behavior, Price Action quality, model quality, replay correctness, or profitability. ADR-0015 separately implements the synthetic-only Phase 2 deployment boundary without changing these six Phase 1 record kinds.
+
+## Implemented separately by ADR-0015
+
+ADR-0015 adds a separate generated Phase 2 schema/OpenAPI document, a forward migration for BrooksDecision and CalvinReview, a content-hashed migration runner, restricted real PostgreSQL roles, a deep Case Store, loopback Fastify REST API, deterministic audit views, and a synthetic CLI. It consumes this Phase 1 migration and strict parser rather than replacing them.
+
+The Phase 2 service accepts only complete `synthetic_fixture_only` CaseBundles. Real data ingestion, event streaming, and public deployment remain deferred.
 
 ## Deferred
 
-- running PostgreSQL plus pgvector and its exact container digest;
-- Fastify routes, request limits, response envelopes, local event streaming, roles, and authentication;
-- a storage repository or connection pool;
 - provider image transport and model calls;
+- real Case ingestion and dataset partitions;
+- public deployment, OIDC, and remote authentication;
 - replay, training, Paper, Live, exchange, wallet, or real-money authority.

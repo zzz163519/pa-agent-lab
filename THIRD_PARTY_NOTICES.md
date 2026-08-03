@@ -44,4 +44,29 @@ PA Agent Lab does not copy or modify resvg-js source files. Installed packages r
 - License: [Apache-2.0 and PostgreSQL](https://github.com/electric-sql/pglite/blob/25d0a55e1f1e4c59f26d9e125150dda88a33fd00/LICENSE)
 - Use: dev-only in-process PostgreSQL WASM conformance tests for the ADR-0013 migration
 
-These dependencies remain unmodified external packages. PGlite and ts-json-schema-generator are not production runtime dependencies. The repository does not commit installed package sources, database files, or generated native/WASM binaries.
+## Fastify
+
+- Package: `fastify@5.11.0`
+- Project: [Fastify](https://github.com/fastify/fastify)
+- Source release: [v5.11.0](https://github.com/fastify/fastify/tree/v5.11.0)
+- License: [MIT](https://github.com/fastify/fastify/blob/v5.11.0/LICENSE)
+- Use: ADR-0015 loopback-only REST routing, bounded raw-body parsing, route injection, and generated-schema consumption
+
+## node-postgres
+
+- Package: `pg@8.22.0`
+- Project: [node-postgres](https://github.com/brianc/node-postgres)
+- Source release: [`pg@8.22.0`](https://github.com/brianc/node-postgres/releases)
+- License: [MIT](https://github.com/brianc/node-postgres/blob/master/LICENSE)
+- Use: ADR-0015 PostgreSQL Pool/client access, parameterized SQL, transactions, and SQLSTATE handling
+
+## pgvector PostgreSQL image
+
+- Image: `pgvector/pgvector:0.8.6-pg18-trixie`
+- Linux amd64 digest: `sha256:8888de64a42b12a8e56df21d0d404c81864c18bafec7ab0f802a1453ec6cd352`
+- Project: [pgvector](https://github.com/pgvector/pgvector)
+- Source release: [v0.8.6](https://github.com/pgvector/pgvector/tree/v0.8.6)
+- License: [PostgreSQL](https://github.com/pgvector/pgvector/blob/v0.8.6/LICENSE)
+- Use: pinned local PostgreSQL 18 image for ADR-0015; the vector extension is not installed in Phase 2
+
+These dependencies remain unmodified external packages. PGlite and ts-json-schema-generator are not production runtime dependencies. The repository does not commit installed package sources, database files, container layers, or generated native/WASM binaries.

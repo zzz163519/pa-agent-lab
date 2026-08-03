@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./case-store-transport-v1": "./src/case-store-transport-v1.ts",
     "./chart-artifact-metadata-v1": "./src/chart-artifact-metadata-v1.ts",
     "./persisted-json-v1": "./src/persisted-json-v1.ts"
   },

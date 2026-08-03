@@ -1,0 +1,20 @@
+{
+  "name": "@pa-agent-lab/case-api",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./case-api-v1": "./src/case-api-v1.ts",
+    "./server": "./src/server.ts"
+  },
+  "dependencies": {
+    "@pa-agent-lab/case-store": "workspace:*",
+    "@pa-agent-lab/contracts": "workspace:*",
+    "@pa-agent-lab/persistence-contracts": "workspace:*",
+    "fastify": "5.11.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.4",
+    "@pa-agent-lab/chart-renderer": "workspace:*"
+  }
+}

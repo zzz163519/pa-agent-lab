@@ -1,0 +1,2841 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "PA Agent Lab Phase 2 Case Store V1",
+    "version": "1.0.0"
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "paths": {
+    "/v1/synthetic-case-bundles": {
+      "post": {
+        "operationId": "createSyntheticCaseBundle",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyntheticCaseBundleV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact immutable record already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiMutationResultV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Immutable record inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiMutationResultV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/brooks-decisions": {
+      "post": {
+        "operationId": "appendBrooksDecision",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrooksDecisionV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact immutable record already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiMutationResultV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Immutable record inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiMutationResultV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/calvin-reviews": {
+      "post": {
+        "operationId": "appendCalvinReview",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalvinReviewV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact immutable record already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiMutationResultV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Immutable record inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiMutationResultV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/cases/{caseHash}": {
+      "get": {
+        "operationId": "getCase",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "caseHash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ContractSha256"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Synthetic Case record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrooksPolicyCaseV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/cases/{caseHash}/audit": {
+      "get": {
+        "operationId": "getCaseAudit",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "caseHash",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ContractSha256"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deterministic Case audit view",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseAuditViewV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/chart-artifacts/{artifactId}/content": {
+      "get": {
+        "operationId": "getChartArtifactContent",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "artifactId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ContractSha256"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Validated anonymous PNG bytes",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthz": {
+      "get": {
+        "operationId": "getHealth",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Process is alive",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "ok"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/readyz": {
+      "get": {
+        "operationId": "getReadiness",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Dependencies are ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "ready"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the local Phase 2 contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SyntheticCaseBundleV1": {
+        "type": "object",
+        "properties": {
+          "sourceScope": {
+            "type": "string",
+            "const": "synthetic_fixture_only"
+          },
+          "policyCase": {
+            "$ref": "#/components/schemas/BrooksPolicyCaseV1"
+          },
+          "policyInput": {
+            "$ref": "#/components/schemas/BrooksPolicyInputV1"
+          },
+          "chartMetadata": {
+            "type": "object",
+            "properties": {
+              "context": {
+                "$ref": "#/components/schemas/AnonymousChartArtifactMetadataV1"
+              },
+              "detail": {
+                "$ref": "#/components/schemas/AnonymousChartArtifactMetadataV1"
+              }
+            },
+            "required": [
+              "context",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "binding": {
+            "$ref": "#/components/schemas/SyntheticCaseBindingV1"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "synthetic-case-bundle.v1"
+          },
+          "bundleHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "binding",
+          "bundleHash",
+          "chartMetadata",
+          "policyCase",
+          "policyInput",
+          "schemaVersion",
+          "sourceScope"
+        ],
+        "additionalProperties": false
+      },
+      "BrooksPolicyCaseV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-policy-case.v1"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "caseId": {
+            "type": "string"
+          },
+          "policyStreamId": {
+            "type": "string"
+          },
+          "barDurationSeconds": {
+            "type": "integer",
+            "const": 300,
+            "minimum": 0
+          },
+          "bars": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "barId": {
+                  "type": "string"
+                },
+                "sequence": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "open": {
+                  "type": "number"
+                },
+                "high": {
+                  "type": "number"
+                },
+                "low": {
+                  "type": "number"
+                },
+                "close": {
+                  "type": "number"
+                },
+                "isClosed": {
+                  "type": "boolean"
+                },
+                "continuityFromPrevious": {
+                  "$ref": "#/components/schemas/BarContinuityStateV1"
+                }
+              },
+              "required": [
+                "barId",
+                "sequence",
+                "open",
+                "high",
+                "low",
+                "close",
+                "isClosed",
+                "continuityFromPrevious"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 40,
+            "maxItems": 120
+          },
+          "lastVisibleBarId": {
+            "type": "string"
+          },
+          "isLeftCensored": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "caseHash",
+          "caseId",
+          "policyStreamId",
+          "barDurationSeconds",
+          "bars",
+          "lastVisibleBarId",
+          "isLeftCensored"
+        ],
+        "additionalProperties": false
+      },
+      "ContractSha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "BarContinuityStateV1": {
+        "type": "string",
+        "enum": [
+          "contiguous",
+          "session_boundary",
+          "missing_data",
+          "unknown"
+        ]
+      },
+      "BrooksPolicyInputV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-policy-input.v1"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "market": {
+            "type": "object",
+            "properties": {
+              "barDurationSeconds": {
+                "type": "integer",
+                "const": 300,
+                "minimum": 0
+              },
+              "lastVisibleBarId": {
+                "type": "string"
+              },
+              "visibleBarCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 120
+              },
+              "isLeftCensored": {
+                "type": "boolean"
+              },
+              "leftCensoredBarsMissing": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 80
+              },
+              "normalization": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "const": "first_visible_close_equals_100"
+                  },
+                  "base": {
+                    "type": "number",
+                    "const": 100
+                  },
+                  "anchorBarId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "method",
+                  "base",
+                  "anchorBarId"
+                ],
+                "additionalProperties": false
+              },
+              "bars": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "barId": {
+                      "type": "string"
+                    },
+                    "sequence": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "open": {
+                      "type": "number"
+                    },
+                    "high": {
+                      "type": "number"
+                    },
+                    "low": {
+                      "type": "number"
+                    },
+                    "close": {
+                      "type": "number"
+                    },
+                    "continuityFromPrevious": {
+                      "$ref": "#/components/schemas/BarContinuityStateV1"
+                    }
+                  },
+                  "required": [
+                    "barId",
+                    "sequence",
+                    "open",
+                    "high",
+                    "low",
+                    "close",
+                    "continuityFromPrevious"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 40,
+                "maxItems": 120
+              }
+            },
+            "required": [
+              "barDurationSeconds",
+              "lastVisibleBarId",
+              "visibleBarCount",
+              "isLeftCensored",
+              "leftCensoredBarsMissing",
+              "normalization",
+              "bars"
+            ],
+            "additionalProperties": false
+          },
+          "charts": {
+            "type": "object",
+            "properties": {
+              "context": {
+                "type": "object",
+                "properties": {
+                  "panel": {
+                    "type": "string",
+                    "enum": [
+                      "context",
+                      "detail"
+                    ]
+                  },
+                  "mediaType": {
+                    "type": "string",
+                    "const": "image/png"
+                  },
+                  "contentHash": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "barIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 40,
+                    "maxItems": 120
+                  },
+                  "lastVisibleBarId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "panel",
+                  "mediaType",
+                  "contentHash",
+                  "barIds",
+                  "lastVisibleBarId"
+                ],
+                "additionalProperties": false
+              },
+              "detail": {
+                "type": "object",
+                "properties": {
+                  "panel": {
+                    "type": "string",
+                    "enum": [
+                      "context",
+                      "detail"
+                    ]
+                  },
+                  "mediaType": {
+                    "type": "string",
+                    "const": "image/png"
+                  },
+                  "contentHash": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "barIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 40,
+                    "maxItems": 120
+                  },
+                  "lastVisibleBarId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "panel",
+                  "mediaType",
+                  "contentHash",
+                  "barIds",
+                  "lastVisibleBarId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "context",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "doctrine": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "doctrineId": {
+                  "type": "string"
+                },
+                "concept": {
+                  "type": "string"
+                },
+                "rule": {
+                  "type": "string"
+                },
+                "appliesWhen": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "avoidWhen": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "decisionEffect": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "doctrineId",
+                "concept",
+                "rule",
+                "appliesWhen",
+                "avoidWhen",
+                "decisionEffect"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "inputHash",
+          "market",
+          "charts",
+          "doctrine"
+        ],
+        "additionalProperties": false
+      },
+      "AnonymousChartArtifactMetadataV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "anonymous-chart-artifact-metadata.v1"
+          },
+          "metadataId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "artifactId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "sourceCaseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "anonymousMarketHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "rendererId": {
+            "type": "string",
+            "const": "pa-candlestick-svg-resvg.v1"
+          },
+          "rendererRuntime": {
+            "type": "string",
+            "const": "@resvg/resvg-js@2.6.2"
+          },
+          "rendererPlatform": {
+            "type": "string",
+            "const": "@resvg/resvg-js-linux-x64-gnu@2.6.2"
+          },
+          "panel": {
+            "type": "string",
+            "enum": [
+              "context",
+              "detail"
+            ]
+          },
+          "mediaType": {
+            "type": "string",
+            "const": "image/png"
+          },
+          "widthPx": {
+            "type": "integer",
+            "const": 1200,
+            "minimum": 1
+          },
+          "heightPx": {
+            "type": "integer",
+            "const": 720,
+            "minimum": 1
+          },
+          "renderInputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "contentHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "byteLength": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "barIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 40,
+            "maxItems": 120
+          },
+          "lastVisibleBarId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "metadataId",
+          "artifactId",
+          "sourceCaseHash",
+          "anonymousMarketHash",
+          "rendererId",
+          "rendererRuntime",
+          "rendererPlatform",
+          "panel",
+          "mediaType",
+          "widthPx",
+          "heightPx",
+          "renderInputHash",
+          "contentHash",
+          "byteLength",
+          "barIds",
+          "lastVisibleBarId"
+        ],
+        "additionalProperties": false
+      },
+      "SyntheticCaseBindingV1": {
+        "type": "object",
+        "properties": {
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "contextMetadataId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "detailMetadataId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "caseHash",
+          "inputHash",
+          "contextMetadataId",
+          "detailMetadataId"
+        ],
+        "additionalProperties": false
+      },
+      "CaseAuditViewV1": {
+        "type": "object",
+        "properties": {
+          "caseBundle": {
+            "$ref": "#/components/schemas/SyntheticCaseBundleV1"
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BrooksDecisionV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "review": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CalvinReviewV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "case-audit-view.v1"
+          },
+          "auditHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "decisionConflict": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DecisionConflictV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "auditHash",
+          "caseBundle",
+          "caseHash",
+          "decision",
+          "decisionConflict",
+          "review",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "BrooksDecisionV1": {
+        "type": "object",
+        "properties": {
+          "decisionId": {
+            "type": "string"
+          },
+          "caseId": {
+            "type": "string"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "lastVisibleBarId": {
+            "type": "string"
+          },
+          "barDurationSeconds": {
+            "type": "integer",
+            "minimum": 0,
+            "const": 300
+          },
+          "verdict": {
+            "$ref": "#/components/schemas/BrooksVerdictV1"
+          },
+          "evidenceBalance": {
+            "$ref": "#/components/schemas/EvidenceBalanceV1"
+          },
+          "broadContext": {
+            "$ref": "#/components/schemas/BroadContextV1"
+          },
+          "currentLeg": {
+            "$ref": "#/components/schemas/CurrentLegV1"
+          },
+          "alwaysIn": {
+            "$ref": "#/components/schemas/AlwaysInV1"
+          },
+          "pressure": {
+            "$ref": "#/components/schemas/PressureAssessmentV1"
+          },
+          "breakoutLifecycle": {
+            "$ref": "#/components/schemas/BreakoutLifecycleV1"
+          },
+          "reversalLifecycle": {
+            "$ref": "#/components/schemas/ReversalLifecycleV1"
+          },
+          "structures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketStructureV1"
+            }
+          },
+          "magnets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MagnetV1"
+            }
+          },
+          "marketEvidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarketEvidenceV1"
+            }
+          },
+          "claims": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DecisionClaimV1"
+            }
+          },
+          "longCase": {
+            "$ref": "#/components/schemas/DirectionalCaseV1"
+          },
+          "shortCase": {
+            "$ref": "#/components/schemas/DirectionalCaseV1"
+          },
+          "tradePlan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TradePlanV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "noTrade": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NoTradeDecisionV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "uncertainty": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UncertainDecisionV1"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "humanSummary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-decision.v1"
+          },
+          "decisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "alwaysIn",
+          "barDurationSeconds",
+          "breakoutLifecycle",
+          "broadContext",
+          "caseId",
+          "claims",
+          "currentLeg",
+          "decisionHash",
+          "decisionId",
+          "evidenceBalance",
+          "humanSummary",
+          "inputHash",
+          "lastVisibleBarId",
+          "longCase",
+          "magnets",
+          "marketEvidence",
+          "noTrade",
+          "pressure",
+          "reversalLifecycle",
+          "schemaVersion",
+          "shortCase",
+          "structures",
+          "tradePlan",
+          "uncertainty",
+          "verdict"
+        ],
+        "additionalProperties": false
+      },
+      "BrooksVerdictV1": {
+        "type": "string",
+        "enum": [
+          "long",
+          "short",
+          "no_trade",
+          "uncertain"
+        ]
+      },
+      "EvidenceBalanceV1": {
+        "type": "string",
+        "enum": [
+          "favors_long",
+          "favors_short",
+          "balanced",
+          "insufficient",
+          "conflicting"
+        ]
+      },
+      "BroadContextV1": {
+        "type": "object",
+        "properties": {
+          "marketState": {
+            "type": "string",
+            "enum": [
+              "trend",
+              "trading_range",
+              "breakout_mode",
+              "transition",
+              "uncertain"
+            ]
+          },
+          "trendDirection": {
+            "type": "string",
+            "enum": [
+              "bull",
+              "bear",
+              "none",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "marketState",
+          "trendDirection",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "CurrentLegV1": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down",
+              "sideways",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "direction",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "AlwaysInV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "long",
+              "short",
+              "not_established",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "PressureAssessmentV1": {
+        "type": "object",
+        "properties": {
+          "buying": {
+            "$ref": "#/components/schemas/PressureSideV1"
+          },
+          "selling": {
+            "$ref": "#/components/schemas/PressureSideV1"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/EvidenceBalanceV1"
+          }
+        },
+        "required": [
+          "buying",
+          "selling",
+          "balance"
+        ],
+        "additionalProperties": false
+      },
+      "PressureSideV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "absent",
+              "present",
+              "dominant",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "BreakoutLifecycleV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "none",
+              "attempt",
+              "provisional",
+              "confirmed",
+              "failed",
+              "testing",
+              "uncertain"
+            ]
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down",
+              "both",
+              "none",
+              "uncertain"
+            ]
+          },
+          "structureId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "direction",
+          "structureId",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "ReversalLifecycleV1": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "none",
+              "potential",
+              "transitioning",
+              "confirmed",
+              "failed",
+              "uncertain"
+            ]
+          },
+          "fromDirection": {
+            "type": "string",
+            "enum": [
+              "bull",
+              "bear",
+              "none",
+              "uncertain"
+            ]
+          },
+          "toDirection": {
+            "type": "string",
+            "enum": [
+              "bull",
+              "bear",
+              "none",
+              "uncertain"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "state",
+          "fromDirection",
+          "toDirection",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "MarketStructureV1": {
+        "type": "object",
+        "properties": {
+          "structureId": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "prior_high",
+              "prior_low",
+              "trading_range_high",
+              "trading_range_low",
+              "trading_range_midpoint",
+              "breakout_point",
+              "gap_boundary",
+              "trend_channel_boundary",
+              "measured_move_structure"
+            ]
+          },
+          "anchors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PriceAnchorV1"
+            }
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "structureId",
+          "kind",
+          "anchors",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "PriceAnchorV1": {
+        "type": "object",
+        "properties": {
+          "barId": {
+            "type": "string"
+          },
+          "field": {
+            "$ref": "#/components/schemas/PriceFieldV1"
+          },
+          "normalizedReferencePrice": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "barId",
+          "field",
+          "normalizedReferencePrice"
+        ],
+        "additionalProperties": false
+      },
+      "PriceFieldV1": {
+        "type": "string",
+        "enum": [
+          "open",
+          "high",
+          "low",
+          "close"
+        ]
+      },
+      "MagnetV1": {
+        "type": "object",
+        "properties": {
+          "magnetId": {
+            "type": "string"
+          },
+          "structureId": {
+            "type": "string"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "above",
+              "below"
+            ]
+          },
+          "relevance": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "secondary"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "magnetId",
+          "structureId",
+          "side",
+          "relevance",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "MarketEvidenceV1": {
+        "type": "object",
+        "properties": {
+          "evidenceId": {
+            "type": "string"
+          },
+          "barIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "observedFields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "open",
+                "high",
+                "low",
+                "close",
+                "relationship"
+              ]
+            }
+          },
+          "observationCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidenceId",
+          "barIds",
+          "observedFields",
+          "observationCode"
+        ],
+        "additionalProperties": false
+      },
+      "DecisionClaimV1": {
+        "type": "object",
+        "properties": {
+          "claimId": {
+            "type": "string"
+          },
+          "statementCode": {
+            "type": "string"
+          },
+          "marketEvidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "doctrineIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "claimId",
+          "statementCode",
+          "marketEvidenceIds",
+          "doctrineIds"
+        ],
+        "additionalProperties": false
+      },
+      "DirectionalCaseV1": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "long",
+              "short"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "absent",
+              "forming",
+              "actionable",
+              "invalidated",
+              "uncertain"
+            ]
+          },
+          "evidenceBalance": {
+            "$ref": "#/components/schemas/EvidenceBalanceV1"
+          },
+          "setupCandidates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SetupCandidateV1"
+            }
+          },
+          "signalBasis": {
+            "$ref": "#/components/schemas/SignalBasisV1"
+          },
+          "triggerState": {
+            "type": "string",
+            "enum": [
+              "not_applicable",
+              "pending",
+              "triggered",
+              "cancelled",
+              "expired",
+              "ambiguous"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "direction",
+          "state",
+          "evidenceBalance",
+          "setupCandidates",
+          "signalBasis",
+          "triggerState",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "SetupCandidateV1": {
+        "type": "object",
+        "properties": {
+          "setupId": {
+            "type": "string"
+          },
+          "doctrineId": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "forming",
+              "confirmed",
+              "invalidated",
+              "expired",
+              "uncertain"
+            ]
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "confluence"
+            ]
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "setupId",
+          "doctrineId",
+          "state",
+          "role",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "SignalBasisV1": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "discrete_bar",
+              "multi_bar_structure",
+              "no_separate_signal"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "absent",
+              "forming",
+              "confirmed",
+              "rejected",
+              "expired",
+              "uncertain"
+            ]
+          },
+          "signalBarIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "doctrineIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "state",
+          "signalBarIds",
+          "doctrineIds",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "TradePlanV1": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "long",
+              "short"
+            ]
+          },
+          "setupId": {
+            "type": "string"
+          },
+          "entry": {
+            "$ref": "#/components/schemas/EntryPlanV1"
+          },
+          "entryCancellation": {
+            "$ref": "#/components/schemas/StructuralConditionV1"
+          },
+          "premiseInvalidation": {
+            "$ref": "#/components/schemas/StructuralConditionV1"
+          },
+          "protection": {
+            "$ref": "#/components/schemas/ProtectionV1"
+          },
+          "holdingIntent": {
+            "type": "string",
+            "enum": [
+              "scalp",
+              "swing"
+            ]
+          },
+          "objective": {
+            "$ref": "#/components/schemas/TradeObjectiveV1"
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "direction",
+          "setupId",
+          "entry",
+          "entryCancellation",
+          "premiseInvalidation",
+          "protection",
+          "holdingIntent",
+          "objective",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "EntryPlanV1": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/StopEntryV1"
+          },
+          {
+            "$ref": "#/components/schemas/LimitEntryV1"
+          },
+          {
+            "$ref": "#/components/schemas/MarketNextEventEntryV1"
+          }
+        ]
+      },
+      "StopEntryV1": {
+        "type": "object",
+        "properties": {
+          "validAfterBarId": {
+            "type": "string"
+          },
+          "validForClosedBars": {
+            "type": "number",
+            "const": 1
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "entryType": {
+            "type": "string",
+            "const": "stop"
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "break_above",
+              "break_below"
+            ]
+          },
+          "anchor": {
+            "$ref": "#/components/schemas/PriceAnchorV1"
+          }
+        },
+        "required": [
+          "anchor",
+          "claimIds",
+          "entryType",
+          "relation",
+          "validAfterBarId",
+          "validForClosedBars"
+        ],
+        "additionalProperties": false
+      },
+      "LimitEntryV1": {
+        "type": "object",
+        "properties": {
+          "validAfterBarId": {
+            "type": "string"
+          },
+          "validForClosedBars": {
+            "type": "number",
+            "const": 1
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "entryType": {
+            "type": "string",
+            "const": "limit"
+          },
+          "relation": {
+            "type": "string",
+            "const": "pullback_to"
+          },
+          "structureId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "claimIds",
+          "entryType",
+          "relation",
+          "structureId",
+          "validAfterBarId",
+          "validForClosedBars"
+        ],
+        "additionalProperties": false
+      },
+      "MarketNextEventEntryV1": {
+        "type": "object",
+        "properties": {
+          "validAfterBarId": {
+            "type": "string"
+          },
+          "validForClosedBars": {
+            "type": "number",
+            "const": 1
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "entryType": {
+            "type": "string",
+            "const": "market_next_event"
+          }
+        },
+        "required": [
+          "claimIds",
+          "entryType",
+          "validAfterBarId",
+          "validForClosedBars"
+        ],
+        "additionalProperties": false
+      },
+      "StructuralConditionV1": {
+        "type": "object",
+        "properties": {
+          "conditionCode": {
+            "type": "string"
+          },
+          "anchor": {
+            "$ref": "#/components/schemas/PriceAnchorV1"
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "conditionCode",
+          "anchor",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "ProtectionV1": {
+        "type": "object",
+        "properties": {
+          "relation": {
+            "type": "string",
+            "enum": [
+              "below",
+              "above"
+            ]
+          },
+          "anchor": {
+            "$ref": "#/components/schemas/PriceAnchorV1"
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "relation",
+          "anchor",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "TradeObjectiveV1": {
+        "type": "object",
+        "properties": {
+          "magnetId": {
+            "type": "string"
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "magnetId",
+          "claimIds"
+        ],
+        "additionalProperties": false
+      },
+      "NoTradeDecisionV1": {
+        "type": "object",
+        "properties": {
+          "reasonCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NoTradeReasonCodeV1"
+            }
+          },
+          "claimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nextObservableCondition": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reasonCodes",
+          "claimIds",
+          "nextObservableCondition"
+        ],
+        "additionalProperties": false
+      },
+      "NoTradeReasonCodeV1": {
+        "type": "string",
+        "enum": [
+          "no_setup",
+          "setup_forming",
+          "signal_absent",
+          "signal_rejected",
+          "poor_location",
+          "opposing_pressure",
+          "balanced_evidence",
+          "breakout_unconfirmed",
+          "reversal_unconfirmed",
+          "entry_condition_not_permitted",
+          "trade_plan_incomplete",
+          "doctrine_prohibits_entry",
+          "swing_reward_insufficient"
+        ]
+      },
+      "UncertainDecisionV1": {
+        "type": "object",
+        "properties": {
+          "reasonCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UncertaintyReasonCodeV1"
+            }
+          },
+          "conflictingClaimIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missingEvidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resolutionCondition": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reasonCodes",
+          "conflictingClaimIds",
+          "missingEvidence",
+          "resolutionCondition"
+        ],
+        "additionalProperties": false
+      },
+      "UncertaintyReasonCodeV1": {
+        "type": "string",
+        "enum": [
+          "insufficient_causal_evidence",
+          "missing_data",
+          "continuity_unknown",
+          "left_censored_context",
+          "same_bar_order_unknown",
+          "market_structure_conflict",
+          "doctrine_evidence_conflict",
+          "source_provenance_uncertain"
+        ]
+      },
+      "CalvinReviewV1": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "string"
+          },
+          "brooksDecisionId": {
+            "type": "string"
+          },
+          "reviewedDecisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "scope": {
+            "type": "string",
+            "const": "whole_decision"
+          },
+          "disposition": {
+            "$ref": "#/components/schemas/CalvinReviewDispositionV1"
+          },
+          "independentVerdict": {
+            "$ref": "#/components/schemas/BrooksVerdictV1"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "outcomeBlind": {
+            "type": "boolean"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "calvin-review.v1"
+          },
+          "reviewHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "brooksDecisionId",
+          "disposition",
+          "independentVerdict",
+          "outcomeBlind",
+          "reviewHash",
+          "reviewId",
+          "reviewedDecisionHash",
+          "schemaVersion",
+          "scope",
+          "summary"
+        ],
+        "additionalProperties": false
+      },
+      "CalvinReviewDispositionV1": {
+        "type": "string",
+        "enum": [
+          "agree",
+          "disagree",
+          "clarify",
+          "uncertain"
+        ]
+      },
+      "DecisionConflictV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "decision-conflict.v1"
+          },
+          "conflictId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "brooksDecisionId": {
+            "type": "string"
+          },
+          "brooksDecisionHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "calvinReviewId": {
+            "type": "string"
+          },
+          "calvinReviewHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "kinds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DecisionConflictKindV1"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed"
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "conflictId",
+          "brooksDecisionId",
+          "brooksDecisionHash",
+          "calvinReviewId",
+          "calvinReviewHash",
+          "kinds",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "DecisionConflictKindV1": {
+        "type": "string",
+        "enum": [
+          "none",
+          "whole_decision_disagreement",
+          "verdict_disagreement",
+          "clarification_required",
+          "reviewer_uncertain"
+        ]
+      },
+      "CaseApiMutationResultV1": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "inserted",
+              "existing"
+            ]
+          },
+          "resourceKind": {
+            "type": "string",
+            "enum": [
+              "synthetic_case_bundle",
+              "brooks_decision",
+              "calvin_review"
+            ]
+          },
+          "resourceHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "case-api-mutation-result.v1"
+          }
+        },
+        "required": [
+          "requestId",
+          "resourceHash",
+          "resourceKind",
+          "schemaVersion",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "CaseApiErrorV1": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "code": {
+            "$ref": "#/components/schemas/CaseApiErrorCodeV1"
+          },
+          "message": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "case-api-error.v1"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "CaseApiErrorCodeV1": {
+        "type": "string",
+        "enum": [
+          "INVALID_JSON",
+          "INVALID_RECORD",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_FOUND",
+          "IDENTITY_CONFLICT",
+          "BODY_TOO_LARGE",
+          "DEPENDENCY_UNAVAILABLE",
+          "INTERNAL_ERROR"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "localToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "PA-Local-Token"
+      }
+    }
+  },
+  "x-pa-phase2-record-kinds": {
+    "brooks_decision": "BrooksDecisionV1",
+    "calvin_review": "CalvinReviewV1"
+  },
+  "x-pa-body-limit-bytes": 524288,
+  "x-pa-synthetic-authorization": "exact_bundle_hash_allowlist",
+  "x-pa-runtime-authority": "synthetic_only_local_case_store_no_model_or_trading_authority",
+  "x-pa-route-manifest": [
+    {
+      "method": "POST",
+      "path": "/v1/synthetic-case-bundles",
+      "openapiPath": "/v1/synthetic-case-bundles",
+      "operationId": "createSyntheticCaseBundle",
+      "authentication": "local_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/brooks-decisions",
+      "openapiPath": "/v1/brooks-decisions",
+      "operationId": "appendBrooksDecision",
+      "authentication": "local_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/calvin-reviews",
+      "openapiPath": "/v1/calvin-reviews",
+      "operationId": "appendCalvinReview",
+      "authentication": "local_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/cases/:caseHash",
+      "openapiPath": "/v1/cases/{caseHash}",
+      "operationId": "getCase",
+      "authentication": "local_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/cases/:caseHash/audit",
+      "openapiPath": "/v1/cases/{caseHash}/audit",
+      "operationId": "getCaseAudit",
+      "authentication": "local_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/chart-artifacts/:artifactId/content",
+      "openapiPath": "/v1/chart-artifacts/{artifactId}/content",
+      "operationId": "getChartArtifactContent",
+      "authentication": "local_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/healthz",
+      "openapiPath": "/healthz",
+      "operationId": "getHealth",
+      "authentication": "none",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/readyz",
+      "openapiPath": "/readyz",
+      "operationId": "getReadiness",
+      "authentication": "none",
+      "transport": "request_response"
+    }
+  ]
+}

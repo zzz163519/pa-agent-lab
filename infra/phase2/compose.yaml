@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.6-pg18-trixie@sha256:8888de64a42b12a8e56df21d0d404c81864c18bafec7ab0f802a1453ec6cd352
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: pa_agent_lab
+      POSTGRES_USER: pa_bootstrap
+      POSTGRES_PASSWORD: ${PA_POSTGRES_BOOTSTRAP_PASSWORD:?set PA_POSTGRES_BOOTSTRAP_PASSWORD}
+    ports:
+      - "127.0.0.1:${PA_POSTGRES_PORT:-55432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pa_bootstrap -d pa_agent_lab"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    volumes:
+      - phase2-postgres-data:/var/lib/postgresql
+
+volumes:
+  phase2-postgres-data:

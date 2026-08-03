@@ -5,6 +5,10 @@ import {
   BROOKS_DETAIL_BAR_COUNT,
   FIRST_BROOKS_POLICY_BAR_DURATION_SECONDS,
 } from "@pa-agent-lab/contracts";
+import {
+  CASE_API_BODY_LIMIT_BYTES,
+  CASE_API_ROUTE_MANIFEST_V1,
+} from "../src/case-store-transport-v1.ts";
 import { createGenerator } from "ts-json-schema-generator";
 
 const PERSISTED_TARGETS = [
@@ -48,6 +52,33 @@ const REPLAY_TARGETS = [
   {
     component: "ReplayResultV1",
     source: "../contracts/src/replay-boundary-v1.ts",
+  },
+] as const;
+
+const CASE_STORE_TARGETS = [
+  {
+    component: "SyntheticCaseBundleV1",
+    source: "src/case-store-transport-v1.ts",
+  },
+  {
+    component: "CaseAuditViewV1",
+    source: "src/case-store-transport-v1.ts",
+  },
+  {
+    component: "CaseApiMutationResultV1",
+    source: "src/case-store-transport-v1.ts",
+  },
+  {
+    component: "CaseApiErrorV1",
+    source: "src/case-store-transport-v1.ts",
+  },
+  {
+    component: "BrooksDecisionV1",
+    source: "../contracts/src/brooks-decision-v1.ts",
+  },
+  {
+    component: "CalvinReviewV1",
+    source: "../contracts/src/calvin-review-v1.ts",
   },
 ] as const;
 
@@ -98,6 +129,187 @@ export function buildReplayBoundaryTransportDocumentsV1(
         "research_only_no_replay_engine_or_trading_authority",
     },
   });
+}
+
+export function buildCaseStoreTransportDocumentsV1(
+  packageRoot: string,
+): GeneratedTransportDocumentsV1 {
+  const documents = buildSchemaDocuments(packageRoot, CASE_STORE_TARGETS, {
+    schemaId: "https://pa-agent-lab.local/schemas/phase2-case-store-v1",
+    title: "PA Agent Lab Phase 2 Case Store V1",
+    extensions: {
+      "x-pa-phase2-record-kinds": {
+        brooks_decision: "BrooksDecisionV1",
+        calvin_review: "CalvinReviewV1",
+      },
+      "x-pa-body-limit-bytes": CASE_API_BODY_LIMIT_BYTES,
+      "x-pa-synthetic-authorization": "exact_bundle_hash_allowlist",
+      "x-pa-runtime-authority":
+        "synthetic_only_local_case_store_no_model_or_trading_authority",
+    },
+  });
+  const openapi = asRecord(documents.openapi);
+  const components = asRecord(openapi.components);
+  return {
+    schemaBundle: documents.schemaBundle,
+    openapi: {
+      ...openapi,
+      paths: buildCaseStoreOpenApiPaths(),
+      components: {
+        ...components,
+        securitySchemes: {
+          localToken: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "PA-Local-Token",
+          },
+        },
+      },
+      "x-pa-route-manifest": CASE_API_ROUTE_MANIFEST_V1,
+    },
+  };
+}
+
+function buildCaseStoreOpenApiPaths(): Record<string, unknown> {
+  const entries = CASE_API_ROUTE_MANIFEST_V1.map((route) => {
+    const operation = buildCaseStoreOperation(route.operationId);
+    return [
+      route.openapiPath,
+      {
+        [route.method.toLowerCase()]: {
+          operationId: route.operationId,
+          ...(route.authentication === "local_token"
+            ? { security: [{ localToken: [] }] }
+            : { security: [] }),
+          ...operation,
+        },
+      },
+    ] as const;
+  });
+  return Object.fromEntries(entries);
+}
+
+function buildCaseStoreOperation(
+  operationId: string,
+): Record<string, unknown> {
+  const errorResponse = {
+    description: "Rejected by the local Phase 2 contract",
+    content: {
+      "application/json": {
+        schema: { $ref: "#/components/schemas/CaseApiErrorV1" },
+      },
+    },
+  };
+  const errors = Object.fromEntries(
+    ["400", "401", "403", "404", "409", "413", "422", "503"].map(
+      (status) => [status, errorResponse],
+    ),
+  );
+  if (operationId === "createSyntheticCaseBundle") {
+    return mutationOperation("SyntheticCaseBundleV1", errors);
+  }
+  if (operationId === "appendBrooksDecision") {
+    return mutationOperation("BrooksDecisionV1", errors);
+  }
+  if (operationId === "appendCalvinReview") {
+    return mutationOperation("CalvinReviewV1", errors);
+  }
+  if (operationId === "getCase") {
+    return {
+      parameters: [pathHashParameter("caseHash")],
+      responses: {
+        "200": jsonResponse("BrooksPolicyCaseV1", "Synthetic Case record"),
+        ...errors,
+      },
+    };
+  }
+  if (operationId === "getCaseAudit") {
+    return {
+      parameters: [pathHashParameter("caseHash")],
+      responses: {
+        "200": jsonResponse("CaseAuditViewV1", "Deterministic Case audit view"),
+        ...errors,
+      },
+    };
+  }
+  if (operationId === "getChartArtifactContent") {
+    return {
+      parameters: [pathHashParameter("artifactId")],
+      responses: {
+        "200": {
+          description: "Validated anonymous PNG bytes",
+          content: {
+            "image/png": { schema: { type: "string", format: "binary" } },
+          },
+        },
+        ...errors,
+      },
+    };
+  }
+  return {
+    responses: {
+      "200": {
+        description: operationId === "getHealth" ? "Process is alive" : "Dependencies are ready",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              additionalProperties: false,
+              required: ["status"],
+              properties: {
+                status: {
+                  type: "string",
+                  const: operationId === "getHealth" ? "ok" : "ready",
+                },
+              },
+            },
+          },
+        },
+      },
+      ...errors,
+    },
+  };
+}
+
+function mutationOperation(
+  component: string,
+  errors: Record<string, unknown>,
+): Record<string, unknown> {
+  return {
+    requestBody: {
+      required: true,
+      content: {
+        "application/json": {
+          schema: { $ref: `#/components/schemas/${component}` },
+        },
+      },
+    },
+    responses: {
+      "200": jsonResponse("CaseApiMutationResultV1", "Exact immutable record already exists"),
+      "201": jsonResponse("CaseApiMutationResultV1", "Immutable record inserted"),
+      ...errors,
+    },
+  };
+}
+
+function jsonResponse(component: string, description: string): Record<string, unknown> {
+  return {
+    description,
+    content: {
+      "application/json": {
+        schema: { $ref: `#/components/schemas/${component}` },
+      },
+    },
+  };
+}
+
+function pathHashParameter(name: string): Record<string, unknown> {
+  return {
+    name,
+    in: "path",
+    required: true,
+    schema: { $ref: "#/components/schemas/ContractSha256" },
+  };
 }
 
 function buildSchemaDocuments(
@@ -211,7 +423,14 @@ function refineSchemaNode(value: unknown): void {
     if (name === "leftCensoredBarsMissing") {
       property.maximum = BROOKS_CONTEXT_BAR_COUNT - BROOKS_DETAIL_BAR_COUNT;
     }
-    if ((name === "bars" || name === "barIds") && property.type === "array") {
+    if (
+      (name === "bars" ||
+        (name === "barIds" &&
+          Object.hasOwn(properties, "panel") &&
+          Object.hasOwn(properties, "mediaType") &&
+          Object.hasOwn(properties, "lastVisibleBarId"))) &&
+      property.type === "array"
+    ) {
       property.minItems = BROOKS_DETAIL_BAR_COUNT;
       property.maxItems = BROOKS_CONTEXT_BAR_COUNT;
     }

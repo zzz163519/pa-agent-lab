@@ -120,10 +120,14 @@ These tests prove renderer and artifact behavior, not Price Action doctrine, mod
 
 ADR-0013 now provides strict persisted chart metadata plus PostgreSQL uniqueness and Case-binding constraints. PNG bytes remain in this contract's content-addressed files.
 
+## Implemented by ADR-0015
+
+ADR-0015 now serves validated content-addressed PNG bytes through a token-protected loopback endpoint after rechecking content hash, length, signature, and dimensions. It adds no image upload or public chart service.
+
 ## Still deferred
 
 - provider-specific image transport;
 - an MCP/skill wrapper for on-demand agent use;
-- a running database or API service;
+- real-data chart ingestion or a public/remote API;
 - visual model-quality evaluation;
 - any market fetch, model call, replay, training, or trading authority.

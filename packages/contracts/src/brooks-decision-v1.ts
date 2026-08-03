@@ -355,6 +355,13 @@ export interface BrooksDecisionV1 extends BrooksDecisionInputV1 {
   readonly decisionHash: ContractSha256;
 }
 
+export interface BrooksDecisionPersistenceBindingV1 {
+  readonly caseId: string;
+  readonly inputHash: ContractSha256;
+  readonly lastVisibleBarId: string;
+  readonly barDurationSeconds: number;
+}
+
 export interface PlannedTradeGeometryV1 {
   readonly entryNormalizedPrice: number;
   readonly protectionNormalizedPrice: number;
@@ -982,6 +989,103 @@ function assertNoForbiddenProbabilityFields(value: unknown): void {
     }
   };
   visit(value);
+}
+
+export function assertBrooksDecisionIntegrity(
+  value: unknown,
+  binding: BrooksDecisionPersistenceBindingV1,
+): asserts value is BrooksDecisionV1 {
+  try {
+    const decision = exactDecisionRecord(value);
+    if (decision.schemaVersion !== BROOKS_DECISION_SCHEMA_VERSION) {
+      throw new Error("BrooksDecision schemaVersion is unsupported");
+    }
+    assertSha256("decisionHash", decision.decisionHash);
+    assertNoForbiddenProbabilityFields(decision);
+    const { decisionHash, ...body } = decision;
+    if (canonicalHash(body) !== decisionHash) {
+      throw new Error("BrooksDecision decision hash does not match its content");
+    }
+    if (
+      decision.caseId !== binding.caseId ||
+      decision.inputHash !== binding.inputHash ||
+      decision.lastVisibleBarId !== binding.lastVisibleBarId ||
+      decision.barDurationSeconds !== binding.barDurationSeconds
+    ) {
+      throw new Error(
+        "BrooksDecision does not match its persisted Case and input binding",
+      );
+    }
+    if (
+      decision.barDurationSeconds !== FIRST_BROOKS_POLICY_BAR_DURATION_SECONDS
+    ) {
+      throw new Error("BrooksDecision V1 requires 300-second bars");
+    }
+  } catch (error) {
+    throw asBrooksDecisionError(error);
+  }
+}
+
+function exactDecisionRecord(value: unknown): BrooksDecisionV1 {
+  const allowedKeys = [
+    "schemaVersion",
+    "decisionHash",
+    "decisionId",
+    "caseId",
+    "inputHash",
+    "lastVisibleBarId",
+    "barDurationSeconds",
+    "verdict",
+    "evidenceBalance",
+    "broadContext",
+    "currentLeg",
+    "alwaysIn",
+    "pressure",
+    "breakoutLifecycle",
+    "reversalLifecycle",
+    "structures",
+    "magnets",
+    "marketEvidence",
+    "claims",
+    "longCase",
+    "shortCase",
+    "tradePlan",
+    "noTrade",
+    "uncertainty",
+    "humanSummary",
+  ] as const;
+  if (
+    value === null ||
+    typeof value !== "object" ||
+    Array.isArray(value) ||
+    (Object.getPrototypeOf(value) !== Object.prototype &&
+      Object.getPrototypeOf(value) !== null)
+  ) {
+    throw new Error("BrooksDecision must be a plain object");
+  }
+  const record = value as Record<string, unknown>;
+  const names = Object.getOwnPropertyNames(record);
+  if (
+    names.length !== allowedKeys.length ||
+    names.some((name) => !(allowedKeys as readonly string[]).includes(name)) ||
+    allowedKeys.some((name) => !Object.hasOwn(record, name))
+  ) {
+    throw new Error("BrooksDecision fields must match the exact V1 contract");
+  }
+  for (const name of names) {
+    const descriptor = Object.getOwnPropertyDescriptor(record, name);
+    if (
+      descriptor === undefined ||
+      !("value" in descriptor) ||
+      !descriptor.enumerable
+    ) {
+      throw new Error("BrooksDecision fields must be enumerable data properties");
+    }
+  }
+  if (Object.getOwnPropertySymbols(record).length !== 0) {
+    throw new Error("BrooksDecision cannot contain symbol fields");
+  }
+  return record as unknown as BrooksDecisionV1;
 }
 
 function asBrooksDecisionError(error: unknown): BrooksDecisionContractError {

@@ -116,7 +116,7 @@ These tests prove contract, causality, privacy-field, and immutable-identity beh
 
 ## Implemented by ADR-0013
 
-ADR-0013 now provides strict persisted JSON/OpenAPI parsing and atomic database uniqueness/relationship constraints for this record chain. It does not start a database or API service.
+ADR-0013 now provides strict persisted JSON/OpenAPI parsing and atomic database uniqueness/relationship constraints for this record chain. It did not itself start a database or API service. ADR-0015 now consumes those records in a separately authorized synthetic-only local Case Store/API; provider transport and model calls remain unauthorized.
 
 ## Still deferred
 

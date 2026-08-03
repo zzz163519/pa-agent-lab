@@ -94,7 +94,7 @@ export function parsePersistedRecordJson<K extends PersistedRecordKindV1>(
   json: string,
 ): Readonly<PersistedRecordMapV1[K]> {
   try {
-    const parsed = parseStrictJson(json);
+    const parsed = parseStrictJsonText(json);
     validatePersistedRecord(kind, parsed);
     return deepFreeze(parsed) as Readonly<PersistedRecordMapV1[K]>;
   } catch (error) {
@@ -114,7 +114,7 @@ export function serializePersistedRecord<K extends PersistedRecordKindV1>(
   }
 }
 
-function parseStrictJson(json: string): unknown {
+export function parseStrictJsonText(json: string): unknown {
   if (typeof json !== "string" || json.length === 0) {
     fail("persisted JSON must be a non-empty string");
   }

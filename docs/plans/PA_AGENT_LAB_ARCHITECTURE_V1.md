@@ -152,14 +152,20 @@ Accepted charting boundary under ADR-0012:
 
 Future on-demand agent chart capability should wrap this seam in a project-scoped MCP plus skill rather than fetch market data or control TradingView.
 
+Implemented infrastructure under ADR-0015:
+
+- API: `fastify@5.11.0` consuming the committed ADR-0015 JSON Schema/OpenAPI route manifest through bounded raw-body parsing;
+- Case Store: `pg@8.22.0`, parameterized SQL, serializable transaction retry, and content-hashed forward migrations;
+- database: `pgvector/pgvector:0.8.6-pg18-trixie` pinned to the accepted Linux amd64 manifest, with vector extension creation deferred to Phase 4;
+- CLI: Node `parseArgs` and `fetch`, with no CLI framework dependency.
+
 Implementation candidates that do not yet authorize dependencies are:
 
-- API: Fastify consuming ADR-0013 generated JSON Schema/OpenAPI components;
 - UI: React, Vite, and TypeScript;
 - large offline candle analysis: Parquet and DuckDB when needed;
 - model access: a small provider-neutral adapter with structured-output support.
 
-The implemented `@pa-agent-lab/contracts` slices have no runtime dependency. `@pa-agent-lab/chart-renderer` uses only ADR-0012's exact resvg-js dependency. `@pa-agent-lab/persistence-contracts` uses ADR-0013's exact Ajv and Microsoft jsonc-parser runtime dependencies; schema generation and PostgreSQL WASM conformance remain dev-only. ADR-0008 defines scheduling, ADR-0010 semantic output, ADR-0011 causal input and run audit, ADR-0012 chart artifacts, ADR-0013 persisted record transport/database constraints, and ADR-0014 the provider-neutral replay boundary. None authorizes a database/API service, provider access, replay engine, or execution mechanics.
+The implemented `@pa-agent-lab/contracts` slices have no runtime dependency. `@pa-agent-lab/chart-renderer` uses only ADR-0012's exact resvg-js dependency. `@pa-agent-lab/persistence-contracts` uses ADR-0013's exact Ajv and Microsoft jsonc-parser runtime dependencies; schema generation and PostgreSQL WASM conformance remain dev-only. ADR-0015 adds only exact `pg` and Fastify runtime dependencies in the Case Store/API packages and authorizes one synthetic-only loopback service. It does not authorize provider access, real data ingestion, a replay engine, or execution mechanics.
 
 Do not introduce SQLite, Qdrant, Chroma, Redis, Neo4j, LangChain, or LlamaIndex initially. Explicit retrieval and orchestration code is easier to audit for leakage, authority, and version identity.
 
@@ -182,7 +188,8 @@ Every evaluated decision should persist at least:
 The following remain unresolved:
 
 - exact public source inventory, media/transcript identity, and permitted local excerpt policy;
-- exact Phase 2 Fastify routes, error envelopes, request limits, PostgreSQL image digest, roles, and whether local event streaming is needed;
+- Phase 3 blind-review interaction and any separately authorized real-Case ingestion adapter;
+- any future public-deployment TLS/OIDC/session/CSRF/authorization and security-log contract;
 - dataset partitions, retrieval permissions, and genuinely untouched evaluation cases;
 - exact semantic, consistency, and prefix-invariance acceptance thresholds;
 - provider-specific pinned model IDs, retirement policy, external data-retention configuration, retry attempts, and rate limits;

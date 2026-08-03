@@ -120,6 +120,84 @@ function assertNoFieldReviewKeys(value: unknown): void {
   visit(value);
 }
 
+export function assertCalvinReviewIntegrity(
+  value: unknown,
+  decision: BrooksDecisionV1,
+): asserts value is CalvinReviewV1 {
+  try {
+    const review = exactReviewRecord(value);
+    if (review.schemaVersion !== CALVIN_REVIEW_SCHEMA_VERSION) {
+      throw new Error("CalvinReview schemaVersion is unsupported");
+    }
+    assertSha256("reviewHash", review.reviewHash);
+    const rebuilt = createCalvinReview(
+      {
+        reviewId: review.reviewId,
+        brooksDecisionId: review.brooksDecisionId,
+        reviewedDecisionHash: review.reviewedDecisionHash,
+        scope: review.scope,
+        disposition: review.disposition,
+        independentVerdict: review.independentVerdict,
+        summary: review.summary,
+        outcomeBlind: review.outcomeBlind,
+      },
+      decision,
+    );
+    if (rebuilt.reviewHash !== review.reviewHash) {
+      throw new Error("CalvinReview review hash does not match its content");
+    }
+  } catch (error) {
+    throw asCalvinReviewError(error);
+  }
+}
+
+function exactReviewRecord(value: unknown): CalvinReviewV1 {
+  const allowedKeys = [
+    "schemaVersion",
+    "reviewHash",
+    "reviewId",
+    "brooksDecisionId",
+    "reviewedDecisionHash",
+    "scope",
+    "disposition",
+    "independentVerdict",
+    "summary",
+    "outcomeBlind",
+  ] as const;
+  if (
+    value === null ||
+    typeof value !== "object" ||
+    Array.isArray(value) ||
+    (Object.getPrototypeOf(value) !== Object.prototype &&
+      Object.getPrototypeOf(value) !== null)
+  ) {
+    throw new Error("CalvinReview must be a plain object");
+  }
+  const record = value as Record<string, unknown>;
+  const names = Object.getOwnPropertyNames(record);
+  if (
+    names.length !== allowedKeys.length ||
+    names.some((name) => !(allowedKeys as readonly string[]).includes(name)) ||
+    allowedKeys.some((name) => !Object.hasOwn(record, name))
+  ) {
+    throw new Error("CalvinReview fields must match the exact V1 contract");
+  }
+  for (const name of names) {
+    const descriptor = Object.getOwnPropertyDescriptor(record, name);
+    if (
+      descriptor === undefined ||
+      !("value" in descriptor) ||
+      !descriptor.enumerable
+    ) {
+      throw new Error("CalvinReview fields must be enumerable data properties");
+    }
+  }
+  if (Object.getOwnPropertySymbols(record).length !== 0) {
+    throw new Error("CalvinReview cannot contain symbol fields");
+  }
+  return record as unknown as CalvinReviewV1;
+}
+
 function asCalvinReviewError(error: unknown): CalvinReviewContractError {
   if (error instanceof CalvinReviewContractError) return error;
   return new CalvinReviewContractError(

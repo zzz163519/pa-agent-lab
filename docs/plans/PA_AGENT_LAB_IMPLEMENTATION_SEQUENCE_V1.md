@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0 AND THE IMPLEMENTED ADR-0008, ADR-0010, ADR-0011, AND ADR-0012 PHASE 1 SLICES ARE AUTHORIZED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, AND THE ADR-0015 SYNTHETIC-ONLY PHASE 2 VERTICAL SLICE ARE IMPLEMENTED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
 
 ## Delivery model
 
@@ -21,7 +21,7 @@ Exit condition: repository identity, authority tracks, and prohibited inputs are
 
 ## Phase 1: Domain contracts
 
-Current phase. The ADR-0008 scheduling, ADR-0010 semantic, ADR-0011 causal-input/privacy/model-run-audit, ADR-0012 deterministic-chart, ADR-0013 strict-persistence, and ADR-0014 provider-neutral replay-boundary contract slices are implemented; a running database/API, provider transport, replay engine, and execution mechanics are not authorized.
+Completed contract phase. The ADR-0008 scheduling, ADR-0010 semantic, ADR-0011 causal-input/privacy/model-run-audit, ADR-0012 deterministic-chart, ADR-0013 strict-persistence, and ADR-0014 provider-neutral replay-boundary contract slices are implemented. Provider transport, replay engines, and execution mechanics remain unauthorized.
 
 - freeze causal case identity and visible-through boundary;
 - freeze the accepted 120/40 chart/OHLC payload, normalization, bar identity, continuity, left-censoring, anonymity schemas, and the ADR-0009 five-minute (`300` second) V1 decision duration;
@@ -51,14 +51,18 @@ This track does not authorize embeddings, vector retrieval, a running RAG servic
 
 Exit condition: one small public-source inventory and 5–10 draft DoctrineUnits show whether the current contract can express structural semantics clearly, identify the highest-priority coverage gaps, and preserve Brooks-source versus V6-prioritization separation.
 
-## Phase 2: Case store and API
+## Phase 2: Synthetic Case store and local API
 
-- implement immutable case and label persistence;
-- expose versioned Case, Label, Commitment, and Audit APIs;
-- create CLI fixtures before a graphical interface;
-- enforce authorization and dataset-split filters server-side.
+Implemented by ADR-0015 as a synthetic-only vertical slice:
 
-Exit condition: one synthetic causal case can be created, labeled, frozen, retrieved, and audited without model involvement.
+- persist one complete Case/input/context/detail bundle atomically;
+- persist BrooksDecision and CalvinReview independently; derive DecisionConflict on demand;
+- expose versioned loopback REST/OpenAPI with strict raw JSON, bounded requests, local-token authentication, deterministic audit, and PNG content reads;
+- use content-hashed migrations, restricted PostgreSQL roles, pinned PostgreSQL 18/pgvector image identity, PGlite conformance, and real PostgreSQL integration tests;
+- provide a synthetic CLI fixture before any graphical interface;
+- reject real data ingestion, generic labels/commitments, dataset splits, event streaming, and public deployment.
+
+Exit condition met: one deterministic synthetic causal case can be created, reviewed, immutably retrieved, and audited without model involvement. Real Case ingestion and detailed dataset partitions remain separately deferred.
 
 ## Phase 3: Thin annotation UI
 

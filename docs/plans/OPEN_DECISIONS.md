@@ -58,15 +58,16 @@ Still open:
 
 ## API and user interface
 
-ADR-0013 accepts strict persisted JSON, generated OpenAPI 3.1 record components, and PostgreSQL-native immutable uniqueness/relationship constraints. It does not choose or start an API or database service.
+ADR-0015 fixes the Phase 2 synthetic-only loopback Fastify REST/OpenAPI routes, 512 KiB raw-body limit, response/error envelopes, content-hashed PostgreSQL migration/role boundary, local-token authentication hook, deterministic audit view, and no-streaming decision. It does not authorize real data ingestion, a graphical interface, public deployment, or model calls.
 
 Still open:
 
-- define versioned Fastify routes, request limits, response envelopes, and local error mapping for the accepted record components;
-- define annotation interactions for source approval and whole-decision blind review;
-- decide whether REST/OpenAPI is sufficient or model runs also need local event streaming.
+- define Phase 3 annotation interactions for source approval and whole-decision blind review;
+- define the separate real-Case ingestion authorization-before-open contract;
+- define a future public-deployment threat model, TLS/OIDC/session/CSRF/authorization boundary if remote access is approved;
+- reconsider SSE only if Phase 5 durable asynchronous model jobs demonstrate that REST polling is insufficient.
 
-Local-only, single-user deployment is accepted for the first version.
+Local-only, single-user deployment remains accepted for the first version.
 
 ## Evaluation
 

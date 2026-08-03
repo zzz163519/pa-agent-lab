@@ -1,0 +1,20 @@
+{
+  "name": "@pa-agent-lab/case-cli",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./case-cli-v1": "./src/case-cli-v1.ts",
+    "./synthetic-fixture-v1": "./src/synthetic-fixture-v1.ts"
+  },
+  "dependencies": {
+    "@pa-agent-lab/chart-renderer": "workspace:*",
+    "@pa-agent-lab/contracts": "workspace:*",
+    "@pa-agent-lab/persistence-contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.4",
+    "@pa-agent-lab/case-api": "workspace:*",
+    "@pa-agent-lab/case-store": "workspace:*"
+  }
+}

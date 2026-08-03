@@ -52,7 +52,7 @@ The logical `callId` is also the cache key for the frozen result. Its hash preim
 - reuse of any previously scheduled bar ID under a new sequence: contract error;
 - new closed bar: one immutable call plus new immutable state.
 
-The V1 in-memory state retains scheduled bar IDs to enforce this contract. Phase 2 persistence must replace or reinforce that registry with an atomic uniqueness constraint on policy stream plus bar ID.
+The V1 in-memory state retains scheduled bar IDs to enforce this contract. ADR-0013 already reinforces the registry with atomic uniqueness on policy stream plus bar ID and sequence. ADR-0015 consumes that constraint without adding a scheduler or provider call.
 
 The fixed selection policy is `continuous_every_close.v1`.
 
