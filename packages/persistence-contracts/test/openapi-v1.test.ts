@@ -7,6 +7,7 @@ import { describe, it } from "node:test";
 import {
   buildCaseStoreTransportDocumentsV1,
   buildDoctrineApprovalTransportDocumentsV1,
+  buildDoctrineRetrievalTransportDocumentsV1,
   buildReplayBoundaryTransportDocumentsV1,
   buildReviewWorkflowTransportDocumentsV1,
   buildTransportSchemaDocumentsV1,
@@ -109,6 +110,33 @@ describe("generated Phase 1 transport schemas V1", () => {
       assert.ok(openapi.components.schemas[name], `unresolved schema: ${name}`);
     }
   });
+  it("publishes Phase 4A operator-only lexical retrieval schemas without vector authority", async () => {
+    const generated = buildDoctrineRetrievalTransportDocumentsV1(packageRoot);
+    const [schemaBundle, openapi] = await Promise.all([
+      readJson(resolve(packageRoot, "schemas/phase4a-doctrine-retrieval-v1.schema.json")),
+      readJson(resolve(packageRoot, "openapi/phase4a-doctrine-retrieval-v1.openapi.json")),
+    ]);
+    assert.deepEqual(schemaBundle, generated.schemaBundle);
+    assert.deepEqual(openapi, generated.openapi);
+    const document = openapi as { readonly paths: Record<string, unknown>; readonly components: { readonly securitySchemes: Record<string, unknown> }; readonly "x-pa-runtime-authority": string };
+    assert.equal(Object.keys(document.paths).length, 7);
+    assert.deepEqual(Object.keys(document.components.securitySchemes), ["operatorToken"]);
+    for (const path of [
+      "/v1/doctrine/ingestion-runs",
+      "/v1/doctrine/activations",
+    ]) {
+      const operation = document.paths[path] as {
+        readonly post: { readonly responses: Readonly<Record<string, unknown>> };
+      };
+      assert.deepEqual(
+        Object.keys(operation.post.responses).filter((status) => status.startsWith("2")),
+        ["200", "201"],
+      );
+    }
+    assert.doesNotMatch(JSON.stringify(document), /reviewerToken|embedding|provider|console/i);
+    assert.doesNotMatch(JSON.stringify(document), /CREATE EXTENSION|"vector"/i);
+  });
+
   it("publishes replay request and result schemas without persisted-record or API authority", async () => {
     const generated = buildReplayBoundaryTransportDocumentsV1(packageRoot);
     const [schemaBundle, openapi] = await Promise.all([

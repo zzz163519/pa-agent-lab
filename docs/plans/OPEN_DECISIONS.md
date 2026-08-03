@@ -10,7 +10,6 @@ Accepted source classes are Brooks public materials, direct material from the of
 
 Still open:
 
-- choose the initial exact source set and create the first approved DoctrineUnits;
 - map selected V6 definition candidates to Brooks semantics before approval.
 
 ## Brooks decision and Calvin review
@@ -48,13 +47,13 @@ Still open:
 
 ## RAG and memory
 
-Accepted: PostgreSQL plus `pgvector` as the first system of record; doctrine, Brooks cases, Calvin review, working memory, research outcome memory, audit, and model registry remain isolated.
+Accepted: ADR-0019 and the Phase 4A contract fix the initial exact six-source public set, complete approved/unretired corpus snapshots, operator-only deterministic PostgreSQL lexical retrieval, outcome-free quality checks, explicit activation, and immutable query evidence. PostgreSQL remains the system of record; doctrine, Brooks cases, Calvin review, working memory, research outcome memory, audit, and model registry remain isolated.
 
 Still open:
 
-- define exact retrieval permissions when an actual RAG service is implemented;
-- populate approved core DoctrineUnits and define a small retrieval-quality check;
-- enforce exclusion of Calvin review and research memory from runtime retrieval.
+- approve Phase 4B embedding runtime, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider/privacy boundaries, and associated quality contract;
+- define Phase 5 deterministic Case-to-query construction and the policy worker's retrieval authority;
+- expand the exact public source allowlist only through a separately approved versioned decision.
 
 ## API and user interface
 
@@ -90,6 +89,18 @@ Still open:
 - freeze Phase 8 execution-event normalization beyond ADR-0014's identity/provenance boundary;
 - freeze the hand-computed fixtures and tolerances used for the LEAN conformance snapshot;
 - prove offline sandboxing, absence of credentials and Paper/Live configuration, and cross-container reproducibility.
+
+## Future agent runtime and market observation
+
+`FUTURE_AGENT_RUNTIME_LEARNING_AND_MARKET_OBSERVATION_DIRECTION_V1.md` records the discussion direction: evaluate Hermes as a future research/learning control plane, retain a narrow repository-owned Policy Worker and deterministic risk/execution boundary, persist market state outside LLM chat history, and design a bounded candidate selector before broad market policy calls. It is not an accepted ADR and grants no implementation or deployment authority.
+
+Still open:
+
+- accept or reject Hermes and pin its exact version, isolation, memory, data-read, and candidate-write permissions;
+- select the provider-neutral Policy Worker library and transport;
+- define continuous real-market ingestion, provisional state, closed-snapshot, restart, and recovery contracts;
+- define selector semantics, coverage/miss measurement, distribution-shift controls, and baseline comparison;
+- decide manual versus bounded automatic candidate promotion and rollback gates.
 
 ## Autonomous research
 

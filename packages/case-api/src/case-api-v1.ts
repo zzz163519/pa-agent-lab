@@ -28,9 +28,13 @@ import {
   CASE_API_BODY_LIMIT_BYTES,
   CASE_API_ROUTE_MANIFEST_V1,
   DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1,
+  DOCTRINE_RETRIEVAL_ROUTE_MANIFEST_V1,
   REVIEW_WORKFLOW_ROUTE_MANIFEST_V1,
   PersistenceContractError,
   assertApproveDoctrineCommand,
+  assertDoctrineActivationCommand,
+  assertDoctrineIngestionCommand,
+  assertDoctrineRetrievalQueryCommand,
   assertRetireDoctrineCommand,
   createCaseApiError,
   createCaseApiMutationResult,
@@ -40,6 +44,9 @@ import {
   type CaseApiErrorCodeV1,
   type CaseAuditViewV1,
   type ApproveDoctrineCommandV1,
+  type DoctrineActivationCommandV1,
+  type DoctrineIngestionCommandV1,
+  type DoctrineRetrievalQueryCommandV1,
   type DoctrineApprovalMutationResultV1,
   type DoctrineWorkItemV1,
   type DoctrineWorkQueueV1,
@@ -57,6 +64,8 @@ const REVIEW_WORKFLOW_SCHEMA_ID =
   "https://pa-agent-lab.local/schemas/phase3a-review-workflow-v1";
 const DOCTRINE_APPROVAL_SCHEMA_ID =
   "https://pa-agent-lab.local/schemas/phase3b-doctrine-approval-v1";
+const DOCTRINE_RETRIEVAL_SCHEMA_ID =
+  "https://pa-agent-lab.local/schemas/phase4a-doctrine-retrieval-v1";
 const SHA256_PATTERN = "^sha256:[0-9a-f]{64}$";
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 const schemaBundle = JSON.parse(
@@ -92,6 +101,17 @@ const doctrineSchemaBundle = JSON.parse(
 ) as Record<string, unknown>;
 const fastifyDoctrineSchemaBundle = structuredClone(doctrineSchemaBundle);
 delete fastifyDoctrineSchemaBundle.$schema;
+const doctrineRetrievalSchemaBundle = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../persistence-contracts/schemas/phase4a-doctrine-retrieval-v1.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+) as Record<string, unknown>;
+const fastifyDoctrineRetrievalSchemaBundle = structuredClone(doctrineRetrievalSchemaBundle);
+delete fastifyDoctrineRetrievalSchemaBundle.$schema;
 
 export interface OperatorPrincipalV1 {
   readonly principalId: "local:phase2-operator";
@@ -154,6 +174,7 @@ export async function createCaseApiV1(
   app.addSchema(fastifySchemaBundle);
   app.addSchema(fastifyReviewSchemaBundle);
   app.addSchema(fastifyDoctrineSchemaBundle);
+  app.addSchema(fastifyDoctrineRetrievalSchemaBundle);
   await app.register(fastifyHelmet, {
     global: true,
     contentSecurityPolicy: {
@@ -208,6 +229,10 @@ export async function createCaseApiV1(
       (entry) =>
         entry.path === request.routeOptions.url && entry.method === request.method,
     );
+    const retrievalRoute = DOCTRINE_RETRIEVAL_ROUTE_MANIFEST_V1.find(
+      (entry) =>
+        entry.path === request.routeOptions.url && entry.method === request.method,
+    );
     const workflowRoute = REVIEW_WORKFLOW_ROUTE_MANIFEST_V1.find(
       (entry) => entry.path === request.routeOptions.url,
     );
@@ -216,6 +241,7 @@ export async function createCaseApiV1(
     );
     const authentication =
       doctrineRoute?.authentication ??
+      retrievalRoute?.authentication ??
       workflowRoute?.authentication ??
       caseRoute?.authentication;
     if (authentication === undefined || authentication === "none") return;
@@ -595,6 +621,76 @@ export async function createCaseApiV1(
       );
     },
   );
+  app.post<{ Body: DoctrineIngestionCommandV1 }>(
+    "/v1/doctrine/ingestion-runs",
+    { schema: { body: doctrineRetrievalSchemaRef("DoctrineIngestionCommandV1") } },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      assertDoctrineIngestionCommand(request.body);
+      const created = await options.store.createDoctrineIngestionRun(request.body);
+      return reply.code(created.status === "inserted" ? 201 : 200).send(created.run);
+    },
+  );
+  app.get<{ Params: { readonly snapshotId: ContractSha256 } }>(
+    "/v1/doctrine/corpus-snapshots/:snapshotId",
+    { schema: { params: hashParamsSchema("snapshotId") } },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      const snapshot = await options.store.getDoctrineCorpusSnapshot(request.params.snapshotId);
+      if (snapshot === null) throw notFound("Doctrine corpus snapshot");
+      return reply.send(snapshot);
+    },
+  );
+  app.get<{ Params: { readonly runId: ContractSha256 } }>(
+    "/v1/doctrine/ingestion-runs/:runId",
+    { schema: { params: hashParamsSchema("runId") } },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      const run = await options.store.getDoctrineIngestionRun(request.params.runId);
+      if (run === null) throw notFound("Doctrine ingestion run");
+      return reply.send(run);
+    },
+  );
+  app.post<{ Body: DoctrineActivationCommandV1 }>(
+    "/v1/doctrine/activations",
+    { schema: { body: doctrineRetrievalSchemaRef("DoctrineActivationCommandV1") } },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      assertDoctrineActivationCommand(request.body);
+      const created = await options.store.createDoctrineCorpusActivation(request.body);
+      return reply
+        .code(created.status === "inserted" ? 201 : 200)
+        .send(created.activation);
+    },
+  );
+  app.get(
+    "/v1/doctrine/activations/current",
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      const activation = await options.store.getCurrentDoctrineActivation();
+      if (activation === null) throw notFound("Doctrine corpus activation");
+      return reply.send(activation);
+    },
+  );
+  app.post<{ Body: DoctrineRetrievalQueryCommandV1 }>(
+    "/v1/doctrine/retrieval-queries",
+    { schema: { body: doctrineRetrievalSchemaRef("DoctrineRetrievalQueryCommandV1") } },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      assertDoctrineRetrievalQueryCommand(request.body);
+      return reply.send(await options.store.queryDoctrine(request.body));
+    },
+  );
+  app.get<{ Params: { readonly evidenceId: ContractSha256 } }>(
+    "/v1/doctrine/retrieval-evidence/:evidenceId",
+    { schema: { params: hashParamsSchema("evidenceId") } },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      const evidence = await options.store.getDoctrineRetrievalEvidence(request.params.evidenceId);
+      if (evidence === null) throw notFound("Doctrine retrieval evidence");
+      return reply.send(evidence);
+    },
+  );
   app.get("/healthz", async () => ({ status: "ok" as const }));
   app.get("/readyz", async (_request, reply) => {
     if (!(await options.store.checkReadiness())) {
@@ -706,6 +802,17 @@ function requirePrincipal(
   return principal;
 }
 
+function requireOperatorPrincipal(
+  principals: WeakMap<object, RequestPrincipalV1>,
+  request: FastifyRequest,
+): OperatorPrincipalV1 {
+  const principal = requirePrincipal(principals, request);
+  if (principal.principalId !== "local:phase2-operator") {
+    throw new CaseApiHttpError(403, "FORBIDDEN", "Operator principal is required.");
+  }
+  return principal;
+}
+
 function requireReviewerPrincipal(
   principals: WeakMap<object, RequestPrincipalV1>,
   request: FastifyRequest,
@@ -757,6 +864,10 @@ function schemaRef(component: string): { readonly $ref: string } {
 
 function doctrineSchemaRef(component: string): { readonly $ref: string } {
   return { $ref: `${DOCTRINE_APPROVAL_SCHEMA_ID}#/$defs/${component}` };
+}
+
+function doctrineRetrievalSchemaRef(component: string): { readonly $ref: string } {
+  return { $ref: `${DOCTRINE_RETRIEVAL_SCHEMA_ID}#/$defs/${component}` };
 }
 
 function doctrineMutationResponseSchemas(): Record<number, unknown> {

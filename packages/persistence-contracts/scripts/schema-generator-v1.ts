@@ -10,6 +10,7 @@ import {
   CASE_API_ROUTE_MANIFEST_V1,
 } from "../src/case-store-transport-v1.ts";
 import { DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1 } from "../src/doctrine-approval-transport-v1.ts";
+import { DOCTRINE_RETRIEVAL_ROUTE_MANIFEST_V1 } from "../src/doctrine-retrieval-transport-v1.ts";
 import { REVIEW_WORKFLOW_ROUTE_MANIFEST_V1 } from "../src/review-workflow-transport-v1.ts";
 import { createGenerator } from "ts-json-schema-generator";
 
@@ -135,6 +136,23 @@ const REVIEW_WORKFLOW_TARGETS = [
   },
 ] as const;
 
+const DOCTRINE_RETRIEVAL_TARGETS = [
+  { component: "DoctrineCorpusEntryV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineCorpusSnapshotV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineRetrievalProfileV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineIngestionRunV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineRetrievalQualitySuiteV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineRetrievalQualityReportV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineCorpusActivationV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineRetrievalQueryV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineRetrievalEvidenceV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineRetrievalResponseV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineIngestionCommandV1", source: "src/doctrine-retrieval-transport-v1.ts" },
+  { component: "DoctrineActivationCommandV1", source: "src/doctrine-retrieval-transport-v1.ts" },
+  { component: "DoctrineRetrievalQueryCommandV1", source: "src/doctrine-retrieval-transport-v1.ts" },
+  { component: "DoctrineRetrievalMutationResultV1", source: "src/doctrine-retrieval-transport-v1.ts" },
+  { component: "CaseApiErrorV1", source: "src/case-store-transport-v1.ts" },
+] as const;
 const DOCTRINE_APPROVAL_TARGETS = [
   {
     component: "DoctrineProposalBundleV1",
@@ -403,6 +421,86 @@ function doctrineIdParameter(): Record<string, unknown> {
   };
 }
 
+export function buildDoctrineRetrievalTransportDocumentsV1(packageRoot: string): GeneratedTransportDocumentsV1 {
+  const documents = buildSchemaDocuments(packageRoot, DOCTRINE_RETRIEVAL_TARGETS, {
+    schemaId: "https://pa-agent-lab.local/schemas/phase4a-doctrine-retrieval-v1",
+    title: "PA Agent Lab Phase 4A Doctrine Retrieval V1",
+    extensions: {
+      "x-pa-phase4a-record-kinds": {
+        doctrine_corpus_entry: "DoctrineCorpusEntryV1",
+        doctrine_corpus_snapshot: "DoctrineCorpusSnapshotV1",
+        doctrine_retrieval_profile: "DoctrineRetrievalProfileV1",
+        doctrine_ingestion_run: "DoctrineIngestionRunV1",
+        doctrine_retrieval_quality_suite: "DoctrineRetrievalQualitySuiteV1",
+        doctrine_retrieval_quality_report: "DoctrineRetrievalQualityReportV1",
+        doctrine_corpus_activation: "DoctrineCorpusActivationV1",
+        doctrine_retrieval_query: "DoctrineRetrievalQueryV1",
+        doctrine_retrieval_evidence: "DoctrineRetrievalEvidenceV1",
+      },
+      "x-pa-route-manifest": DOCTRINE_RETRIEVAL_ROUTE_MANIFEST_V1,
+      "x-pa-runtime-authority": "local_operator_lexical_retrieval_no_model_vector_or_trading_authority",
+    },
+  });
+  const openapi = asRecord(documents.openapi);
+  const components = asRecord(openapi.components);
+  return { schemaBundle: documents.schemaBundle, openapi: { ...openapi, paths: buildDoctrineRetrievalOpenApiPaths(), components: { ...components, securitySchemes: { operatorToken: { type: "http", scheme: "bearer", bearerFormat: "PA-Local-Operator-Token" } } } } };
+}
+function buildDoctrineRetrievalOpenApiPaths(): Record<string, unknown> {
+  return Object.fromEntries(
+    DOCTRINE_RETRIEVAL_ROUTE_MANIFEST_V1.map((route) => {
+      const errors = Object.fromEntries(
+        ["400", "401", "403", "404", "409", "422", "503"].map((status) => [status, { description: "Rejected by the Phase 4A contract", content: { "application/json": { schema: { $ref: "#/components/schemas/CaseApiErrorV1" } } } }]),
+      );
+      const responseComponent =
+        route.operationId === "createDoctrineIngestionRun" || route.operationId === "getDoctrineIngestionRun"
+          ? "DoctrineIngestionRunV1"
+          : route.operationId === "getDoctrineCorpusSnapshot"
+            ? "DoctrineCorpusSnapshotV1"
+            : route.operationId === "createDoctrineCorpusActivation" || route.operationId === "getCurrentDoctrineActivation"
+              ? "DoctrineCorpusActivationV1"
+              : route.operationId === "createDoctrineRetrievalQuery"
+                ? "DoctrineRetrievalResponseV1"
+                : "DoctrineRetrievalEvidenceV1";
+      const requestComponent =
+        route.operationId === "createDoctrineIngestionRun"
+          ? "DoctrineIngestionCommandV1"
+          : route.operationId === "createDoctrineCorpusActivation"
+            ? "DoctrineActivationCommandV1"
+            : route.operationId === "createDoctrineRetrievalQuery"
+              ? "DoctrineRetrievalQueryCommandV1"
+              : null;
+      const parameterName = route.openapiPath.includes("{snapshotId}")
+        ? "snapshotId"
+        : route.openapiPath.includes("{runId}")
+          ? "runId"
+          : route.openapiPath.includes("{evidenceId}")
+            ? "evidenceId"
+            : null;
+      const mutationOperation =
+        route.operationId === "createDoctrineIngestionRun" ||
+        route.operationId === "createDoctrineCorpusActivation";
+      const successResponses = mutationOperation
+        ? {
+            "200": jsonResponse(responseComponent, "Existing Phase 4A Doctrine retrieval resource"),
+            "201": jsonResponse(responseComponent, "Inserted Phase 4A Doctrine retrieval resource"),
+          }
+        : {
+            "200": jsonResponse(responseComponent, "Phase 4A Doctrine retrieval response"),
+          };
+      const operation = {
+        operationId: route.operationId,
+        security: [{ operatorToken: [] }],
+        ...(parameterName === null ? {} : { parameters: [pathHashParameter(parameterName)] }),
+        ...(requestComponent === null ? {} : { requestBody: { required: true, content: { "application/json": { schema: { $ref: `#/components/schemas/${requestComponent}` } } } } }),
+        responses: {
+          ...successResponses,
+          ...errors,
+        },
+      };
+      return [route.openapiPath, { [route.method.toLowerCase()]: operation }];
+    }),
+  );
+}
 export function buildReviewWorkflowTransportDocumentsV1(
   packageRoot: string,
 ): GeneratedTransportDocumentsV1 {

@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import {
   buildCaseStoreTransportDocumentsV1,
   buildDoctrineApprovalTransportDocumentsV1,
+  buildDoctrineRetrievalTransportDocumentsV1,
   buildReplayBoundaryTransportDocumentsV1,
   buildReviewWorkflowTransportDocumentsV1,
   buildTransportSchemaDocumentsV1,
@@ -18,6 +19,7 @@ const replayDocuments = buildReplayBoundaryTransportDocumentsV1(packageRoot);
 const caseStoreDocuments = buildCaseStoreTransportDocumentsV1(packageRoot);
 const reviewWorkflowDocuments = buildReviewWorkflowTransportDocumentsV1(packageRoot);
 const doctrineApprovalDocuments = buildDoctrineApprovalTransportDocumentsV1(packageRoot);
+const doctrineRetrievalDocuments = buildDoctrineRetrievalTransportDocumentsV1(packageRoot);
 
 await mkdir(schemasDirectory, { recursive: true });
 await mkdir(openapiDirectory, { recursive: true });
@@ -61,6 +63,14 @@ await Promise.all([
   writeJson(
     resolve(openapiDirectory, "phase3b-doctrine-approval-v1.openapi.json"),
     doctrineApprovalDocuments.openapi,
+  ),
+  writeJson(
+    resolve(schemasDirectory, "phase4a-doctrine-retrieval-v1.schema.json"),
+    doctrineRetrievalDocuments.schemaBundle,
+  ),
+  writeJson(
+    resolve(openapiDirectory, "phase4a-doctrine-retrieval-v1.openapi.json"),
+    doctrineRetrievalDocuments.openapi,
   ),
 ]);
 

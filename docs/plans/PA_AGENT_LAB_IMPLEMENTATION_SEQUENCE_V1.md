@@ -96,18 +96,25 @@ Implemented by ADR-0017 as a local public-source lifecycle:
 
 Exit condition met: an exact public-source proposal can be explicitly approved or retired, and draft/retired units cannot enter the approved projection.
 
-## Phase 4: Doctrine ingestion and RAG
+## Phase 4: Doctrine ingestion and retrieval
 
-The Phase 1 corpus preflight is input discovery and semantic pilot work; Phase 4 is the formal approved-corpus and retrieval implementation.
+ADR-0019 splits the original broad Phase 4 direction into an implemented lexical slice and a separately authorized future vector slice.
 
-- inventory only legally available source material, using the preflight inventory as a starting point;
-- create simple local Source records and approved DoctrineUnits containing core trading semantics;
-- preserve source/version hashes and source mapping in local authority records while keeping the RAG view simplified;
-- implement metadata, lexical, and vector retrieval over approved DoctrineUnits;
-- persist retrieved doctrine IDs for each model run;
-- enforce exclusion of draft, retired, Calvin-review, research-memory, and model-generated authority.
+### Phase 4A: approved corpus and lexical retrieval
 
-Exit condition: a doctrine query returns bounded approved trading semantics and cannot retrieve draft, retired, Calvin-review, or model-generated authority.
+- project the complete approved, unretired Doctrine set from the Phase 3B authority chain into immutable snapshots;
+- preserve exact Source, proposal, approval, and simplified RAG-record hashes without fetching or storing source bodies;
+- run one fixed PostgreSQL lexical profile over the five approved semantic fields;
+- require human-authored outcome-free quality fixtures, an explicit passed report, and explicit activation;
+- expose only operator-authenticated loopback API and CLI retrieval;
+- commit immutable query/evidence records for matched, no-match, retirement-invalidated, and terminal retrieval paths;
+- exclude draft, retired, Calvin-review, research-memory, model-generated, Case, outcome, replay, and trading authority.
+
+Exit condition met: the exact initial approved corpus can be ingested and explicitly activated; bounded deterministic lexical queries return approved simplified semantics or an audited terminal state, while PostgreSQL constraints and restricted roles fail closed.
+
+### Phase 4B: vector and hybrid retrieval
+
+Still requires a separate ADR, contract, and implementation approval before adding embeddings, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider calls, model-run retrieval integration, or Case-aware query construction.
 
 ## Phase 5: Brooks Policy Agent vertical slice
 

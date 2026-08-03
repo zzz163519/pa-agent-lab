@@ -34,7 +34,7 @@ after(async () => {
   await db.close();
 });
 
-describe("content-hashed Phase 3B migration runner", () => {
+describe("content-hashed migrations", () => {
   it("applies ordered migrations once and records exact content hashes atomically", async () => {
     const migrations = await loadContentHashedMigrations(
       resolve(root, "persistence-contracts/sql"),
@@ -44,11 +44,12 @@ describe("content-hashed Phase 3B migration runner", () => {
       [2, "0002_phase2_decision_review_records_v1.sql"],
       [3, "0003_phase3a_blind_review_workflow_v1.sql"],
       [4, "0004_phase3b_doctrine_approval_v1.sql"],
+      [5, "0005_phase4a_doctrine_lexical_retrieval_v1.sql"],
     ]);
     const first = await applyContentHashedMigrations(db, migrations);
     const second = await applyContentHashedMigrations(db, migrations);
-    assert.deepEqual(first.map(({ status }) => status), ["applied", "applied", "applied", "applied"]);
-    assert.deepEqual(second.map(({ status }) => status), ["existing", "existing", "existing", "existing"]);
+    assert.deepEqual(first.map(({ status }) => status), ["applied", "applied", "applied", "applied", "applied"]);
+    assert.deepEqual(second.map(({ status }) => status), ["existing", "existing", "existing", "existing", "existing"]);
 
     const ledger = await db.query<{
       migration_order: number;
@@ -88,6 +89,7 @@ describe("content-hashed Phase 3B migration runner", () => {
           },
           migrations[2]!,
           migrations[3]!,
+          migrations[4]!,
         ]),
       { message: /migration content hash drift/ },
     );

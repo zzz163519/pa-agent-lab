@@ -35,6 +35,9 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
         "artifact-root": { type: "string" },
         output: { type: "string" },
         reason: { type: "string" },
+        query: { type: "string" },
+        limit: { type: "string" },
+        "repeat-index": { type: "string" },
       },
     });
     const command = parsed.positionals[0];
@@ -45,6 +48,52 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
     }
     const request = createRequest(apiUrl, token, options.fetchImpl ?? fetch);
     const fetchImpl = options.fetchImpl ?? fetch;
+
+    if (command === "run-doctrine-ingestion") {
+      const attemptIndex = optionalNonNegativeInteger("--repeat-index", parsed.values["repeat-index"]);
+      const value = await request("POST", "/v1/doctrine/ingestion-runs", attemptIndex === undefined ? {} : { attemptIndex });
+      options.stdout(JSON.stringify(value));
+      return 0;
+    }
+
+    if (command === "inspect-doctrine-snapshot") {
+      const snapshotId = requiredSha256("inspect-doctrine-snapshot requires one snapshot identity", parsed.positionals[1]);
+      options.stdout(JSON.stringify(await request("GET", `/v1/doctrine/corpus-snapshots/${snapshotId}`)));
+      return 0;
+    }
+
+    if (command === "inspect-doctrine-ingestion") {
+      const runId = requiredSha256("inspect-doctrine-ingestion requires one run identity", parsed.positionals[1]);
+      options.stdout(JSON.stringify(await request("GET", `/v1/doctrine/ingestion-runs/${runId}`)));
+      return 0;
+    }
+
+    if (command === "activate-doctrine-corpus") {
+      const runId = requiredSha256("activate-doctrine-corpus requires a run identity", parsed.positionals[1]);
+      const qualityReportHash = requiredSha256("activate-doctrine-corpus requires a quality report identity", parsed.positionals[2]);
+      options.stdout(JSON.stringify(await request("POST", "/v1/doctrine/activations", { runId, qualityReportHash })));
+      return 0;
+    }
+
+    if (command === "inspect-current-doctrine-activation") {
+      options.stdout(JSON.stringify(await request("GET", "/v1/doctrine/activations/current")));
+      return 0;
+    }
+
+    if (command === "query-doctrine") {
+      const query = parsed.values.query ?? parsed.positionals[1];
+      if (query === undefined) throw new Error("query-doctrine requires --query <text>");
+      const limit = optionalBoundedInteger("--limit", parsed.values.limit, 1, 8);
+      const repeatIndex = optionalNonNegativeInteger("--repeat-index", parsed.values["repeat-index"]);
+      options.stdout(JSON.stringify(await request("POST", "/v1/doctrine/retrieval-queries", { query, ...(limit === undefined ? {} : { limit }), ...(repeatIndex === undefined ? {} : { repeatIndex }) })));
+      return 0;
+    }
+
+    if (command === "inspect-doctrine-evidence") {
+      const evidenceId = requiredSha256("inspect-doctrine-evidence requires one evidence identity", parsed.positionals[1]);
+      options.stdout(JSON.stringify(await request("GET", `/v1/doctrine/retrieval-evidence/${evidenceId}`)));
+      return 0;
+    }
 
     if (command === "seed-doctrine-pilot") {
       const proposals = createPhase3bPilotDoctrineProposalsV1();
@@ -298,7 +347,7 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
     }
 
     throw new Error(
-      "command must be seed-doctrine-pilot, inspect-doctrine, approve-doctrine, retire-doctrine, seed-review-work-item, seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
+      "command must be run-doctrine-ingestion, inspect-doctrine-snapshot, inspect-doctrine-ingestion, activate-doctrine-corpus, inspect-current-doctrine-activation, query-doctrine, inspect-doctrine-evidence, seed-doctrine-pilot, inspect-doctrine, approve-doctrine, retire-doctrine, seed-review-work-item, seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
     );
   } catch (error) {
     options.stderr(error instanceof Error ? error.message : String(error));
@@ -336,6 +385,18 @@ function createRequest(
     }
     return value;
   };
+}
+
+function optionalNonNegativeInteger(name: string, value: string | undefined): number | undefined {
+  return optionalBoundedInteger(name, value, 0, Number.MAX_SAFE_INTEGER);
+}
+
+function optionalBoundedInteger(name: string, value: string | undefined, minimum: number, maximum: number): number | undefined {
+  if (value === undefined) return undefined;
+  if (!/^(0|[1-9][0-9]*)$/.test(value)) throw new Error(`${name} must be an integer`);
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < minimum || parsed > maximum) throw new Error(`${name} must be between ${minimum} and ${maximum}`);
+  return parsed;
 }
 
 function requiredDoctrineId(command: string, value: string | undefined): string {

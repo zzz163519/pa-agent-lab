@@ -5,7 +5,10 @@ import {
   createPostgresCaseStoreV1,
   createPostgresConnectionStringV1,
 } from "@pa-agent-lab/case-store";
-import type { ContractSha256 } from "@pa-agent-lab/contracts";
+import {
+  DOCTRINE_RETRIEVAL_RUNTIME,
+  type ContractSha256,
+} from "@pa-agent-lab/contracts";
 
 import { createCaseApiV1 } from "./case-api-v1.ts";
 
@@ -36,6 +39,7 @@ export async function startCaseApiServerV1(
   const reviewerToken = randomBytes(32).toString("hex");
   const database = createPostgresCaseStoreV1({
     connectionString: deployment.databaseUrl,
+    doctrineRetrievalRuntime: DOCTRINE_RETRIEVAL_RUNTIME,
   });
   try {
     const app = await createCaseApiV1({

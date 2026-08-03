@@ -3,6 +3,7 @@ import pg, { type Pool, type PoolClient } from "pg";
 import {
   CALVIN_REVIEW_WORKFLOW_PROTOCOL_VERSION,
   CALVIN_REVIEWER_PRINCIPAL,
+  DOCTRINE_RETRIEVAL_RUNTIME,
   DoctrineApprovalContractError,
   DoctrineContractError,
   assertBrooksDecisionIntegrity,
@@ -70,6 +71,11 @@ import {
   type SyntheticCaseBundleV1,
 } from "@pa-agent-lab/persistence-contracts";
 
+import {
+  createDoctrineRetrievalStoreV1,
+  type DoctrineRetrievalStoreV1,
+} from "./doctrine-retrieval-store-v1.ts";
+
 export interface CaseStoreDatabaseClientV1 {
   query<T>(
     sql: string,
@@ -88,7 +94,7 @@ export interface CaseStoreMutationResultV1 {
   readonly resourceHash: ContractSha256;
 }
 
-export interface CaseStoreV1 {
+export interface CaseStoreV1 extends DoctrineRetrievalStoreV1 {
   appendSyntheticCaseBundle(
     bundle: SyntheticCaseBundleV1,
   ): Promise<Readonly<CaseStoreMutationResultV1>>;
@@ -165,19 +171,34 @@ export interface PostgresCaseStoreHandleV1 {
 export function createPostgresCaseStoreV1(options: {
   readonly connectionString: string;
   readonly maxConnections?: number;
+  readonly doctrineRetrievalRuntime: typeof DOCTRINE_RETRIEVAL_RUNTIME;
 }): PostgresCaseStoreHandleV1 {
   const pool = new pg.Pool({
     connectionString: options.connectionString,
     max: options.maxConnections ?? 4,
   });
   return {
-    store: createCaseStore(createPgCaseStoreDatabase(pool)),
+    store: createCaseStore(createPgCaseStoreDatabase(pool), {
+      doctrineRetrievalRuntime: options.doctrineRetrievalRuntime,
+    }),
     close: () => pool.end(),
   };
 }
 
-export function createCaseStore(database: CaseStoreDatabaseV1): CaseStoreV1 {
+export function createCaseStore(
+  database: CaseStoreDatabaseV1,
+  options: {
+    readonly doctrineRetrievalRuntime?: typeof DOCTRINE_RETRIEVAL_RUNTIME;
+  } = {},
+): CaseStoreV1 {
+  const doctrineRetrieval = createDoctrineRetrievalStoreV1(database, {
+    runtimeAttestation:
+      options.doctrineRetrievalRuntime === undefined
+        ? null
+        : { runtime: options.doctrineRetrievalRuntime },
+  });
   return {
+    ...doctrineRetrieval,
     appendSyntheticCaseBundle: (bundle) => appendBundle(database, bundle),
     appendBrooksDecision: (decision) => appendDecision(database, decision),
     appendCalvinReview: (review) => appendReview(database, review),

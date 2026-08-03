@@ -6,6 +6,7 @@
     ".": "./src/index.ts",
     "./case-store-v1": "./src/case-store-v1.ts",
     "./database-bootstrap-v1": "./src/database-bootstrap-v1.ts",
+    "./doctrine-retrieval-store-v1": "./src/doctrine-retrieval-store-v1.ts",
     "./migration-runner-v1": "./src/migration-runner-v1.ts",
     "./postgres-connection-v1": "./src/postgres-connection-v1.ts"
   },

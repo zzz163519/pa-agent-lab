@@ -6,16 +6,19 @@ import { describe, it } from "node:test";
 import pg from "pg";
 
 import {
+  DOCTRINE_RETRIEVAL_RUNTIME,
+} from "@pa-agent-lab/contracts";
+import {
   bootstrapPhase2DatabaseV1,
   createPostgresCaseStoreV1,
 } from "../src/index.ts";
 import { makePhase3ReviewWorkflowFixture } from "../../persistence-contracts/test/fixtures/phase3a-review-workflow-v1.fixture.ts";
-import { makePhase3bDoctrineApprovalFixture } from "../../persistence-contracts/test/fixtures/phase3b-doctrine-approval-v1.fixture.ts";
+import { createPhase3bPilotDoctrineProposalsV1 } from "../../case-cli/src/doctrine-pilot-v1.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const adminUrl = process.env.PA_PHASE2_POSTGRES_ADMIN_URL;
 
-describe("real PostgreSQL Phase 3B integration", () => {
+describe("real PostgreSQL Phase 4A integration", () => {
   it(
     "proves migrations, concurrent idempotency, ownership, and restricted application privileges",
     { skip: adminUrl === undefined },
@@ -42,8 +45,10 @@ describe("real PostgreSQL Phase 3B integration", () => {
         "applied",
         "applied",
         "applied",
+        "applied",
       ]);
       assert.deepEqual(secondMigration.map(({ status }) => status), [
+        "existing",
         "existing",
         "existing",
         "existing",
@@ -56,6 +61,7 @@ describe("real PostgreSQL Phase 3B integration", () => {
       const handle = createPostgresCaseStoreV1({
         connectionString: applicationUrl.toString(),
         maxConnections: 4,
+        doctrineRetrievalRuntime: DOCTRINE_RETRIEVAL_RUNTIME,
       });
       const applicationPool = new pg.Pool({
         connectionString: applicationUrl.toString(),
@@ -113,33 +119,41 @@ describe("real PostgreSQL Phase 3B integration", () => {
           fixture.review.independentVerdict,
         );
 
-        const doctrine = makePhase3bDoctrineApprovalFixture();
-        await handle.store.appendDoctrineProposal(doctrine.proposal);
-        const doctrineApproval = await handle.store.approveDoctrine(
-          doctrine.proposal.doctrineUnit.doctrineId,
-          { proposalHash: doctrine.proposal.proposalHash },
-          "local:phase2-operator",
+        const pilotProposals = createPhase3bPilotDoctrineProposalsV1();
+        for (const proposal of pilotProposals) {
+          await handle.store.appendDoctrineProposal(proposal);
+          await handle.store.approveDoctrine(
+            proposal.doctrineUnit.doctrineId,
+            { proposalHash: proposal.proposalHash },
+            "local:phase2-operator",
+          );
+        }
+        const retrievalRun = (await handle.store.createDoctrineIngestionRun({})).run;
+        assert.equal(retrievalRun.status, "succeeded");
+        const quality = await applicationPool.query<{
+          readonly quality_report_hash: `sha256:${string}`;
+          readonly status: string;
+        }>(
+          "SELECT quality_report_hash,status FROM pa_doctrine_quality_reports WHERE run_id=$1",
+          [retrievalRun.runId],
         );
-        await handle.store.retireDoctrine(
-          doctrine.proposal.doctrineUnit.doctrineId,
-          {
-            approvalHash: doctrineApproval.resourceHash,
-            reason: doctrine.retirement.reason,
-          },
-          "local:calvin-reviewer",
-        );
-        assert.equal(
-          (await handle.store.getDoctrineWorkItem(
-            doctrine.proposal.doctrineUnit.doctrineId,
-          ))?.status,
-          "retired",
-        );
+        assert.equal(quality.rows[0]?.status, "passed");
+        await handle.store.createDoctrineCorpusActivation({
+          runId: retrievalRun.runId,
+          qualityReportHash: quality.rows[0]!.quality_report_hash,
+        });
+        const retrieval = await handle.store.queryDoctrine({
+          query: "breakout context follow through",
+        });
+        assert.equal(retrieval.evidence.status, "matched");
+        assert.match(retrieval.evidence.results[0]!.scoreHex, /^[0-9a-f]{8}$/);
 
         const owner = await applicationPool.query<{
           readonly owner: string;
           readonly current_user: string;
           readonly canonical_json_execute: boolean;
           readonly vector_installed: boolean;
+          readonly postgresql_major: number;
         }>(`
           SELECT
             pg_get_userbyid(relowner) AS owner,
@@ -151,7 +165,8 @@ describe("real PostgreSQL Phase 3B integration", () => {
             ) AS canonical_json_execute,
             EXISTS (
               SELECT 1 FROM pg_extension WHERE extname = 'vector'
-            ) AS vector_installed
+            ) AS vector_installed,
+            current_setting('server_version_num')::integer / 10000 AS postgresql_major
           FROM pg_class WHERE relname = 'pa_doctrine_proposals'
         `);
         assert.deepEqual(owner.rows, [
@@ -160,6 +175,7 @@ describe("real PostgreSQL Phase 3B integration", () => {
             current_user: applicationRole,
             canonical_json_execute: true,
             vector_installed: false,
+            postgresql_major: 18,
           },
         ]);
         await assert.rejects(

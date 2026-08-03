@@ -48,7 +48,7 @@ Keep these tracks separate even when they agree:
 
 ## Engineering model
 
-- Direct Pi is the primary coordinator and final writer unless Calvin approves another workflow.
+- Implementation may be delegated to a worker only after Direct Pi states the concrete reason, write scope, and retained verification/merge responsibilities, and Calvin explicitly approves that delegation. Keep one writer per worktree and use a separate agent for independent review.
 - Define domain contracts and API schemas before building model orchestration.
 - ADR-0008 fixes `evaluation_sampled` and `continuous_every_close` as the only V1 scheduling modes; a future frequency-reduction filter is a separately evaluated research candidate.
 - ADR-0009 fixes the first V1 Brooks policy duration to five-minute closed bars (`barDurationSeconds = 300`); any later timeframe is a separately versioned generalization candidate.

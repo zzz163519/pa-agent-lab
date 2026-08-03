@@ -1,0 +1,796 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pa-agent-lab.local/schemas/phase4a-doctrine-retrieval-v1",
+  "$defs": {
+    "DoctrineCorpusEntryV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-corpus-entry.v1"
+        },
+        "doctrineId": {
+          "type": "string"
+        },
+        "proposalHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "approvalHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "sourceId": {
+          "type": "string"
+        },
+        "sourceContentHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "ragRecord": {
+          "$ref": "#/$defs/DoctrineRagRecordV1"
+        },
+        "ragRecordHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "doctrineId",
+        "proposalHash",
+        "approvalHash",
+        "sourceId",
+        "sourceContentHash",
+        "ragRecord",
+        "ragRecordHash"
+      ],
+      "additionalProperties": false
+    },
+    "ContractSha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "DoctrineRagRecordV1": {
+      "type": "object",
+      "properties": {
+        "doctrineId": {
+          "type": "string"
+        },
+        "concept": {
+          "type": "string"
+        },
+        "rule": {
+          "type": "string"
+        },
+        "appliesWhen": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "avoidWhen": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "decisionEffect": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "doctrineId",
+        "concept",
+        "rule",
+        "appliesWhen",
+        "avoidWhen",
+        "decisionEffect"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineCorpusSnapshotV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-corpus-snapshot.v1"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DoctrineCorpusEntryV1"
+          }
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "snapshotId"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineRetrievalProfileV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-retrieval-profile.v1"
+        },
+        "engine": {
+          "type": "string",
+          "const": "postgresql_fts"
+        },
+        "runtime": {
+          "type": "string",
+          "const": "pgvector/pgvector:0.8.6-pg18-trixie@sha256:8888de64a42b12a8e56df21d0d404c81864c18bafec7ab0f802a1453ec6cd352"
+        },
+        "postgresqlMajor": {
+          "type": "number",
+          "const": 18
+        },
+        "textSearchConfiguration": {
+          "type": "string",
+          "const": "pg_catalog.english"
+        },
+        "fields": {
+          "type": "array",
+          "minItems": 5,
+          "items": [
+            {
+              "type": "string",
+              "const": "concept"
+            },
+            {
+              "type": "string",
+              "const": "rule"
+            },
+            {
+              "type": "string",
+              "const": "appliesWhen"
+            },
+            {
+              "type": "string",
+              "const": "avoidWhen"
+            },
+            {
+              "type": "string",
+              "const": "decisionEffect"
+            }
+          ],
+          "maxItems": 5
+        },
+        "fieldWeight": {
+          "type": "string",
+          "const": "D"
+        },
+        "arraySeparator": {
+          "type": "string",
+          "const": "\n"
+        },
+        "queryParser": {
+          "type": "string",
+          "const": "plainto_tsquery"
+        },
+        "matchPredicate": {
+          "type": "string",
+          "const": "document_vector_@@_parsed_query"
+        },
+        "rankFunction": {
+          "type": "string",
+          "const": "ts_rank_cd_0"
+        },
+        "defaultLimit": {
+          "type": "number",
+          "const": 5
+        },
+        "maxLimit": {
+          "type": "number",
+          "const": 8
+        },
+        "ordering": {
+          "type": "string",
+          "const": "rank_desc_doctrine_id_c"
+        },
+        "scoreEncoding": {
+          "type": "string",
+          "const": "float4send_hex"
+        },
+        "queryRewriting": {
+          "type": "string",
+          "const": "none"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "engine",
+        "runtime",
+        "postgresqlMajor",
+        "textSearchConfiguration",
+        "fields",
+        "fieldWeight",
+        "arraySeparator",
+        "queryParser",
+        "matchPredicate",
+        "rankFunction",
+        "defaultLimit",
+        "maxLimit",
+        "ordering",
+        "scoreEncoding",
+        "queryRewriting",
+        "profileHash"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineIngestionRunV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-ingestion-run.v1"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "attemptIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "succeeded",
+            "failed"
+          ]
+        },
+        "entryCount": {
+          "type": "number"
+        },
+        "ragRecordHashes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ContractSha256"
+          }
+        },
+        "logicalDocumentHashes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ContractSha256"
+          }
+        },
+        "lexicalManifestHash": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractSha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "errorCodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DoctrineIngestionErrorCodeV1"
+          }
+        },
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "snapshotId",
+        "profileHash",
+        "attemptIndex",
+        "status",
+        "entryCount",
+        "ragRecordHashes",
+        "logicalDocumentHashes",
+        "lexicalManifestHash",
+        "errorCodes",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineIngestionErrorCodeV1": {
+      "type": "string",
+      "enum": [
+        "RUNTIME_MISMATCH",
+        "EMPTY_CORPUS",
+        "SOURCE_NOT_ALLOWED",
+        "INVALID_ENTRY",
+        "INGESTION_FAILED"
+      ]
+    },
+    "DoctrineRetrievalQualitySuiteV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-retrieval-quality-suite.v1"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "fixtures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DoctrineQualityFixtureV1"
+          }
+        },
+        "qualitySuiteHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "profileHash",
+        "fixtures",
+        "qualitySuiteHash"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineQualityFixtureV1": {
+      "type": "object",
+      "properties": {
+        "fixtureId": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "positive",
+            "cross_concept",
+            "no_match",
+            "isolation"
+          ]
+        },
+        "query": {
+          "type": "string"
+        },
+        "requiredDoctrineIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expectedDoctrineIdOrder": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expectedStatus": {
+          "type": "string",
+          "enum": [
+            "matched",
+            "no_match"
+          ]
+        }
+      },
+      "required": [
+        "fixtureId",
+        "kind",
+        "query",
+        "requiredDoctrineIds",
+        "expectedDoctrineIdOrder",
+        "expectedStatus"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineRetrievalQualityReportV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-retrieval-quality-report.v1"
+        },
+        "suiteHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "fixtureResultHashes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ContractSha256"
+          }
+        },
+        "qualityReportHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "suiteHash",
+        "snapshotId",
+        "runId",
+        "profileHash",
+        "status",
+        "fixtureResultHashes",
+        "qualityReportHash"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineCorpusActivationV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-corpus-activation.v1"
+        },
+        "activationSequence": {
+          "type": "number"
+        },
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "qualityReportHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "operatorPrincipal": {
+          "type": "string",
+          "const": "local:phase2-operator"
+        },
+        "activationId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "activationSequence",
+        "runId",
+        "snapshotId",
+        "profileHash",
+        "qualityReportHash",
+        "operatorPrincipal",
+        "activationId"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineRetrievalQueryV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-retrieval-query.v1"
+        },
+        "activationId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "originalQuery": {
+          "type": "string"
+        },
+        "normalizedQuery": {
+          "type": "string"
+        },
+        "queryHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "limit": {
+          "type": "number"
+        },
+        "repeatIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operatorPrincipal": {
+          "type": "string",
+          "const": "local:phase2-operator"
+        },
+        "queryId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "activationId",
+        "runId",
+        "snapshotId",
+        "profileHash",
+        "originalQuery",
+        "normalizedQuery",
+        "queryHash",
+        "limit",
+        "repeatIndex",
+        "operatorPrincipal",
+        "queryId"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineRetrievalEvidenceV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-retrieval-evidence.v1"
+        },
+        "queryId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "activationId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "normalizedQuery": {
+          "type": "string"
+        },
+        "queryHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "limit": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "matched",
+            "no_match",
+            "failed"
+          ]
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DoctrineRetrievalResultV1"
+          }
+        },
+        "errorCodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DoctrineRetrievalErrorCodeV1"
+          }
+        },
+        "evidenceId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "queryId",
+        "activationId",
+        "runId",
+        "snapshotId",
+        "profileHash",
+        "normalizedQuery",
+        "queryHash",
+        "limit",
+        "status",
+        "results",
+        "errorCodes",
+        "evidenceId"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineRetrievalResultV1": {
+      "type": "object",
+      "properties": {
+        "rank": {
+          "type": "number"
+        },
+        "doctrineId": {
+          "type": "string"
+        },
+        "ragRecordHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "scoreHex": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "rank",
+        "doctrineId",
+        "ragRecordHash",
+        "scoreHex"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineRetrievalErrorCodeV1": {
+      "type": "string",
+      "enum": [
+        "ACTIVATION_NOT_ELIGIBLE",
+        "CORPUS_RETIRED",
+        "RETRIEVAL_FAILED"
+      ]
+    },
+    "DoctrineRetrievalResponseV1": {
+      "type": "object",
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/DoctrineRetrievalEvidenceV1"
+        },
+        "ragRecords": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DoctrineRagRecordV1"
+          }
+        }
+      },
+      "required": [
+        "evidence",
+        "ragRecords"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineIngestionCommandV1": {
+      "type": "object",
+      "properties": {
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "attemptIndex": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "DoctrineActivationCommandV1": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "qualityReportHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "runId",
+        "qualityReportHash"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineRetrievalQueryCommandV1": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "number"
+        },
+        "repeatIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "activationId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineRetrievalMutationResultV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-retrieval-mutation-result.v1"
+        },
+        "requestId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "inserted",
+            "existing"
+          ]
+        },
+        "resourceKind": {
+          "type": "string",
+          "enum": [
+            "doctrine_ingestion_run",
+            "doctrine_corpus_activation"
+          ]
+        },
+        "resourceHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "requestId",
+        "status",
+        "resourceKind",
+        "resourceHash"
+      ],
+      "additionalProperties": false
+    },
+    "CaseApiErrorV1": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string"
+        },
+        "code": {
+          "$ref": "#/$defs/CaseApiErrorCodeV1"
+        },
+        "message": {
+          "type": "string"
+        },
+        "schemaVersion": {
+          "type": "string",
+          "const": "case-api-error.v1"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "requestId",
+        "schemaVersion"
+      ],
+      "additionalProperties": false
+    },
+    "CaseApiErrorCodeV1": {
+      "type": "string",
+      "enum": [
+        "INVALID_JSON",
+        "INVALID_RECORD",
+        "UNAUTHORIZED",
+        "FORBIDDEN",
+        "NOT_FOUND",
+        "IDENTITY_CONFLICT",
+        "BODY_TOO_LARGE",
+        "DEPENDENCY_UNAVAILABLE",
+        "INTERNAL_ERROR"
+      ]
+    }
+  }
+}

@@ -9,6 +9,7 @@
     "./contract-utils-v1": "./src/contract-utils-v1.ts",
     "./decision-conflict-v1": "./src/decision-conflict-v1.ts",
     "./doctrine-v1": "./src/doctrine-v1.ts",
+    "./doctrine-retrieval-v1": "./src/doctrine-retrieval-v1.ts",
     "./model-call-schedule-v1": "./src/model-call-schedule-v1.ts",
     "./model-run-audit-v1": "./src/model-run-audit-v1.ts",
     "./policy-input-v1": "./src/policy-input-v1.ts",
