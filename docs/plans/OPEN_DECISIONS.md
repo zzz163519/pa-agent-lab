@@ -58,7 +58,7 @@ Still open:
 
 ## API and user interface
 
-ADR-0015 fixes the Phase 2 synthetic-only operator REST/OpenAPI and PostgreSQL boundary. ADR-0016 fixes the Phase 3A synthetic-only, backend-enforced two-stage whole-decision review and same-origin Research Console. ADR-0017 fixes one minimal local Doctrine proposal/approval/retirement workflow, with exact proposal allowlists and Calvin-or-Agent principal binding. None authorizes real data, providers, public deployment, market screening, RAG, replay, or execution.
+ADR-0015 fixes the Phase 2 synthetic-only operator REST/OpenAPI and PostgreSQL boundary. ADR-0016 fixes the Phase 3A synthetic-only, backend-enforced two-stage whole-decision review and same-origin Research Console. ADR-0018 fixes the local single-user trusted-loopback Compose deployment and its token-free reviewer browser path while preserving operator bearer authentication. ADR-0017 fixes one minimal local Doctrine proposal/approval/retirement workflow, with exact proposal allowlists and Calvin-or-Agent principal binding. None authorizes real data, providers, public deployment, market screening, RAG, replay, or execution.
 
 Still open:
 

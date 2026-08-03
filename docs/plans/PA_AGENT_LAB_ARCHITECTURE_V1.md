@@ -159,10 +159,12 @@ Implemented infrastructure under ADR-0015:
 - database: `pgvector/pgvector:0.8.6-pg18-trixie` pinned to the accepted Linux amd64 manifest, with vector extension creation deferred to Phase 4;
 - CLI: Node `parseArgs` and `fetch`, with no CLI framework dependency.
 
-Implemented Research Console infrastructure under ADR-0016 and ADR-0017:
+Implemented Research Console infrastructure under ADR-0016, ADR-0017, and ADR-0018:
 
 - UI: React 19, Vite 8, React Router 8, TanStack Query 5, Lucide, and strict TypeScript;
 - serving: Fastify static assets and Helmet CSP on the same loopback origin;
+- local deployment: digest-pinned Node/PostgreSQL Compose services, content-hashed one-shot migration, internal-only credential-bearing app/database, and one credential-free fixed-target loopback gateway;
+- reviewer identity: bearer mode by default or explicit trusted-loopback server-derived identity in the repository-owned single-user Compose deployment;
 - review workflow: backend-derived blind review state over immutable assessment, reveal receipt, review, and binding records;
 - Doctrine workflow: one exact proposal, one explicit operator-or-reviewer approval, optional retirement, and an approved-only projection;
 - browser verification: Vitest/Testing Library and Chromium Playwright on desktop/mobile.
@@ -172,7 +174,7 @@ Implementation candidates that do not yet authorize dependencies are:
 - large offline candle analysis: Parquet and DuckDB when needed;
 - model access: a small provider-neutral adapter with structured-output support.
 
-The implemented `@pa-agent-lab/contracts` slices have no runtime dependency. `@pa-agent-lab/chart-renderer` uses only ADR-0012's exact resvg-js dependency. `@pa-agent-lab/persistence-contracts` uses ADR-0013's exact Ajv and Microsoft jsonc-parser runtime dependencies; schema generation and PostgreSQL WASM conformance remain dev-only. ADR-0015 adds only exact `pg` and Fastify runtime dependencies in the Case Store/API packages and authorizes one synthetic-only loopback service. It does not authorize provider access, real data ingestion, a replay engine, or execution mechanics.
+The implemented `@pa-agent-lab/contracts` slices have no runtime dependency. `@pa-agent-lab/chart-renderer` uses only ADR-0012's exact resvg-js dependency. `@pa-agent-lab/persistence-contracts` uses ADR-0013's exact Ajv and Microsoft jsonc-parser runtime dependencies; schema generation and PostgreSQL WASM conformance remain dev-only. ADR-0015 adds only exact `pg` and Fastify runtime dependencies in the Case Store/API packages and authorizes one synthetic-only loopback service. ADR-0018 adds no npm runtime dependency; it reuses Node HTTP and Docker Compose with an exact Node image digest. None authorizes provider access, real data ingestion, a replay engine, or execution mechanics.
 
 Do not introduce SQLite, Qdrant, Chroma, Redis, Neo4j, LangChain, or LlamaIndex initially. Explicit retrieval and orchestration code is easier to audit for leakage, authority, and version identity.
 

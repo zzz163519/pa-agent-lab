@@ -1,7 +1,10 @@
 import { randomBytes } from "node:crypto";
 import { pathToFileURL } from "node:url";
 
-import { createPostgresCaseStoreV1 } from "@pa-agent-lab/case-store";
+import {
+  createPostgresCaseStoreV1,
+  createPostgresConnectionStringV1,
+} from "@pa-agent-lab/case-store";
 import type { ContractSha256 } from "@pa-agent-lab/contracts";
 
 import { createCaseApiV1 } from "./case-api-v1.ts";
@@ -12,44 +15,60 @@ export interface StartedCaseApiServerV1 {
   close(): Promise<void>;
 }
 
+export interface CaseApiDeploymentV1 {
+  readonly databaseUrl: string;
+  readonly artifactRoot: string;
+  readonly localToken: string;
+  readonly consoleRoot?: string;
+  readonly authorizedSyntheticBundleHashes: readonly ContractSha256[];
+  readonly authorizedDoctrineProposalHashes: readonly ContractSha256[];
+  readonly reviewerAuthMode: "bearer" | "trusted_loopback";
+  readonly listenHost: "127.0.0.1" | "0.0.0.0";
+  readonly publicOrigin: string;
+  readonly port: number;
+  readonly publicPort: number;
+}
+
 export async function startCaseApiServerV1(
   env: Readonly<Record<string, string | undefined>> = process.env,
 ): Promise<StartedCaseApiServerV1> {
-  const databaseUrl = required(env, "PA_DATABASE_URL");
-  const artifactRoot = required(env, "PA_CHART_ARTIFACT_ROOT");
-  const localToken = required(env, "PA_API_TOKEN");
+  const deployment = parseCaseApiDeploymentV1(env);
   const reviewerToken = randomBytes(32).toString("hex");
-  const consoleRoot = env.PA_CONSOLE_ROOT;
-  const authorizedSyntheticBundleHashes = parseHashes(
-    required(env, "PA_AUTHORIZED_SYNTHETIC_BUNDLE_HASHES"),
-  );
-  const authorizedDoctrineProposalHashes = parseOptionalHashes(
-    env.PA_AUTHORIZED_DOCTRINE_PROPOSAL_HASHES,
-  );
-  const port = parsePort(env.PA_API_PORT ?? "3210");
-  const database = createPostgresCaseStoreV1({ connectionString: databaseUrl });
+  const database = createPostgresCaseStoreV1({
+    connectionString: deployment.databaseUrl,
+  });
   try {
     const app = await createCaseApiV1({
       store: database.store,
-      artifactRoot,
-      localToken,
+      artifactRoot: deployment.artifactRoot,
+      localToken: deployment.localToken,
       reviewerToken,
-      authorizedSyntheticBundleHashes,
-      authorizedDoctrineProposalHashes,
+      reviewerAuthMode: deployment.reviewerAuthMode,
+      authorizedSyntheticBundleHashes:
+        deployment.authorizedSyntheticBundleHashes,
+      authorizedDoctrineProposalHashes:
+        deployment.authorizedDoctrineProposalHashes,
       allowedHosts: ["127.0.0.1", "localhost"],
       allowedOrigins: [
-        `http://127.0.0.1:${port}`,
-        `http://localhost:${port}`,
+        `http://127.0.0.1:${deployment.publicPort}`,
+        `http://localhost:${deployment.publicPort}`,
       ],
-      ...(consoleRoot === undefined ? {} : { consoleRoot }),
+      ...(deployment.consoleRoot === undefined
+        ? {}
+        : { consoleRoot: deployment.consoleRoot }),
     });
-    const url = await app.listen({ host: "127.0.0.1", port });
+    await app.listen({
+      host: deployment.listenHost,
+      port: deployment.port,
+    });
     return {
-      url,
+      url: deployment.publicOrigin,
       reviewerUrl:
-        consoleRoot === undefined
+        deployment.consoleRoot === undefined
           ? null
-          : `${url}/console/#token=${reviewerToken}`,
+          : deployment.reviewerAuthMode === "trusted_loopback"
+            ? `${deployment.publicOrigin}/console/`
+            : `${deployment.publicOrigin}/console/#token=${reviewerToken}`,
       close: async () => {
         await app.close();
         await database.close();
@@ -59,6 +78,63 @@ export async function startCaseApiServerV1(
     await database.close();
     throw error;
   }
+}
+
+export function parseCaseApiDeploymentV1(
+  env: Readonly<Record<string, string | undefined>>,
+): Readonly<CaseApiDeploymentV1> {
+  const port = parsePort("PA_API_PORT", env.PA_API_PORT ?? "3210");
+  const publicPort = parsePort(
+    "PA_PUBLIC_PORT",
+    env.PA_PUBLIC_PORT ?? String(port),
+  );
+  const reviewerAuthMode = parseReviewerAuthMode(env.PA_REVIEWER_AUTH_MODE);
+  const listenHost = parseListenHost(
+    env.PA_API_LISTEN_HOST,
+    reviewerAuthMode,
+    env.PA_TRUSTED_LOOPBACK_GATEWAY,
+  );
+  const publicHost = env.PA_PUBLIC_HOST ?? "127.0.0.1";
+  if (publicHost !== "127.0.0.1" && publicHost !== "localhost") {
+    throw new Error("PA_PUBLIC_HOST must be an exact loopback hostname");
+  }
+  return {
+    databaseUrl: databaseConnectionString(env),
+    artifactRoot: required(env, "PA_CHART_ARTIFACT_ROOT"),
+    localToken: required(env, "PA_API_TOKEN"),
+    ...(env.PA_CONSOLE_ROOT === undefined
+      ? {}
+      : { consoleRoot: required(env, "PA_CONSOLE_ROOT") }),
+    authorizedSyntheticBundleHashes: parseHashes(
+      required(env, "PA_AUTHORIZED_SYNTHETIC_BUNDLE_HASHES"),
+    ),
+    authorizedDoctrineProposalHashes: parseOptionalHashes(
+      env.PA_AUTHORIZED_DOCTRINE_PROPOSAL_HASHES,
+    ),
+    reviewerAuthMode,
+    listenHost,
+    publicOrigin: `http://${publicHost}:${publicPort}`,
+    port,
+    publicPort,
+  };
+}
+
+function databaseConnectionString(
+  env: Readonly<Record<string, string | undefined>>,
+): string {
+  if (env.PA_DATABASE_URL !== undefined) {
+    return required(env, "PA_DATABASE_URL");
+  }
+  return createPostgresConnectionStringV1({
+    host: required(env, "PA_DATABASE_HOST"),
+    port: parsePort(
+      "PA_DATABASE_PORT",
+      required(env, "PA_DATABASE_PORT"),
+    ),
+    database: required(env, "PA_DATABASE_NAME"),
+    user: required(env, "PA_DATABASE_USER"),
+    password: required(env, "PA_DATABASE_PASSWORD"),
+  });
 }
 
 function required(
@@ -93,10 +169,50 @@ function parseOptionalHashes(
   return parseHashes(value);
 }
 
-function parsePort(value: string): number {
+function parseReviewerAuthMode(
+  value: string | undefined,
+): "bearer" | "trusted_loopback" {
+  if (value === undefined || value === "bearer") return "bearer";
+  if (value === "trusted_loopback") return value;
+  throw new Error(
+    "PA_REVIEWER_AUTH_MODE must be bearer or trusted_loopback",
+  );
+}
+
+function parseListenHost(
+  value: string | undefined,
+  reviewerAuthMode: "bearer" | "trusted_loopback",
+  trustedLoopbackGateway: string | undefined,
+): "127.0.0.1" | "0.0.0.0" {
+  const host = value ?? "127.0.0.1";
+  if (
+    reviewerAuthMode === "trusted_loopback" &&
+    trustedLoopbackGateway !== "true"
+  ) {
+    throw new Error(
+      "trusted_loopback requires an explicit loopback gateway",
+    );
+  }
+  if (host === "127.0.0.1") return host;
+  if (
+    host === "0.0.0.0" &&
+    reviewerAuthMode === "trusted_loopback" &&
+    trustedLoopbackGateway === "true"
+  ) {
+    return host;
+  }
+  if (host === "0.0.0.0") {
+    throw new Error(
+      "0.0.0.0 requires trusted_loopback and an explicit loopback gateway",
+    );
+  }
+  throw new Error("PA_API_LISTEN_HOST must be 127.0.0.1 or 0.0.0.0");
+}
+
+function parsePort(name: string, value: string): number {
   const port = Number(value);
   if (!Number.isSafeInteger(port) || port < 1 || port > 65_535) {
-    throw new Error("PA_API_PORT must be an integer from 1 through 65535");
+    throw new Error(`${name} must be an integer from 1 through 65535`);
   }
   return port;
 }

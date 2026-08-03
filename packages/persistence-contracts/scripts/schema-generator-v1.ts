@@ -13,6 +13,14 @@ import { DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1 } from "../src/doctrine-approval-tr
 import { REVIEW_WORKFLOW_ROUTE_MANIFEST_V1 } from "../src/review-workflow-transport-v1.ts";
 import { createGenerator } from "ts-json-schema-generator";
 
+const TRUSTED_LOOPBACK_REVIEWER_EXTENSION = {
+  defaultMode: "bearer",
+  localDeploymentMode: "trusted_loopback",
+  principal: "local:calvin-reviewer",
+  authority:
+    "repository_owned_loopback_gateway_only_not_public_authentication",
+} as const;
+
 const PERSISTED_TARGETS = [
   {
     kind: "policy_case",
@@ -228,6 +236,7 @@ export function buildCaseStoreTransportDocumentsV1(
       },
       "x-pa-body-limit-bytes": CASE_API_BODY_LIMIT_BYTES,
       "x-pa-synthetic-authorization": "exact_bundle_hash_allowlist",
+      "x-pa-reviewer-authentication": TRUSTED_LOOPBACK_REVIEWER_EXTENSION,
       "x-pa-runtime-authority":
         "synthetic_only_local_case_store_no_model_or_trading_authority",
     },
@@ -271,6 +280,7 @@ export function buildDoctrineApprovalTransportDocumentsV1(
         doctrine_approval: "DoctrineApprovalV1",
         doctrine_retirement: "DoctrineRetirementV1",
       },
+      "x-pa-reviewer-authentication": TRUSTED_LOOPBACK_REVIEWER_EXTENSION,
       "x-pa-runtime-authority":
         "local_public_source_approval_no_rag_model_replay_or_trading_authority",
     },
@@ -405,6 +415,7 @@ export function buildReviewWorkflowTransportDocumentsV1(
         decision_reveal_receipt: "DecisionRevealReceiptV1",
         calvin_review_workflow_binding: "CalvinReviewWorkflowBindingV1",
       },
+      "x-pa-reviewer-authentication": TRUSTED_LOOPBACK_REVIEWER_EXTENSION,
       "x-pa-runtime-authority":
         "synthetic_only_local_blind_review_no_model_replay_or_trading_authority",
     },

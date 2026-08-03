@@ -84,6 +84,14 @@ The following MIT-licensed packages are dev-only:
 
 They verify tab-local state, user-visible components, actual loopback HTTP workflows, PNG rendering, responsive layouts, and screenshots. Browser binaries are external test artifacts and are not committed.
 
+## Official Node.js runtime image
+
+- Image: `node:24.18.0-bookworm-slim`
+- Multi-platform digest: `sha256:6f7b03f7c2c8e2e784dcf9295400527b9b1270fd37b7e9a7285cf83b6951452d`
+- Project: [Node.js Docker Official Image](https://github.com/nodejs/docker-node)
+- License: [MIT for Docker image packaging](https://github.com/nodejs/docker-node/blob/main/LICENSE)
+- Use: pinned build/runtime base for the ADR-0018 local Research Console, migrator, and credential-free loopback gateway
+
 ## pgvector PostgreSQL image
 
 - Image: `pgvector/pgvector:0.8.6-pg18-trixie`

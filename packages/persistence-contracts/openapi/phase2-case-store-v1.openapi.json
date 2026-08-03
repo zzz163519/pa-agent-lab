@@ -2779,6 +2779,12 @@
   },
   "x-pa-body-limit-bytes": 524288,
   "x-pa-synthetic-authorization": "exact_bundle_hash_allowlist",
+  "x-pa-reviewer-authentication": {
+    "defaultMode": "bearer",
+    "localDeploymentMode": "trusted_loopback",
+    "principal": "local:calvin-reviewer",
+    "authority": "repository_owned_loopback_gateway_only_not_public_authentication"
+  },
   "x-pa-runtime-authority": "synthetic_only_local_case_store_no_model_or_trading_authority",
   "x-pa-route-manifest": [
     {

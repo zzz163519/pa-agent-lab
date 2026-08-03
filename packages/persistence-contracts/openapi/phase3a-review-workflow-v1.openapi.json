@@ -2507,6 +2507,12 @@
     "decision_reveal_receipt": "DecisionRevealReceiptV1",
     "calvin_review_workflow_binding": "CalvinReviewWorkflowBindingV1"
   },
+  "x-pa-reviewer-authentication": {
+    "defaultMode": "bearer",
+    "localDeploymentMode": "trusted_loopback",
+    "principal": "local:calvin-reviewer",
+    "authority": "repository_owned_loopback_gateway_only_not_public_authentication"
+  },
   "x-pa-runtime-authority": "synthetic_only_local_blind_review_no_model_replay_or_trading_authority",
   "x-pa-route-manifest": [
     {

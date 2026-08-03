@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, ADR-0015 PHASE 2, ADR-0016 PHASE 3A, AND ADR-0017 PHASE 3B ARE IMPLEMENTED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, ADR-0015 PHASE 2, ADR-0016/ADR-0018 PHASE 3A, AND ADR-0017 PHASE 3B ARE IMPLEMENTED; LATER SERVICES AND PHASES REQUIRE SEPARATE APPROVAL.
 
 ## Delivery model
 
@@ -75,6 +75,8 @@ Implemented by ADR-0016 as a synthetic-only vertical slice:
 - construct `CalvinReviewV1` server-side and atomically bind assessment, receipt, decision, review, reviewer, and protocol;
 - derive four workflow states without a mutable status table;
 - separate operator and reviewer principals and serve the React Research Console on the same loopback origin;
+- support bearer reviewer identity by default and ADR-0018's persistent trusted-loopback Compose deployment without weakening operator authentication;
+- keep the credential-bearing app/database internal and publish only a credential-free fixed-target gateway on `127.0.0.1`;
 - auto-save only the unsubmitted exact-identity draft in tab-local session storage;
 - keep Doctrine approval, real ingestion, market modules, provider, replay, and execution absent.
 

@@ -2,7 +2,7 @@
 
 Status: IMPLEMENTED SYNTHETIC-ONLY REVIEW VERTICAL SLICE.
 
-Authority: ADR-0003, ADR-0010, ADR-0011, ADR-0012, ADR-0013, ADR-0015, and ADR-0016.
+Authority: ADR-0003, ADR-0010, ADR-0011, ADR-0012, ADR-0013, ADR-0015, ADR-0016, and ADR-0018.
 
 ## Scope
 
@@ -63,14 +63,18 @@ After receipt, the same endpoint may return the exact BrooksDecision and receipt
 ## Authentication
 
 - operator routes require the Phase 2 operator token;
-- reviewer routes require the per-launch reviewer token;
+- direct host-process reviewer routes require the per-launch reviewer token;
+- the ADR-0018 Compose deployment may map an absent Authorization header to `local:calvin-reviewer` only in explicit `trusted_loopback` mode behind the fixed loopback gateway;
+- an invalid Authorization header never falls back to trusted reviewer identity;
 - the anonymous PNG route accepts either principal;
 - health and readiness remain unauthenticated;
 - Host and Origin remain explicit loopback allowlists;
-- operator and reviewer tokens must be at least 32 characters and unequal;
+- operator and reviewer bearer tokens must be at least 32 characters and unequal;
 - reviewer responses and console HTML use `Cache-Control: no-store`.
 
-The token bootstrap URL is `/console/#token=<per-launch-token>`. `phase3a:server` builds the SPA and sets `PA_CONSOLE_ROOT`; the existing `phase2:server` remains usable without frontend assets. Fragment material is never sent in the HTTP request. The SPA stores it in tab-local `sessionStorage`, removes the fragment, and adds the bearer token to same-origin API/PNG fetches.
+The direct host-process bootstrap URL is `/console/#token=<per-launch-token>`. `phase3a:server` builds the SPA and sets `PA_CONSOLE_ROOT`; the existing `phase2:server` remains usable without frontend assets. Fragment material is never sent in the HTTP request. The bearer-mode SPA stores it in tab-local `sessionStorage`, removes the fragment, and adds the bearer token to same-origin API/PNG fetches.
+
+The ADR-0018 deployment builds the SPA in trusted-loopback mode and exposes the stable `/console/` URL with no browser token state. PostgreSQL and Console remain on an internal-only Docker network; a credential-free fixed-target gateway alone publishes the loopback port. This is accepted local single-user identity, not public authentication.
 
 ## Research Console
 
@@ -110,7 +114,9 @@ Required checks include:
 - operator/reviewer cross-principal rejection;
 - pre-reveal response scans for BrooksDecision fields and exact identities;
 - duplicate-key, unknown-field, body-bound, Host/Origin, CSP, and no-store tests;
-- tab-local token/draft tests;
+- tab-local bearer token/draft tests and token-free trusted-loopback bootstrap tests;
+- trusted-loopback API tests proving no-credential reviewer identity, invalid-credential rejection, operator separation, and foreign Host/Origin rejection;
+- Compose tests proving fixed loopback publication, internal database/app networks, credential-free gateway, blocked app egress, migration completion, restart persistence, and no-token browser rendering;
 - desktop and mobile Chromium workflows using actual Fastify, PGlite, PNG bytes, and production assets;
 - chart natural-pixel, layout-overflow, screenshot, and nonblank pixel checks.
 

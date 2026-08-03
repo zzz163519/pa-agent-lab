@@ -29,7 +29,7 @@ Changing source metadata, locator, or doctrine wording creates a different propo
 
 ## Authorization
 
-Proposal insertion requires the operator token and an exact deployment-authorized proposal hash. List, detail, approve, and retire accept the existing operator or reviewer token. The API supplies the principal from authenticated request state; command JSON contains no principal field.
+Proposal insertion requires the operator token and an exact deployment-authorized proposal hash. List, detail, approve, and retire accept the existing operator or server-derived reviewer principal. Bearer mode derives the reviewer from its token; ADR-0018 trusted-loopback mode derives the same `local:calvin-reviewer` only behind the repository-owned local gateway. The API supplies the principal from request state; command JSON contains no principal field.
 
 Approval is one explicit command. There is no automatic promotion, dual-agent review, voting, blind stage, mutable draft editor, or generic workflow state machine.
 

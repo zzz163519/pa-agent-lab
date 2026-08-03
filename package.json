@@ -15,6 +15,9 @@
     "build:console": "pnpm --filter @pa-agent-lab/research-console build",
     "test:browser": "pnpm --filter @pa-agent-lab/research-console test:browser",
     "phase3a:server": "pnpm build:console && PA_CONSOLE_ROOT=packages/research-console/dist node packages/case-api/src/server.ts",
+    "phase3a:docker:up": "docker compose --env-file ${PA_PHASE3A_ENV_FILE:-$HOME/.config/pa-agent-lab/phase3a.env} -f infra/phase3a/compose.yaml up -d --build",
+    "phase3a:docker:down": "docker compose --env-file ${PA_PHASE3A_ENV_FILE:-$HOME/.config/pa-agent-lab/phase3a.env} -f infra/phase3a/compose.yaml down",
+    "phase3a:docker:logs": "docker compose --env-file ${PA_PHASE3A_ENV_FILE:-$HOME/.config/pa-agent-lab/phase3a.env} -f infra/phase3a/compose.yaml logs -f gateway console",
     "phase3b:server": "pnpm build:console && PA_CONSOLE_ROOT=packages/research-console/dist node packages/case-api/src/server.ts"
   },
   "devDependencies": {

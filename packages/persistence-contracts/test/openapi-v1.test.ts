@@ -258,6 +258,12 @@ describe("generated Phase 1 transport schemas V1", () => {
         readonly securitySchemes: Readonly<Record<string, unknown>>;
       };
       readonly "x-pa-phase3a-record-kinds": Readonly<Record<string, string>>;
+      readonly "x-pa-reviewer-authentication": {
+        readonly defaultMode: string;
+        readonly localDeploymentMode: string;
+        readonly principal: string;
+        readonly authority: string;
+      };
       readonly "x-pa-runtime-authority": string;
     };
     assert.deepEqual(
@@ -268,6 +274,13 @@ describe("generated Phase 1 transport schemas V1", () => {
       calvin_independent_assessment: "CalvinIndependentAssessmentV1",
       decision_reveal_receipt: "DecisionRevealReceiptV1",
       calvin_review_workflow_binding: "CalvinReviewWorkflowBindingV1",
+    });
+    assert.deepEqual(document["x-pa-reviewer-authentication"], {
+      defaultMode: "bearer",
+      localDeploymentMode: "trusted_loopback",
+      principal: "local:calvin-reviewer",
+      authority:
+        "repository_owned_loopback_gateway_only_not_public_authentication",
     });
     assert.equal(
       document["x-pa-runtime-authority"],

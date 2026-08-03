@@ -1,0 +1,148 @@
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.6-pg18-trixie@sha256:8888de64a42b12a8e56df21d0d404c81864c18bafec7ab0f802a1453ec6cd352
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: pa_agent_lab
+      POSTGRES_USER: pa_bootstrap
+      POSTGRES_PASSWORD: ${PA_POSTGRES_BOOTSTRAP_PASSWORD:?set PA_POSTGRES_BOOTSTRAP_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pa_bootstrap -d pa_agent_lab"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    volumes:
+      - phase3a-postgres-data:/var/lib/postgresql
+    networks:
+      - phase3a-internal
+
+  migrator:
+    image: pa-agent-lab-phase3a-console:local
+    build:
+      context: ../..
+      dockerfile: infra/phase3a/Dockerfile
+    command: ["node", "packages/case-store/src/database-bootstrap-main-v1.ts"]
+    environment:
+      PA_DATABASE_ADMIN_HOST: postgres
+      PA_DATABASE_ADMIN_PORT: "5432"
+      PA_DATABASE_NAME: pa_agent_lab
+      PA_DATABASE_ADMIN_USER: pa_bootstrap
+      PA_POSTGRES_BOOTSTRAP_PASSWORD: ${PA_POSTGRES_BOOTSTRAP_PASSWORD:?set PA_POSTGRES_BOOTSTRAP_PASSWORD}
+      PA_DATABASE_APPLICATION_ROLE: pa_console_app
+      PA_DATABASE_APPLICATION_PASSWORD: ${PA_DATABASE_APPLICATION_PASSWORD:?set PA_DATABASE_APPLICATION_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+    networks:
+      - phase3a-internal
+
+  console:
+    image: pa-agent-lab-phase3a-console:local
+    build:
+      context: ../..
+      dockerfile: infra/phase3a/Dockerfile
+    environment:
+      PA_DATABASE_HOST: postgres
+      PA_DATABASE_PORT: "5432"
+      PA_DATABASE_NAME: pa_agent_lab
+      PA_DATABASE_USER: pa_console_app
+      PA_DATABASE_PASSWORD: ${PA_DATABASE_APPLICATION_PASSWORD:?set PA_DATABASE_APPLICATION_PASSWORD}
+      PA_CHART_ARTIFACT_ROOT: /var/lib/pa-agent-lab/charts
+      PA_API_TOKEN: ${PA_API_TOKEN:?set PA_API_TOKEN}
+      PA_AUTHORIZED_SYNTHETIC_BUNDLE_HASHES: ${PA_AUTHORIZED_SYNTHETIC_BUNDLE_HASHES:?set PA_AUTHORIZED_SYNTHETIC_BUNDLE_HASHES}
+      PA_AUTHORIZED_DOCTRINE_PROPOSAL_HASHES: ${PA_AUTHORIZED_DOCTRINE_PROPOSAL_HASHES:-}
+      PA_REVIEWER_AUTH_MODE: trusted_loopback
+      PA_API_LISTEN_HOST: 0.0.0.0
+      PA_TRUSTED_LOOPBACK_GATEWAY: "true"
+      PA_PUBLIC_HOST: 127.0.0.1
+      PA_PUBLIC_PORT: ${PA_CONSOLE_PORT:-3210}
+      PA_API_PORT: "3210"
+      PA_CONSOLE_ROOT: packages/research-console/dist
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:3210/readyz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+    volumes:
+      - type: bind
+        source: ${PA_CHART_ARTIFACT_HOST_PATH:?set PA_CHART_ARTIFACT_HOST_PATH}
+        target: /var/lib/pa-agent-lab/charts
+    networks:
+      - phase3a-internal
+
+  gateway:
+    image: pa-agent-lab-phase3a-console:local
+    command: ["node", "packages/case-api/src/loopback-gateway-v1.ts"]
+    environment:
+      PA_GATEWAY_TARGET_ORIGIN: http://console:3210
+      PA_GATEWAY_PORT: "3210"
+      PA_PUBLIC_PORT: ${PA_CONSOLE_PORT:-3210}
+    ports:
+      - "127.0.0.1:${PA_CONSOLE_PORT:-3210}:3210"
+    depends_on:
+      console:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:3210/readyz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+    networks:
+      - phase3a-internal
+      - phase3a-loopback-ingress
+
+networks:
+  phase3a-internal:
+    internal: true
+  phase3a-loopback-ingress:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "false"
+
+volumes:
+  phase3a-postgres-data:
+    name: ${PA_POSTGRES_VOLUME_NAME:-pa_agent_lab_phase3a_postgres_data}

@@ -7,7 +7,10 @@ import type {
   SubmitIndependentAssessmentCommandV1,
 } from "@pa-agent-lab/persistence-contracts/review-workflow-transport-v1";
 
-import { reviewerToken } from "./session-state.ts";
+import {
+  REVIEWER_AUTH_MODE,
+  reviewerToken,
+} from "./session-state.ts";
 
 export class ReviewerApiError extends Error {
   override readonly name = "ReviewerApiError";
@@ -78,14 +81,14 @@ async function authenticatedRequest(
   init: RequestInit = {},
 ): Promise<Response> {
   const token = reviewerToken();
-  if (token === null) {
+  if (REVIEWER_AUTH_MODE === "bearer" && token === null) {
     throw new ReviewerApiError(401, "Reviewer session is not authorized.");
   }
   return fetch(path, {
     ...init,
     cache: "no-store",
     headers: {
-      authorization: `Bearer ${token}`,
+      ...(token === null ? {} : { authorization: `Bearer ${token}` }),
       ...(init.body === undefined ? {} : { "content-type": "application/json" }),
       ...headersToRecord(init.headers),
     },

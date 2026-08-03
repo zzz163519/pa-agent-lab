@@ -98,9 +98,11 @@ export interface OperatorPrincipalV1 {
   readonly authenticationMethod: "local_token";
 }
 
+export type ReviewerAuthModeV1 = "bearer" | "trusted_loopback";
+
 export interface ReviewerPrincipalV1 {
   readonly principalId: "local:calvin-reviewer";
-  readonly authenticationMethod: "local_reviewer_token";
+  readonly authenticationMethod: "local_reviewer_token" | "trusted_loopback";
 }
 
 export type RequestPrincipalV1 = OperatorPrincipalV1 | ReviewerPrincipalV1;
@@ -110,6 +112,7 @@ export interface CaseApiOptionsV1 {
   readonly artifactRoot: string;
   readonly localToken: string;
   readonly reviewerToken: string;
+  readonly reviewerAuthMode?: ReviewerAuthModeV1;
   readonly authorizedSyntheticBundleHashes: readonly ContractSha256[];
   readonly authorizedDoctrineProposalHashes?: readonly ContractSha256[];
   readonly allowedHosts: readonly string[];
@@ -230,7 +233,11 @@ export async function createCaseApiV1(
       token !== null &&
       authentication !== "operator_token" &&
       sameSecret(token, options.reviewerToken);
-    if (!operatorAccepted && !reviewerAccepted) {
+    const trustedLoopbackAccepted =
+      (options.reviewerAuthMode ?? "bearer") === "trusted_loopback" &&
+      authorization === undefined &&
+      authentication !== "operator_token";
+    if (!operatorAccepted && !reviewerAccepted && !trustedLoopbackAccepted) {
       throw new CaseApiHttpError(
         401,
         "UNAUTHORIZED",
@@ -246,7 +253,9 @@ export async function createCaseApiV1(
           }
         : {
             principalId: "local:calvin-reviewer",
-            authenticationMethod: "local_reviewer_token",
+            authenticationMethod: trustedLoopbackAccepted
+              ? "trusted_loopback"
+              : "local_reviewer_token",
           },
     );
   });
@@ -618,6 +627,21 @@ function validateOptions(options: CaseApiOptionsV1): void {
   if (sameSecret(options.localToken, options.reviewerToken)) {
     throw new Error("operator and reviewer tokens must be distinct");
   }
+  const reviewerAuthMode = options.reviewerAuthMode ?? "bearer";
+  if (!(["bearer", "trusted_loopback"] as const).includes(reviewerAuthMode)) {
+    throw new Error("Phase 3A reviewer auth mode is unsupported");
+  }
+  if (
+    reviewerAuthMode === "trusted_loopback" &&
+    (options.allowedHosts.some(
+      (host) => host !== "127.0.0.1" && host !== "localhost",
+    ) ||
+      options.allowedOrigins.some((origin) => !isLoopbackOrigin(origin)))
+  ) {
+    throw new Error(
+      "trusted-loopback reviewer auth requires exact loopback Host and Origin allowlists",
+    );
+  }
   if (options.allowedHosts.length === 0 || options.allowedOrigins.length === 0) {
     throw new Error("Phase 2 API requires explicit Host and Origin allowlists");
   }
@@ -635,6 +659,23 @@ function validateOptions(options: CaseApiOptionsV1): void {
     new Set(doctrineHashes).size !== doctrineHashes.length
   ) {
     throw new Error("Phase 3B API requires unique exact Doctrine proposal hashes");
+  }
+}
+
+function isLoopbackOrigin(origin: string): boolean {
+  try {
+    const parsed = new URL(origin);
+    return (
+      parsed.protocol === "http:" &&
+      (parsed.hostname === "127.0.0.1" || parsed.hostname === "localhost") &&
+      parsed.username.length === 0 &&
+      parsed.password.length === 0 &&
+      parsed.pathname === "/" &&
+      parsed.search.length === 0 &&
+      parsed.hash.length === 0
+    );
+  } catch {
+    return false;
   }
 }
 

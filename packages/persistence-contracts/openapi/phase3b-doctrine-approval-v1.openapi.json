@@ -1112,6 +1112,12 @@
     "doctrine_approval": "DoctrineApprovalV1",
     "doctrine_retirement": "DoctrineRetirementV1"
   },
+  "x-pa-reviewer-authentication": {
+    "defaultMode": "bearer",
+    "localDeploymentMode": "trusted_loopback",
+    "principal": "local:calvin-reviewer",
+    "authority": "repository_owned_loopback_gateway_only_not_public_authentication"
+  },
   "x-pa-runtime-authority": "local_public_source_approval_no_rag_model_replay_or_trading_authority",
   "x-pa-route-manifest": [
     {

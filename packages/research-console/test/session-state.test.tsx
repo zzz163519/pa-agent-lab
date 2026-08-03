@@ -6,6 +6,8 @@ import {
   blindDraftStorageKey,
   bootstrapReviewerToken,
   clearBlindDraftAfterFreeze,
+  reviewerAuthModeFromEnvironment,
+  reviewerSessionAvailable,
   saveBlindDraft,
 } from "../src/features/review/session-state.ts";
 
@@ -15,6 +17,22 @@ test("moves the fragment token into tab-local session storage and clears the URL
   assert.equal(sessionStorage.getItem(REVIEWER_TOKEN_SESSION_KEY), "reviewer-token-value");
   assert.equal(location.hash, "");
   assert.equal(location.pathname, "/console/");
+});
+
+test("allows the trusted-loopback deployment without browser token state", () => {
+  history.replaceState(null, "", "/console/");
+  sessionStorage.removeItem(REVIEWER_TOKEN_SESSION_KEY);
+  const mode = reviewerAuthModeFromEnvironment("trusted_loopback");
+  const token = bootstrapReviewerToken(mode);
+  assert.equal(mode, "trusted_loopback");
+  assert.equal(token, null);
+  assert.equal(reviewerSessionAvailable(mode, token), true);
+  assert.equal(sessionStorage.getItem(REVIEWER_TOKEN_SESSION_KEY), null);
+});
+
+test("fails closed to bearer mode for an unknown frontend deployment value", () => {
+  assert.equal(reviewerAuthModeFromEnvironment("public"), "bearer");
+  assert.equal(reviewerSessionAvailable("bearer", null), false);
 });
 
 test("binds blind drafts to the exact server-owned workflow identity", () => {

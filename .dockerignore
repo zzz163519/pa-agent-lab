@@ -1,0 +1,16 @@
+.git
+.gitignore
+**/node_modules
+**/dist
+**/coverage
+**/test-results
+**/playwright-report
+**/.pi-subagents
+**/.env
+**/.env.*
+!**/.env.example
+corpus
+coverage
+artifacts
+var
+tmp

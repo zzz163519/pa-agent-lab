@@ -75,6 +75,53 @@ describe("Phase 3A reviewer REST workflow", () => {
     }
   });
 
+  it("maps only absent credentials to the fixed reviewer in trusted-loopback mode", async () => {
+    const harness = await createHarness({ reviewerAuthMode: "trusted_loopback" });
+    try {
+      const fixture = await seed(harness);
+      const trustedHeaders = { ...baseHeaders };
+      const queue = await harness.app.inject({
+        method: "GET",
+        url: "/v1/reviewer/work-items",
+        headers: trustedHeaders,
+      });
+      assert.equal(queue.statusCode, 200, queue.body);
+
+      const reviewerChart = await harness.app.inject({
+        method: "GET",
+        url: `/v1/chart-artifacts/${fixture.caseBundle.chartMetadata.context.artifactId}/content`,
+        headers: trustedHeaders,
+      });
+      assert.equal(reviewerChart.statusCode, 200, reviewerChart.body);
+
+      const operatorOnly = await harness.app.inject({
+        method: "GET",
+        url: `/v1/cases/${fixture.caseBundle.policyCase.caseHash}/audit`,
+        headers: trustedHeaders,
+      });
+      assert.equal(operatorOnly.statusCode, 401, operatorOnly.body);
+
+      const invalidBearer = await harness.app.inject({
+        method: "GET",
+        url: "/v1/reviewer/work-items",
+        headers: {
+          ...trustedHeaders,
+          authorization: "Bearer invalid-local-credential",
+        },
+      });
+      assert.equal(invalidBearer.statusCode, 401, invalidBearer.body);
+
+      const foreignOrigin = await harness.app.inject({
+        method: "GET",
+        url: "/v1/reviewer/work-items",
+        headers: { ...trustedHeaders, origin: "http://attacker.example" },
+      });
+      assert.equal(foreignOrigin.statusCode, 403, foreignOrigin.body);
+    } finally {
+      await harness.close();
+    }
+  });
+
   it("returns no BrooksDecision content before receipt and enforces the full workflow", async () => {
     const harness = await createHarness();
     try {
@@ -254,7 +301,9 @@ describe("Phase 3A reviewer REST workflow", () => {
   });
 });
 
-async function createHarness() {
+async function createHarness(
+  options: { readonly reviewerAuthMode?: "bearer" | "trusted_loopback" } = {},
+) {
   const db = new PGlite();
   await applyContentHashedMigrations(db, migrations);
   const database = makeDatabase(db);
@@ -272,6 +321,9 @@ async function createHarness() {
     artifactRoot,
     localToken: operatorToken,
     reviewerToken,
+    ...(options.reviewerAuthMode === undefined
+      ? {}
+      : { reviewerAuthMode: options.reviewerAuthMode }),
     authorizedSyntheticBundleHashes: [fixture.caseBundle.bundleHash],
     allowedHosts: ["127.0.0.1", "localhost"],
     allowedOrigins: ["http://127.0.0.1"],

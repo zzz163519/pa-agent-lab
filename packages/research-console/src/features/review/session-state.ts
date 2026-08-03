@@ -9,7 +9,28 @@ export interface BlindAssessmentDraftV1 {
   readonly blindSummary: string;
 }
 
-export function bootstrapReviewerToken(): string | null {
+export type ReviewerAuthMode = "bearer" | "trusted_loopback";
+
+export const REVIEWER_AUTH_MODE = reviewerAuthModeFromEnvironment(
+  import.meta.env.VITE_PA_REVIEWER_AUTH_MODE,
+);
+
+export function reviewerAuthModeFromEnvironment(
+  value: string | undefined,
+): ReviewerAuthMode {
+  return value === "trusted_loopback" ? "trusted_loopback" : "bearer";
+}
+
+export function bootstrapReviewerToken(
+  authMode: ReviewerAuthMode = REVIEWER_AUTH_MODE,
+): string | null {
+  if (authMode === "trusted_loopback") {
+    sessionStorage.removeItem(REVIEWER_TOKEN_SESSION_KEY);
+    if (location.hash.length > 0) {
+      history.replaceState(null, "", `${location.pathname}${location.search}`);
+    }
+    return null;
+  }
   const parameters = new URLSearchParams(location.hash.replace(/^#/, ""));
   const fragmentToken = parameters.get("token");
   if (fragmentToken !== null && fragmentToken.length > 0) {
@@ -20,8 +41,19 @@ export function bootstrapReviewerToken(): string | null {
   return sessionStorage.getItem(REVIEWER_TOKEN_SESSION_KEY);
 }
 
-export function reviewerToken(): string | null {
-  return sessionStorage.getItem(REVIEWER_TOKEN_SESSION_KEY);
+export function reviewerSessionAvailable(
+  authMode: ReviewerAuthMode,
+  token: string | null,
+): boolean {
+  return authMode === "trusted_loopback" || token !== null;
+}
+
+export function reviewerToken(
+  authMode: ReviewerAuthMode = REVIEWER_AUTH_MODE,
+): string | null {
+  return authMode === "trusted_loopback"
+    ? null
+    : sessionStorage.getItem(REVIEWER_TOKEN_SESSION_KEY);
 }
 
 export function blindDraftStorageKey(draftIdentityHash: string): string {

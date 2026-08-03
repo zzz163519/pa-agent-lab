@@ -1,6 +1,6 @@
 # ADR-0016: Synthetic Blind Review Workflow and Research Console Foundation
 
-Status: ACCEPTED AND IMPLEMENTED FOR PHASE 3A.
+Status: ACCEPTED AND IMPLEMENTED FOR PHASE 3A. LOCAL DEPLOYMENT AUTHENTICATION AMENDED BY ADR-0018.
 
 ## Context
 
@@ -47,7 +47,7 @@ The fixed reviewer is `local:calvin-reviewer`; the server supplies the principal
 
 ### Authentication and transport
 
-Phase 2 operator and Phase 3A reviewer tokens are distinct principals. Each route manifest entry declares `operator_token`, `reviewer_token`, `operator_or_reviewer_token`, or `none` explicitly.
+Phase 2 operator and Phase 3A reviewer remain distinct server-derived principals. Each route manifest entry declares its default bearer requirement as `operator_token`, `reviewer_token`, `operator_or_reviewer_token`, or `none`; ADR-0018 adds an explicitly gated trusted-loopback deployment path for the reviewer principal without changing operator authorization.
 
 Five reviewer workflow routes use loopback REST/OpenAPI:
 
@@ -61,7 +61,9 @@ POST /v1/reviewer/final-reviews
 
 The existing anonymous PNG route accepts either local principal; complete Case and audit routes remain operator-only. Reviewer responses use `Cache-Control: no-store`.
 
-The server generates a new reviewer token for every launch and places it only in the URL fragment. The SPA moves it to tab-local `sessionStorage` and removes it from the URL. An unsubmitted blind draft is stored only in that tab under the exact server-owned workflow identity and is deleted after assessment freeze. No token or draft is persisted to PostgreSQL or localStorage.
+Direct host-process deployment generates a new reviewer token for every launch and places it only in the URL fragment. The SPA moves it to tab-local `sessionStorage` and removes it from the URL. An unsubmitted blind draft is stored only in that tab under the exact server-owned workflow identity and is deleted after assessment freeze. No token or draft is persisted to PostgreSQL or localStorage.
+
+ADR-0018 additionally authorizes the repository-owned persistent Docker deployment. Its credential-free loopback gateway publishes only `127.0.0.1`; the credential-bearing app remains internal-only and maps an absent Authorization header to the fixed reviewer only when trusted-loopback mode and the explicit gateway flag are both enabled. Invalid credentials never fall back to trusted mode, and operator-only routes still require the separate operator token.
 
 ### Research Console
 
@@ -90,7 +92,8 @@ Vitest, Testing Library, jsdom, and Playwright are dev-only verification tools. 
 - Queue and pre-reveal responses cannot contain BrooksDecision content.
 - Pause/resume is supported after assessment or reveal without mutable rows.
 - Legacy operator `CalvinReviewV1` remains a Phase 2 semantic path; a reviewer work item containing a review without complete Phase 3A workflow evidence fails closed.
-- Public deployment still requires a separate threat model and ADR.
+- Public deployment still requires a separate threat model and ADR. Trusted-loopback is explicitly limited to the local single-user Docker boundary in ADR-0018.
+- The trusted-loopback tradeoff allows another process on the same workstation to act as Calvin reviewer, but never as operator without the operator token.
 - Doctrine approval, real ingestion, market discovery/screening, provider calls, replay mechanics, Paper, Live, exchange, wallet, and real-money activity remain unauthorized.
 
 ## Reuse evidence

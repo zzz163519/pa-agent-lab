@@ -4,7 +4,7 @@ Status: IMPLEMENTED SELECTION RECORD.
 
 ## Requirement
 
-Build a long-lived, local, data-dense PA Agent Lab Research Console foundation while implementing only the synthetic blind-review module. The selected stack must preserve backend authority, exact schemas, same-origin loopback security, tab-local token handling, deterministic testing, and future module boundaries without importing market, provider, replay, or execution behavior.
+Build a long-lived, local, data-dense PA Agent Lab Research Console foundation while implementing only the synthetic blind-review module. The selected stack must preserve backend authority, exact schemas, same-origin loopback security, explicit bearer or trusted-loopback reviewer identity, deterministic testing, and future module boundaries without importing market, provider, replay, or execution behavior.
 
 ## Discovery surfaces
 
@@ -28,6 +28,7 @@ The configured Exa MCP backend returned `Unknown MCP server 'exa'`; official pro
 | Icons | Lucide React | Familiar accessible command icons without hand-authored SVG. |
 | Static serving | `@fastify/static` 10 | Fastify 5-compatible same-origin immutable assets and uncached SPA index. |
 | Security headers | `@fastify/helmet` 13 | Fastify 5-compatible CSP, referrer, frame, and MIME defenses. |
+| Local persistent deployment | Docker Compose + official Node image + existing Fastify/Node HTTP | Reuses the pinned PostgreSQL image and application stack. A dependency-free fixed-target gateway keeps credentials and writable volumes off the host-published service. |
 | Component tests | Vitest 4 + Testing Library + jsdom | Vite-aware tab-state and user-visible component tests. |
 | Browser tests | Playwright 1.62, Chromium only | Actual production assets, Fastify, PGlite, PNG, desktop/mobile, screenshot, and overflow verification. |
 
@@ -46,7 +47,8 @@ All versions are exact in package manifests and `pnpm-lock.yaml`. React Router 8
 | AG Grid, TanStack Table, virtualization | Defer | The synthetic review queue is small; install only when a separately approved market/candidate module proves the need. |
 | TradingView, Lightweight Charts, ECharts, D3 | Defer | Phase 3A must display immutable deterministic PNGs. Future interactive market charts are a different contract. |
 | SSE, WebSocket, GraphQL, gRPC, queue client | Reject | Five synchronous reviewer routes need no streaming or event transport. |
-| Authentication/user packages | Reject | V1 has one fixed local reviewer and per-launch token; public or multi-user deployment requires a new ADR. |
+| Authentication/user packages | Reject | V1 has one fixed local reviewer. Bearer mode and ADR-0018 trusted-loopback deployment use existing server boundaries; public or multi-user deployment still requires a new ADR. |
+| Nginx, Caddy, Traefik, general proxy package | Reject | A small Node HTTP gateway proxies to one compile-time constrained upstream and avoids a configurable proxy surface or new runtime dependency. |
 | Browser-stored database or offline sync | Reject | Browser state cannot become workflow authority. |
 | Agent skill or MCP UI generator | Reject | No inspected skill supplied the exact backend-enforced immutable review protocol; importing generated UI would not reduce contract risk. |
 
@@ -56,7 +58,8 @@ All versions are exact in package manifests and `pnpm-lock.yaml`. React Router 8
 - no empty market/execution navigation exists;
 - the API, not React, computes workflow state;
 - no CORS or Vite proxy is used;
-- token and draft state remain tab-local;
+- bearer token and draft state remain tab-local; trusted-loopback builds store no reviewer token;
+- the credential-bearing app and PostgreSQL have no host ports; only the credential-free fixed-target gateway publishes loopback;
 - BrooksDecision content arrives only after persisted reveal receipt;
 - PNG rendering remains the ADR-0012 artifact path;
 - dependencies provide UI/build/test capability only and no trading semantics.

@@ -6,7 +6,11 @@ import { DoctrineQueuePage } from "../features/doctrine/doctrine-queue-page.tsx"
 import { DoctrineWorkItemPage } from "../features/doctrine/doctrine-work-item-page.tsx";
 import { ReviewQueuePage } from "../features/review/review-queue-page.tsx";
 import { ReviewWorkItemPage } from "../features/review/review-work-item-page.tsx";
-import { bootstrapReviewerToken } from "../features/review/session-state.ts";
+import {
+  REVIEWER_AUTH_MODE,
+  bootstrapReviewerToken,
+  reviewerSessionAvailable,
+} from "../features/review/session-state.ts";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,7 +40,9 @@ const router = createBrowserRouter(
 
 export function ResearchConsoleApp() {
   const token = bootstrapReviewerToken();
-  if (token === null) return <MissingReviewerSession />;
+  if (!reviewerSessionAvailable(REVIEWER_AUTH_MODE, token)) {
+    return <MissingReviewerSession />;
+  }
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
