@@ -82,6 +82,99 @@ describe("Phase 4A Doctrine retrieval Case Store", () => {
     } finally { await harness.close(); }
   });
 
+  it("creates explicit rollback events with immediate-retry idempotency", async () => {
+    const harness = await createHarness();
+    try {
+      const proposals = createPhase3bPilotDoctrineProposalsV1();
+      const approvals = [];
+      for (const proposal of proposals) {
+        await harness.store.appendDoctrineProposal(proposal);
+        approvals.push(
+          await harness.store.approveDoctrine(
+            proposal.doctrineUnit.doctrineId,
+            { proposalHash: proposal.proposalHash },
+            "local:phase2-operator",
+          ),
+        );
+      }
+      const createActivation = async (attemptIndex: number) => {
+        const run = (
+          await harness.store.createDoctrineIngestionRun({ attemptIndex })
+        ).run;
+        const report = await harness.db.query<{
+          readonly quality_report_hash: `sha256:${string}`;
+        }>(
+          "SELECT quality_report_hash FROM pa_doctrine_quality_reports WHERE run_id=$1",
+          [run.runId],
+        );
+        return (
+          await harness.store.createDoctrineCorpusActivation({
+            runId: run.runId,
+            qualityReportHash: report.rows[0]!.quality_report_hash,
+          })
+        ).activation;
+      };
+      const target = await createActivation(0);
+      const current = await createActivation(1);
+      const command = {
+        targetActivationId: target.activationId,
+        reason: "  Restore   prior eligible corpus.  ",
+      } as const;
+      const first = await harness.store.createDoctrineCorpusRollback(command);
+      assert.equal(first.status, "inserted");
+      assert.equal(first.activation.activationKind, "rollback");
+      assert.equal(first.activation.targetActivationId, target.activationId);
+      assert.equal(first.activation.replacesActivationId, current.activationId);
+      assert.equal(first.activation.reason, "Restore prior eligible corpus.");
+
+      const retry = await harness.store.createDoctrineCorpusRollback(command);
+      assert.equal(retry.status, "existing");
+      assert.equal(retry.activation.activationId, first.activation.activationId);
+      assert.equal(
+        (
+          await harness.store.createDoctrineCorpusActivation({
+            runId: target.runId,
+            qualityReportHash: target.qualityReportHash,
+          })
+        ).status,
+        "existing",
+      );
+      assert.equal(
+        (await harness.store.getCurrentDoctrineActivation())?.activationId,
+        first.activation.activationId,
+      );
+      assert.equal(
+        (await harness.store.getDoctrineActivation(target.activationId))?.activationId,
+        target.activationId,
+      );
+
+      const intervening = await createActivation(2);
+      const second = await harness.store.createDoctrineCorpusRollback(command);
+      assert.equal(second.status, "inserted");
+      assert.equal(second.activation.replacesActivationId, intervening.activationId);
+      assert.notEqual(second.activation.activationId, first.activation.activationId);
+
+      await harness.store.retireDoctrine(
+        proposals[0]!.doctrineUnit.doctrineId,
+        {
+          approvalHash: approvals[0]!.resourceHash,
+          reason: "No longer current Doctrine.",
+        },
+        "local:phase2-operator",
+      );
+      await assert.rejects(
+        () => harness.store.createDoctrineCorpusRollback(command),
+        /retirement/,
+      );
+      const count = await harness.db.query<{ readonly count: number }>(
+        "SELECT count(*)::int AS count FROM pa_doctrine_corpus_activations",
+      );
+      assert.equal(count.rows[0]?.count, 5);
+    } finally {
+      await harness.close();
+    }
+  });
+
   it("uses fixed human-authored queries for exact nine-unit pilot coverage", async () => {
     const entries = createPhase3bPilotDoctrineProposalsV1().map((proposal) =>
       createDoctrineCorpusEntry({

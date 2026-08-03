@@ -72,6 +72,16 @@ import {
 } from "@pa-agent-lab/persistence-contracts";
 
 import {
+  createPolicyAssemblyStoreV1,
+  createLocalPngArtifactValidatorV1,
+  type PolicyAssemblyArtifactValidatorV1,
+  type PolicyAssemblyStoreV1,
+} from "./policy-assembly-store-v1.ts";
+import {
+  CaseStoreError,
+  type CaseStoreErrorCodeV1,
+} from "./case-store-error-v1.ts";
+import {
   createDoctrineRetrievalStoreV1,
   type DoctrineRetrievalStoreV1,
 } from "./doctrine-retrieval-store-v1.ts";
@@ -94,7 +104,9 @@ export interface CaseStoreMutationResultV1 {
   readonly resourceHash: ContractSha256;
 }
 
-export interface CaseStoreV1 extends DoctrineRetrievalStoreV1 {
+export interface CaseStoreV1
+  extends DoctrineRetrievalStoreV1,
+    PolicyAssemblyStoreV1 {
   appendSyntheticCaseBundle(
     bundle: SyntheticCaseBundleV1,
   ): Promise<Readonly<CaseStoreMutationResultV1>>;
@@ -144,24 +156,8 @@ export interface CaseStoreV1 extends DoctrineRetrievalStoreV1 {
   checkReadiness(): Promise<boolean>;
 }
 
-export type CaseStoreErrorCodeV1 =
-  | "INTEGRITY_VIOLATION"
-  | "IDENTITY_CONFLICT"
-  | "DEPENDENCY_UNAVAILABLE";
-
-export class CaseStoreError extends Error {
-  override readonly name = "CaseStoreError";
-  readonly code: CaseStoreErrorCodeV1;
-
-  constructor(
-    code: CaseStoreErrorCodeV1,
-    message: string,
-    options?: ErrorOptions,
-  ) {
-    super(message, options);
-    this.code = code;
-  }
-}
+export type { CaseStoreErrorCodeV1 } from "./case-store-error-v1.ts";
+export { CaseStoreError } from "./case-store-error-v1.ts";
 
 export interface PostgresCaseStoreHandleV1 {
   readonly store: CaseStoreV1;
@@ -172,6 +168,8 @@ export function createPostgresCaseStoreV1(options: {
   readonly connectionString: string;
   readonly maxConnections?: number;
   readonly doctrineRetrievalRuntime: typeof DOCTRINE_RETRIEVAL_RUNTIME;
+  readonly authorizedSyntheticBundleHashes?: readonly ContractSha256[];
+  readonly artifactRoot?: string;
 }): PostgresCaseStoreHandleV1 {
   const pool = new pg.Pool({
     connectionString: options.connectionString,
@@ -180,6 +178,12 @@ export function createPostgresCaseStoreV1(options: {
   return {
     store: createCaseStore(createPgCaseStoreDatabase(pool), {
       doctrineRetrievalRuntime: options.doctrineRetrievalRuntime,
+      authorizedSyntheticBundleHashes:
+        options.authorizedSyntheticBundleHashes ?? [],
+      validateChartArtifact:
+        options.artifactRoot === undefined
+          ? null
+          : createLocalPngArtifactValidatorV1(options.artifactRoot),
     }),
     close: () => pool.end(),
   };
@@ -189,6 +193,8 @@ export function createCaseStore(
   database: CaseStoreDatabaseV1,
   options: {
     readonly doctrineRetrievalRuntime?: typeof DOCTRINE_RETRIEVAL_RUNTIME;
+    readonly authorizedSyntheticBundleHashes?: readonly ContractSha256[];
+    readonly validateChartArtifact?: PolicyAssemblyArtifactValidatorV1 | null;
   } = {},
 ): CaseStoreV1 {
   const doctrineRetrieval = createDoctrineRetrievalStoreV1(database, {
@@ -197,8 +203,14 @@ export function createCaseStore(
         ? null
         : { runtime: options.doctrineRetrievalRuntime },
   });
+  const policyAssembly = createPolicyAssemblyStoreV1(database, {
+    authorizedSyntheticBundleHashes:
+      options.authorizedSyntheticBundleHashes ?? [],
+    validateChartArtifact: options.validateChartArtifact ?? null,
+  });
   return {
     ...doctrineRetrieval,
+    ...policyAssembly,
     appendSyntheticCaseBundle: (bundle) => appendBundle(database, bundle),
     appendBrooksDecision: (decision) => appendDecision(database, decision),
     appendCalvinReview: (review) => appendReview(database, review),
@@ -271,7 +283,14 @@ function isRetryableTransactionError(error: unknown): boolean {
   if (error === null || typeof error !== "object" || !("code" in error)) {
     return false;
   }
-  return error.code === "40001" || error.code === "40P01";
+  if (error.code === "40001" || error.code === "40P01") {
+    return true;
+  }
+  return (
+    error.code === "23505" &&
+    "constraint" in error &&
+    error.constraint === "pa_policy_assembly_natural_identity_uq"
+  );
 }
 
 async function appendBundle(
@@ -1276,7 +1295,7 @@ interface BundleRowV1 {
   readonly detail_record: unknown;
 }
 
-async function loadBundleByCaseHash(
+export async function loadBundleByCaseHash(
   client: CaseStoreDatabaseClientV1,
   caseHash: ContractSha256,
 ): Promise<SyntheticCaseBundleV1 | null> {

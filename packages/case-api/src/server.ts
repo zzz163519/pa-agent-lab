@@ -40,6 +40,9 @@ export async function startCaseApiServerV1(
   const database = createPostgresCaseStoreV1({
     connectionString: deployment.databaseUrl,
     doctrineRetrievalRuntime: DOCTRINE_RETRIEVAL_RUNTIME,
+    authorizedSyntheticBundleHashes:
+      deployment.authorizedSyntheticBundleHashes,
+    artifactRoot: deployment.artifactRoot,
   });
   try {
     const app = await createCaseApiV1({

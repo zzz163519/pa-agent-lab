@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, AND PHASE 4A ARE IMPLEMENTED. ADR-0020, THE PHASE 5A CONTRACT, AND ITS IMPLEMENTATION PLAN ARE ACCEPTED, BUT PHASE 5A IMPLEMENTATION HAS NOT STARTED AND REQUIRES SEPARATE EXPLICIT START AUTHORIZATION.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, AND PHASE 5A ARE IMPLEMENTED. PHASE 4B, PHASE 5B, SELECTOR V2, AND LATER AUTHORITY REMAIN SEPARATE.
 
 ## Delivery model
 
@@ -122,7 +122,7 @@ ADR-0020 splits Phase 5 into an accepted synthetic assembly slice and a separate
 
 ### Phase 5A: explicit corpus rollback and synthetic Policy Assembly
 
-Accepted contract and approved implementation plan; implementation has not started and requires separate explicit Calvin start authorization.
+Implemented and freshly verified under ADR-0020 and the accepted Phase 5A contract; Direct Pi remained the sole writer.
 
 - add one operator-only explicit rollback command that revalidates an earlier ordinary activation and appends a new rollback activation identity;
 - never roll back automatically or search backward from an ineligible current activation;
@@ -135,7 +135,7 @@ Accepted contract and approved implementation plan; implementation has not start
 - keep operator authentication, reviewer isolation, append-only PostgreSQL, and bounded expected-failure evidence;
 - add no Case-derived query, outbound payload, ModelRun, provider, scheduler, Console UI, real data, replay, or trading path.
 
-Exit condition when separately implemented: a still-eligible historical corpus can become current only through a new explicit rollback identity, and one existing synthetic Case can produce an immutable full-current-corpus policy input with complete provenance and no model call.
+Exit condition met: a still-eligible historical corpus can become current only through a new explicit rollback identity, and one existing deployment-authorized synthetic Case can produce an immutable full-current-corpus policy input with complete provenance and no model call.
 
 ### Phase 5B: provider-bound Brooks Policy inference
 

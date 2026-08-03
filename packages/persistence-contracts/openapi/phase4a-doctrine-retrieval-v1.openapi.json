@@ -448,7 +448,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DoctrineCorpusActivationV1"
+                  "$ref": "#/components/schemas/DoctrineActivationAuthorityV1"
                 }
               }
             }
@@ -1203,6 +1203,79 @@
           "snapshotId",
           "profileHash",
           "qualityReportHash",
+          "operatorPrincipal",
+          "activationId"
+        ],
+        "additionalProperties": false
+      },
+      "DoctrineActivationAuthorityV1": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/DoctrineCorpusActivationV1"
+          },
+          {
+            "$ref": "#/components/schemas/DoctrineCorpusRollbackActivationV1"
+          }
+        ]
+      },
+      "DoctrineCorpusRollbackActivationV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "doctrine-corpus-rollback-activation.v1"
+          },
+          "activationKind": {
+            "type": "string",
+            "const": "rollback"
+          },
+          "activationSequence": {
+            "type": "number"
+          },
+          "replacesActivationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "targetActivationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "runId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "snapshotId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "profileHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "qualityReportHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "reasonHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "operatorPrincipal": {
+            "type": "string",
+            "const": "local:phase2-operator"
+          },
+          "activationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "activationKind",
+          "activationSequence",
+          "replacesActivationId",
+          "targetActivationId",
+          "runId",
+          "snapshotId",
+          "profileHash",
+          "qualityReportHash",
+          "reason",
+          "reasonHash",
           "operatorPrincipal",
           "activationId"
         ],

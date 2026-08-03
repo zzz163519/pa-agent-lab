@@ -4,8 +4,12 @@ import {
   DOCTRINE_RETRIEVAL_EVIDENCE_SCHEMA_VERSION,
   DOCTRINE_RETRIEVAL_PROFILE_V1,
   DOCTRINE_RETRIEVAL_RUNTIME,
+  assertDoctrineActivationAuthorityIntegrity,
   createDoctrineCorpusActivation,
   createDoctrineCorpusEntry,
+  createDoctrineCorpusRollbackActivation,
+  doctrineActivationKind,
+  normalizeDoctrineRollbackReason,
   createDoctrineCorpusSnapshot,
   createDoctrineIngestionRun,
   createDoctrineRetrievalEvidence,
@@ -19,7 +23,9 @@ import {
   canonicalStringify,
   deepFreeze,
   type ContractSha256,
+  type DoctrineActivationAuthorityV1,
   type DoctrineCorpusActivationV1,
+  type DoctrineCorpusRollbackActivationV1,
   type DoctrineCorpusSnapshotV1,
   type DoctrineIngestionRunV1,
   type DoctrineProposalBundleV1,
@@ -29,8 +35,10 @@ import {
   type DoctrineRagRecordV1,
 } from "@pa-agent-lab/contracts";
 import {
+  assertDoctrineCorpusRollbackCommand,
   assertDoctrineRetrievalQueryCommand,
   type DoctrineActivationCommandV1,
+  type DoctrineCorpusRollbackCommandV1,
   type DoctrineIngestionCommandV1,
   type DoctrineRetrievalQueryCommandV1,
 } from "@pa-agent-lab/persistence-contracts";
@@ -65,6 +73,11 @@ export interface DoctrineActivationMutationV1 {
   readonly activation: DoctrineCorpusActivationV1;
 }
 
+export interface DoctrineRollbackActivationMutationV1 {
+  readonly status: "inserted" | "existing";
+  readonly activation: DoctrineCorpusRollbackActivationV1;
+}
+
 export interface DoctrineRetrievalStoreV1 {
   createDoctrineIngestionRun(
     command: DoctrineIngestionCommandV1,
@@ -78,7 +91,13 @@ export interface DoctrineRetrievalStoreV1 {
   createDoctrineCorpusActivation(
     command: DoctrineActivationCommandV1,
   ): Promise<Readonly<DoctrineActivationMutationV1>>;
-  getCurrentDoctrineActivation(): Promise<Readonly<DoctrineCorpusActivationV1> | null>;
+  createDoctrineCorpusRollback(
+    command: DoctrineCorpusRollbackCommandV1,
+  ): Promise<Readonly<DoctrineRollbackActivationMutationV1>>;
+  getDoctrineActivation(
+    activationId: ContractSha256,
+  ): Promise<Readonly<DoctrineActivationAuthorityV1> | null>;
+  getCurrentDoctrineActivation(): Promise<Readonly<DoctrineActivationAuthorityV1> | null>;
   queryDoctrine(
     command: DoctrineRetrievalQueryCommandV1,
   ): Promise<Readonly<DoctrineRetrievalResponseV1>>;
@@ -106,6 +125,9 @@ export function createDoctrineRetrievalStoreV1(
     getDoctrineCorpusSnapshot: (snapshotId) => getSnapshot(database, snapshotId),
     getDoctrineIngestionRun: (runId) => getRun(database, runId),
     createDoctrineCorpusActivation: (command) => activate(database, command),
+    createDoctrineCorpusRollback: (command) => rollback(database, command),
+    getDoctrineActivation: (activationId) =>
+      getActivation(database, activationId),
     getCurrentDoctrineActivation: () => currentActivation(database),
     queryDoctrine: (command) => query(database, command),
     getDoctrineRetrievalEvidence: (evidenceId) => getEvidence(database, evidenceId),
@@ -440,13 +462,18 @@ async function activate(
 ): Promise<Readonly<DoctrineActivationMutationV1>> {
   return database.transaction(async (client) => {
     const existing = await client.query<{ readonly record: unknown }>(
-      "SELECT record FROM pa_doctrine_corpus_activations WHERE run_id=$1 AND quality_report_hash=$2",
+      `SELECT record FROM pa_doctrine_corpus_activations
+       WHERE activation_kind='standard' AND run_id=$1 AND quality_report_hash=$2`,
       [command.runId, command.qualityReportHash],
     );
     if (existing.rows.length === 1) {
+      const activation = materializeActivation(existing.rows[0]!.record);
+      if (doctrineActivationKind(activation) !== "standard") {
+        fail("ordinary activation identity resolved to a rollback record");
+      }
       return deepFreeze({
         status: "existing",
-        activation: materializeActivation(existing.rows[0]!.record),
+        activation: activation as DoctrineCorpusActivationV1,
       });
     }
     const parents = await client.query<{ readonly snapshot_id: ContractSha256; readonly profile_hash: ContractSha256 }>(
@@ -484,9 +511,145 @@ async function activate(
   });
 }
 
-async function currentActivation(
+async function rollback(
+  database: CaseStoreDatabaseV1,
+  command: DoctrineCorpusRollbackCommandV1,
+): Promise<Readonly<DoctrineRollbackActivationMutationV1>> {
+  assertDoctrineCorpusRollbackCommand(command);
+  const reason = normalizeDoctrineRollbackReason(command.reason);
+  return database.transaction(async (client) => {
+    const current = await currentActivation(client);
+    if (current === null) fail("rollback requires a current Doctrine activation");
+    const target = await getActivation(client, command.targetActivationId);
+    if (target === null || doctrineActivationKind(target) !== "standard") {
+      fail("rollback target must be an ordinary activation");
+    }
+    const ordinaryTarget = target as DoctrineCorpusActivationV1;
+    if (ordinaryTarget.activationSequence >= current.activationSequence) {
+      fail("rollback target must be earlier than the current activation");
+    }
+    await assertActivationEligible(client, ordinaryTarget);
+
+    if (
+      "activationKind" in current &&
+      current.activationKind === "rollback" &&
+      current.targetActivationId === ordinaryTarget.activationId &&
+      current.reason === reason
+    ) {
+      return deepFreeze({ status: "existing", activation: current });
+    }
+
+    const sequence = await client.query<{
+      readonly activation_sequence: number;
+    }>(
+      "SELECT nextval('pa_doctrine_corpus_activation_sequence_seq')::integer AS activation_sequence",
+    );
+    const activationSequence = sequence.rows[0]?.activation_sequence;
+    if (activationSequence === undefined) {
+      fail("database did not assign an activation sequence");
+    }
+    const activation = createDoctrineCorpusRollbackActivation({
+      activationSequence,
+      replacesActivationId: current.activationId,
+      targetActivation: ordinaryTarget,
+      reason,
+      operatorPrincipal: DOCTRINE_RETRIEVAL_OPERATOR_PRINCIPAL,
+    });
+    await client.query(
+      `INSERT INTO pa_doctrine_corpus_activations
+        (activation_sequence,activation_id,activation_kind,run_id,snapshot_id,
+         profile_hash,quality_report_hash,operator_principal,
+         target_activation_id,replaces_activation_id,reason_hash,record)
+       VALUES ($1,$2,'rollback',$3,$4,$5,$6,$7,$8,$9,$10,$11::jsonb)`,
+      [
+        activation.activationSequence,
+        activation.activationId,
+        activation.runId,
+        activation.snapshotId,
+        activation.profileHash,
+        activation.qualityReportHash,
+        activation.operatorPrincipal,
+        activation.targetActivationId,
+        activation.replacesActivationId,
+        activation.reasonHash,
+        canonicalStringify(activation),
+      ],
+    );
+    return deepFreeze({ status: "inserted", activation });
+  });
+}
+
+async function assertActivationEligible(
   client: CaseStoreDatabaseClientV1,
-): Promise<Readonly<DoctrineCorpusActivationV1> | null> {
+  activation: DoctrineCorpusActivationV1,
+): Promise<void> {
+  const result = await client.query<{
+    readonly chain_eligible: boolean;
+    readonly sources_allowed: boolean;
+    readonly contains_retirement: boolean;
+  }>(
+    `SELECT
+       EXISTS (
+         SELECT 1
+         FROM pa_doctrine_ingestion_runs AS run
+         JOIN pa_doctrine_quality_reports AS report
+           ON report.run_id=run.run_id
+          AND report.snapshot_id=run.snapshot_id
+          AND report.profile_hash=run.profile_hash
+         WHERE run.run_id=$1 AND run.snapshot_id=$2 AND run.profile_hash=$3
+           AND run.status='succeeded'
+           AND report.quality_report_hash=$4 AND report.status='passed'
+       ) AS chain_eligible,
+       NOT EXISTS (
+         SELECT 1
+         FROM pa_doctrine_corpus_entries AS entry
+         WHERE entry.snapshot_id=$2
+           AND NOT pa_doctrine_source_is_phase4a_allowed(
+             entry.source_id,entry.source_content_hash
+           )
+       ) AS sources_allowed,
+       EXISTS (
+         SELECT 1
+         FROM pa_doctrine_corpus_entries AS entry
+         JOIN pa_doctrine_retirements AS retirement
+           ON retirement.doctrine_id=entry.doctrine_id
+         WHERE entry.snapshot_id=$2
+       ) AS contains_retirement`,
+    [
+      activation.runId,
+      activation.snapshotId,
+      activation.profileHash,
+      activation.qualityReportHash,
+    ],
+  );
+  const eligibility = result.rows[0];
+  if (eligibility?.chain_eligible !== true) {
+    fail("rollback target run or quality report is not eligible");
+  }
+  if (eligibility.sources_allowed !== true) {
+    fail("rollback target Source is outside the exact Phase 4A allowlist");
+  }
+  if (eligibility.contains_retirement) {
+    fail("rollback target snapshot contains a retirement");
+  }
+}
+
+async function getActivation(
+  client: Pick<CaseStoreDatabaseClientV1, "query">,
+  activationId: ContractSha256,
+): Promise<Readonly<DoctrineActivationAuthorityV1> | null> {
+  const result = await client.query<{ readonly record: unknown }>(
+    "SELECT record FROM pa_doctrine_corpus_activations WHERE activation_id=$1",
+    [activationId],
+  );
+  return result.rows[0] === undefined
+    ? null
+    : materializeActivation(result.rows[0].record);
+}
+
+async function currentActivation(
+  client: Pick<CaseStoreDatabaseClientV1, "query">,
+): Promise<Readonly<DoctrineActivationAuthorityV1> | null> {
   const result = await client.query<{ readonly record: unknown }>(
     "SELECT record FROM pa_doctrine_corpus_activations ORDER BY activation_sequence DESC LIMIT 1",
   );
@@ -627,7 +790,7 @@ async function persistFailedQuery(
 
 async function buildQueryRecord(
   client: CaseStoreDatabaseClientV1,
-  activation: DoctrineCorpusActivationV1,
+  activation: DoctrineActivationAuthorityV1,
   command: DoctrineRetrievalQueryCommandV1,
   normalized: string,
   limit: number,
@@ -752,10 +915,11 @@ function materialize<T>(value: unknown): T {
   if (value === null || value === undefined) fail("stored Doctrine retrieval record is missing");
   return structuredClone(value) as T;
 }
-function materializeActivation(value: unknown): Readonly<DoctrineCorpusActivationV1> {
-  const activation = materialize<DoctrineCorpusActivationV1>(value);
-  const { activationId, ...body } = activation;
-  if (canonicalHash(body) !== activationId) fail("stored activation identity mismatch");
+function materializeActivation(
+  value: unknown,
+): Readonly<DoctrineActivationAuthorityV1> {
+  const activation = materialize<DoctrineActivationAuthorityV1>(value);
+  assertDoctrineActivationAuthorityIntegrity(activation);
   return deepFreeze(activation);
 }
 function fail(message: string): never {

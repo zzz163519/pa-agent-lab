@@ -8,6 +8,9 @@ import {
   ANONYMOUS_CHART_WIDTH_PX,
   persistAnonymousChartArtifacts,
 } from "@pa-agent-lab/chart-renderer";
+import {
+  normalizeDoctrineRollbackReason,
+} from "@pa-agent-lab/contracts";
 import { assertCaseAuditViewIntegrity } from "@pa-agent-lab/persistence-contracts";
 
 import { createPhase3bPilotDoctrineProposalsV1 } from "./doctrine-pilot-v1.ts";
@@ -38,6 +41,9 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
         query: { type: "string" },
         limit: { type: "string" },
         "repeat-index": { type: "string" },
+        "case-hash": { type: "string" },
+        "assembly-id": { type: "string" },
+        "failure-id": { type: "string" },
       },
     });
     const command = parsed.positionals[0];
@@ -78,6 +84,95 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
     if (command === "inspect-current-doctrine-activation") {
       options.stdout(JSON.stringify(await request("GET", "/v1/doctrine/activations/current")));
       return 0;
+    }
+
+    if (command === "rollback-doctrine-corpus") {
+      const targetActivationId = requiredSha256(
+        "rollback-doctrine-corpus requires a target activation identity",
+        parsed.positionals[1],
+      );
+      const rawReason = parsed.values.reason;
+      if (rawReason === undefined) {
+        throw new Error(
+          "rollback-doctrine-corpus requires --reason with 1 through 500 Unicode scalar values",
+        );
+      }
+      let reason: string;
+      try {
+        reason = normalizeDoctrineRollbackReason(rawReason);
+      } catch {
+        throw new Error(
+          "rollback-doctrine-corpus requires a normalized, control-free --reason with 1 through 500 Unicode scalar values",
+        );
+      }
+      options.stdout(
+        JSON.stringify(
+          await request("POST", "/v1/doctrine/rollback-activations", {
+            targetActivationId,
+            reason,
+          }),
+        ),
+      );
+      return 0;
+    }
+
+    if (command === "inspect-doctrine-activation") {
+      const activationId = requiredSha256(
+        "inspect-doctrine-activation requires one activation identity",
+        parsed.positionals[1],
+      );
+      options.stdout(
+        JSON.stringify(
+          await request("GET", `/v1/doctrine/activations/${activationId}`),
+        ),
+      );
+      return 0;
+    }
+
+    if (command === "policy") {
+      const subcommand = parsed.positionals[1];
+      if (subcommand === "assemble") {
+        const caseHash = requiredSha256(
+          "policy assemble requires --case-hash with one Case identity",
+          parsed.values["case-hash"],
+        );
+        options.stdout(
+          JSON.stringify(
+            await request("POST", "/v1/policy-assemblies", { caseHash }),
+          ),
+        );
+        return 0;
+      }
+      if (subcommand === "assembly") {
+        const assemblyId = requiredSha256(
+          "policy assembly requires --assembly-id with one assembly identity",
+          parsed.values["assembly-id"],
+        );
+        options.stdout(
+          JSON.stringify(
+            await request("GET", `/v1/policy-assemblies/${assemblyId}`),
+          ),
+        );
+        return 0;
+      }
+      if (subcommand === "assembly-failure") {
+        const failureId = requiredSha256(
+          "policy assembly-failure requires --failure-id with one failure identity",
+          parsed.values["failure-id"],
+        );
+        options.stdout(
+          JSON.stringify(
+            await request(
+              "GET",
+              `/v1/policy-assembly-failures/${failureId}`,
+            ),
+          ),
+        );
+        return 0;
+      }
+      throw new Error(
+        "policy requires assemble, assembly, or assembly-failure",
+      );
     }
 
     if (command === "query-doctrine") {
@@ -347,7 +442,7 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
     }
 
     throw new Error(
-      "command must be run-doctrine-ingestion, inspect-doctrine-snapshot, inspect-doctrine-ingestion, activate-doctrine-corpus, inspect-current-doctrine-activation, query-doctrine, inspect-doctrine-evidence, seed-doctrine-pilot, inspect-doctrine, approve-doctrine, retire-doctrine, seed-review-work-item, seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
+      "command must be run-doctrine-ingestion, inspect-doctrine-snapshot, inspect-doctrine-ingestion, activate-doctrine-corpus, inspect-current-doctrine-activation, rollback-doctrine-corpus, inspect-doctrine-activation, policy, query-doctrine, inspect-doctrine-evidence, seed-doctrine-pilot, inspect-doctrine, approve-doctrine, retire-doctrine, seed-review-work-item, seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
     );
   } catch (error) {
     options.stderr(error instanceof Error ? error.message : String(error));

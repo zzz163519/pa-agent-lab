@@ -1,0 +1,1349 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "PA Agent Lab Phase 5A Synthetic Policy Assembly V1",
+    "version": "1.0.0"
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "paths": {
+    "/v1/doctrine/rollback-activations": {
+      "post": {
+        "operationId": "createDoctrineCorpusRollbackActivation",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctrineCorpusRollbackCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact Phase 5A resource already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineActivationAuthorityV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Phase 5A resource inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineActivationAuthorityV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/doctrine/activations/{activationId}": {
+      "get": {
+        "operationId": "getDoctrineActivation",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "activationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ContractSha256"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phase 5A resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctrineActivationAuthorityV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/policy-assemblies": {
+      "post": {
+        "operationId": "createPolicyAssembly",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePolicyAssemblyCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact Phase 5A resource already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyAssemblyTerminalV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Phase 5A resource inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyAssemblyTerminalV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/policy-assemblies/{assemblyId}": {
+      "get": {
+        "operationId": "getPolicyAssembly",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "assemblyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ContractSha256"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phase 5A resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyAssemblyV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/policy-assembly-failures/{failureId}": {
+      "get": {
+        "operationId": "getPolicyAssemblyFailure",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "failureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ContractSha256"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phase 5A resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyAssemblyFailureV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5A contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DoctrineCorpusRollbackCommandV1": {
+        "type": "object",
+        "properties": {
+          "targetActivationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f-\\u009f]*$"
+          }
+        },
+        "required": [
+          "targetActivationId",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "ContractSha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "CreatePolicyAssemblyCommandV1": {
+        "type": "object",
+        "properties": {
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "caseHash"
+        ],
+        "additionalProperties": false
+      },
+      "PolicyAssemblyV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "policy-assembly.v1"
+          },
+          "assemblyRulesVersion": {
+            "type": "string",
+            "const": "policy-assembly-rules.v1"
+          },
+          "sourceScope": {
+            "type": "string",
+            "const": "synthetic_fixture_only"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "sourceBundleHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "activationKind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "rollback"
+            ]
+          },
+          "activationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "activationSequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "runId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "snapshotId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "profileHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "qualityReportHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "doctrineContextHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "doctrineContextByteLength": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 524288
+          },
+          "doctrineManifest": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "doctrineId": {
+                  "type": "string"
+                },
+                "ragRecordHash": {
+                  "$ref": "#/components/schemas/ContractSha256"
+                }
+              },
+              "required": [
+                "doctrineId",
+                "ragRecordHash"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 32
+          },
+          "charts": {
+            "type": "object",
+            "properties": {
+              "context": {
+                "type": "object",
+                "properties": {
+                  "panel": {
+                    "type": "string",
+                    "enum": [
+                      "context",
+                      "detail"
+                    ]
+                  },
+                  "metadataId": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "artifactId": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "contentHash": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  }
+                },
+                "required": [
+                  "panel",
+                  "metadataId",
+                  "artifactId",
+                  "contentHash"
+                ],
+                "additionalProperties": false
+              },
+              "detail": {
+                "type": "object",
+                "properties": {
+                  "panel": {
+                    "type": "string",
+                    "enum": [
+                      "context",
+                      "detail"
+                    ]
+                  },
+                  "metadataId": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "artifactId": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "contentHash": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  }
+                },
+                "required": [
+                  "panel",
+                  "metadataId",
+                  "artifactId",
+                  "contentHash"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "context",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "policyInput": {
+            "type": "object",
+            "properties": {
+              "schemaVersion": {
+                "type": "string",
+                "const": "brooks-policy-input.v1"
+              },
+              "inputHash": {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              "market": {
+                "type": "object",
+                "properties": {
+                  "barDurationSeconds": {
+                    "type": "integer",
+                    "const": 300,
+                    "minimum": 0
+                  },
+                  "lastVisibleBarId": {
+                    "type": "string"
+                  },
+                  "visibleBarCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 120
+                  },
+                  "isLeftCensored": {
+                    "type": "boolean"
+                  },
+                  "leftCensoredBarsMissing": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 80
+                  },
+                  "normalization": {
+                    "type": "object",
+                    "properties": {
+                      "method": {
+                        "type": "string",
+                        "const": "first_visible_close_equals_100"
+                      },
+                      "base": {
+                        "type": "number",
+                        "const": 100
+                      },
+                      "anchorBarId": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "method",
+                      "base",
+                      "anchorBarId"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "bars": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "barId": {
+                          "type": "string"
+                        },
+                        "sequence": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "open": {
+                          "type": "number"
+                        },
+                        "high": {
+                          "type": "number"
+                        },
+                        "low": {
+                          "type": "number"
+                        },
+                        "close": {
+                          "type": "number"
+                        },
+                        "continuityFromPrevious": {
+                          "$ref": "#/components/schemas/BarContinuityStateV1"
+                        }
+                      },
+                      "required": [
+                        "barId",
+                        "sequence",
+                        "open",
+                        "high",
+                        "low",
+                        "close",
+                        "continuityFromPrevious"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 40,
+                    "maxItems": 120
+                  }
+                },
+                "required": [
+                  "barDurationSeconds",
+                  "lastVisibleBarId",
+                  "visibleBarCount",
+                  "isLeftCensored",
+                  "leftCensoredBarsMissing",
+                  "normalization",
+                  "bars"
+                ],
+                "additionalProperties": false
+              },
+              "charts": {
+                "type": "object",
+                "properties": {
+                  "context": {
+                    "type": "object",
+                    "properties": {
+                      "panel": {
+                        "type": "string",
+                        "enum": [
+                          "context",
+                          "detail"
+                        ]
+                      },
+                      "mediaType": {
+                        "type": "string",
+                        "const": "image/png"
+                      },
+                      "contentHash": {
+                        "$ref": "#/components/schemas/ContractSha256"
+                      },
+                      "barIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 40,
+                        "maxItems": 120
+                      },
+                      "lastVisibleBarId": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "panel",
+                      "mediaType",
+                      "contentHash",
+                      "barIds",
+                      "lastVisibleBarId"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "detail": {
+                    "type": "object",
+                    "properties": {
+                      "panel": {
+                        "type": "string",
+                        "enum": [
+                          "context",
+                          "detail"
+                        ]
+                      },
+                      "mediaType": {
+                        "type": "string",
+                        "const": "image/png"
+                      },
+                      "contentHash": {
+                        "$ref": "#/components/schemas/ContractSha256"
+                      },
+                      "barIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 40,
+                        "maxItems": 120
+                      },
+                      "lastVisibleBarId": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "panel",
+                      "mediaType",
+                      "contentHash",
+                      "barIds",
+                      "lastVisibleBarId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "context",
+                  "detail"
+                ],
+                "additionalProperties": false
+              },
+              "doctrine": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "doctrineId": {
+                      "type": "string"
+                    },
+                    "concept": {
+                      "type": "string"
+                    },
+                    "rule": {
+                      "type": "string"
+                    },
+                    "appliesWhen": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "avoidWhen": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "decisionEffect": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "doctrineId",
+                    "concept",
+                    "rule",
+                    "appliesWhen",
+                    "avoidWhen",
+                    "decisionEffect"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "schemaVersion",
+              "inputHash",
+              "market",
+              "charts",
+              "doctrine"
+            ],
+            "additionalProperties": false
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "operatorPrincipal": {
+            "type": "string",
+            "const": "local:phase2-operator"
+          },
+          "assemblyId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "assemblyRulesVersion",
+          "sourceScope",
+          "caseHash",
+          "sourceBundleHash",
+          "activationKind",
+          "activationId",
+          "activationSequence",
+          "runId",
+          "snapshotId",
+          "profileHash",
+          "qualityReportHash",
+          "doctrineContextHash",
+          "doctrineContextByteLength",
+          "doctrineManifest",
+          "charts",
+          "policyInput",
+          "inputHash",
+          "operatorPrincipal",
+          "assemblyId"
+        ],
+        "additionalProperties": false
+      },
+      "BarContinuityStateV1": {
+        "type": "string",
+        "enum": [
+          "contiguous",
+          "session_boundary",
+          "missing_data",
+          "unknown"
+        ]
+      },
+      "PolicyAssemblyFailureV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "policy-assembly-failure.v1"
+          },
+          "assemblyRulesVersion": {
+            "type": "string",
+            "const": "policy-assembly-rules.v1"
+          },
+          "sourceScope": {
+            "type": "string",
+            "const": "synthetic_fixture_only"
+          },
+          "caseHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "sourceBundleHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "activationKind": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "standard",
+              "rollback",
+              null
+            ]
+          },
+          "activationId": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "activationSequence": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "snapshotId": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "observedDoctrineCount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "observedDoctrineContextByteLength": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "errorCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PolicyAssemblyFailureCodeV1"
+            }
+          },
+          "operatorPrincipal": {
+            "type": "string",
+            "const": "local:phase2-operator"
+          },
+          "failureId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "assemblyRulesVersion",
+          "sourceScope",
+          "caseHash",
+          "sourceBundleHash",
+          "activationKind",
+          "activationId",
+          "activationSequence",
+          "snapshotId",
+          "observedDoctrineCount",
+          "observedDoctrineContextByteLength",
+          "errorCodes",
+          "operatorPrincipal",
+          "failureId"
+        ],
+        "additionalProperties": false
+      },
+      "PolicyAssemblyFailureCodeV1": {
+        "type": "string",
+        "enum": [
+          "ACTIVATION_UNAVAILABLE",
+          "ACTIVE_CORPUS_INELIGIBLE",
+          "DOCTRINE_COUNT_EXCEEDED",
+          "DOCTRINE_CONTEXT_BYTES_EXCEEDED"
+        ]
+      },
+      "PolicyAssemblyTerminalV1": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/PolicyAssemblyV1"
+          },
+          {
+            "$ref": "#/components/schemas/PolicyAssemblyFailureV1"
+          }
+        ]
+      },
+      "DoctrineCorpusActivationV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "doctrine-corpus-activation.v1"
+          },
+          "activationSequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "runId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "snapshotId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "profileHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "qualityReportHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "operatorPrincipal": {
+            "type": "string",
+            "const": "local:phase2-operator"
+          },
+          "activationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "activationSequence",
+          "runId",
+          "snapshotId",
+          "profileHash",
+          "qualityReportHash",
+          "operatorPrincipal",
+          "activationId"
+        ],
+        "additionalProperties": false
+      },
+      "DoctrineCorpusRollbackActivationV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "doctrine-corpus-rollback-activation.v1"
+          },
+          "activationKind": {
+            "type": "string",
+            "const": "rollback"
+          },
+          "activationSequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "replacesActivationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "targetActivationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "runId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "snapshotId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "profileHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "qualityReportHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "reasonHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "operatorPrincipal": {
+            "type": "string",
+            "const": "local:phase2-operator"
+          },
+          "activationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "activationKind",
+          "activationSequence",
+          "replacesActivationId",
+          "targetActivationId",
+          "runId",
+          "snapshotId",
+          "profileHash",
+          "qualityReportHash",
+          "reason",
+          "reasonHash",
+          "operatorPrincipal",
+          "activationId"
+        ],
+        "additionalProperties": false
+      },
+      "DoctrineActivationAuthorityV1": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/DoctrineCorpusActivationV1"
+          },
+          {
+            "$ref": "#/components/schemas/DoctrineCorpusRollbackActivationV1"
+          }
+        ]
+      },
+      "CaseApiErrorV1": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "code": {
+            "$ref": "#/components/schemas/CaseApiErrorCodeV1"
+          },
+          "message": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "case-api-error.v1"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "CaseApiErrorCodeV1": {
+        "type": "string",
+        "enum": [
+          "INVALID_JSON",
+          "INVALID_RECORD",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_FOUND",
+          "IDENTITY_CONFLICT",
+          "BODY_TOO_LARGE",
+          "DEPENDENCY_UNAVAILABLE",
+          "INTERNAL_ERROR"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "operatorToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "PA-Local-Operator-Token"
+      }
+    }
+  },
+  "x-pa-phase5a-record-kinds": {
+    "doctrine_corpus_rollback_activation": "DoctrineCorpusRollbackActivationV1",
+    "policy_assembly": "PolicyAssemblyV1",
+    "policy_assembly_failure": "PolicyAssemblyFailureV1"
+  },
+  "x-pa-route-manifest": [
+    {
+      "method": "POST",
+      "path": "/v1/doctrine/rollback-activations",
+      "openapiPath": "/v1/doctrine/rollback-activations",
+      "operationId": "createDoctrineCorpusRollbackActivation",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/doctrine/activations/:activationId",
+      "openapiPath": "/v1/doctrine/activations/{activationId}",
+      "operationId": "getDoctrineActivation",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/policy-assemblies",
+      "openapiPath": "/v1/policy-assemblies",
+      "operationId": "createPolicyAssembly",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/policy-assemblies/:assemblyId",
+      "openapiPath": "/v1/policy-assemblies/{assemblyId}",
+      "operationId": "getPolicyAssembly",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/policy-assembly-failures/:failureId",
+      "openapiPath": "/v1/policy-assembly-failures/{failureId}",
+      "operationId": "getPolicyAssemblyFailure",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    }
+  ],
+  "x-pa-runtime-authority": "synthetic_only_local_policy_assembly_no_remote_calls_replay_or_trading_authority"
+}

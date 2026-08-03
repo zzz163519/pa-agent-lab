@@ -1,6 +1,6 @@
 # Phase 5A Synthetic Policy Assembly Implementation Plan V1
 
-Status: APPROVED IMPLEMENTATION PLAN. IMPLEMENTATION HAS NOT STARTED AND REQUIRES SEPARATE EXPLICIT START AUTHORIZATION.
+Status: IMPLEMENTED AND FRESHLY VERIFIED. PHASE 5B AND SELECTOR V2 REMAIN UNAUTHORIZED.
 
 Depends on accepted:
 
@@ -9,7 +9,7 @@ Depends on accepted:
 
 ## Objective
 
-Implement, only after separate explicit implementation-start authorization, two ordered local slices:
+Implement two ordered local slices under the recorded explicit implementation-start authorization:
 
 1. operator-only explicit rollback to an earlier still-eligible ordinary Doctrine activation;
 2. synthetic-only deterministic assembly of one existing Case and the complete current active Doctrine snapshot into immutable `PolicyAssemblyV1` plus `BrooksPolicyInputV1`.
@@ -18,12 +18,9 @@ The implementation must stop before outbound payload creation, ModelRun creation
 
 ## Approval gates
 
-ADR-0020, the Phase 5A contract, and this implementation plan are accepted. Their acceptance fixes the design and delivery order but does not start implementation.
+ADR-0020, the Phase 5A contract, this plan, and the explicit Phase 5A implementation start are accepted. Direct Pi is the sole writer for the authorized implementation.
 
-Before any code, migration, generated artifact, worktree, or deployment change, Calvin must separately:
-
-1. explicitly authorize Phase 5A implementation to start;
-2. approve any proposed worker write delegation with its exact reason, write scope, and retained Direct Pi responsibilities.
+Any proposed worker write delegation still requires Calvin to approve its exact reason, write scope, and retained Direct Pi responsibilities.
 
 Direct Pi remains coordinator, final writer, verifier, and merger. No worker delegation is assumed. If delegation is later useful, one writer may own one isolated worktree; the main agent retains contract review, test review, real PostgreSQL verification, final diff audit, commit, and `--ff-only` merge responsibility.
 
@@ -81,7 +78,7 @@ Reference surfaces inspected include:
 
 ## Delivery rules
 
-- Work in a dedicated clean git worktree after explicit implementation-start authorization.
+- Work in the dedicated clean implementation worktree.
 - Keep one writer in that worktree.
 - Use contract TDD for each behavior slice: red test, smallest implementation, green test, then broader regression.
 - Do not change existing record JSON or hashes unless the accepted contract explicitly requires a new version.
@@ -92,7 +89,7 @@ Reference surfaces inspected include:
 
 ## Proposed file map
 
-No implementation step in this approved plan may begin until the separate start authorization is recorded.
+The authorized implementation remains bounded to this file map.
 
 ### Domain contracts
 
@@ -162,12 +159,12 @@ Do not change Research Console source, provider modules, replay modules, market-
 
 ### Step 0: Freeze accepted text
 
-Before code changes after explicit implementation-start authorization:
+Before code changes:
 
 - confirm ADR-0020, the Phase 5A contract, and this plan remain accepted and unchanged;
-- record the separate implementation-start authorization without widening any exclusion;
+- preserve all exclusions under the recorded implementation-start authorization;
 - identify any newly discovered contract wording that requires a Calvin decision;
-- create the isolated worktree and confirm clean baseline tests.
+- use the isolated worktree and confirm clean baseline tests.
 
 Exit: accepted text and implementation authority are unambiguous; no unresolved semantic choice is hidden in code.
 
@@ -429,7 +426,7 @@ These are contract changes, not implementation details.
 
 ## Completion report requirements
 
-A future implementation completion report must state:
+The Phase 5A completion report must state:
 
 - exact changed files and commit;
 - fresh contract, transport, PGlite, API, CLI, and real PostgreSQL results;

@@ -1,6 +1,6 @@
 # ADR-0020: Explicit Corpus Rollback and Synthetic Policy Assembly
 
-Status: ACCEPTED PHASE 5A DESIGN. IMPLEMENTATION NOT YET AUTHORIZED.
+Status: ACCEPTED FOR PHASE 5A IMPLEMENTATION.
 
 ## Context
 
@@ -127,7 +127,7 @@ The service remains synchronous. Phase 5A adds no scheduler, background worker, 
 
 ### Persistence
 
-Future implementation must use forward-only, content-hashed migrations and append-only PostgreSQL records. New records and relations reject `UPDATE`, `DELETE`, and `TRUNCATE`, enforce JSON-to-column identities and exact foreign-key bindings, and preserve ordinary activation idempotency while permitting only explicit rollback activations to reuse a historical run/report chain.
+Phase 5A uses forward-only, content-hashed migrations and append-only PostgreSQL records. New records and relations reject `UPDATE`, `DELETE`, and `TRUNCATE`, enforce JSON-to-column identities and exact foreign-key bindings, and preserve ordinary activation idempotency while permitting only explicit rollback activations to reuse a historical run/report chain.
 
 A successful assembly persists the rebuilt policy input, a new assembly-specific Case/input/chart relation, the Doctrine manifest, and the assembly atomically. It does not add a second Phase 2 `pa_case_policy_inputs` bundle binding, because that would make existing CaseBundle audit/review loading ambiguous. A failure record is written atomically without a partial policy input or assembly.
 
@@ -168,7 +168,7 @@ No skill, MCP server, npm package, service, Docker image, provider, or model is 
 
 This accepted ADR does not authorize:
 
-- implementation, migration execution, schema generation, route changes, CLI changes, or deployment;
+- implementation beyond the bounded Phase 5A contract, migration changes beyond `0006`/`0007`, or any additional deployment surface;
 - retroactive synthetic authority for a Case whose reconstructed original bundle hash is absent from the configured allowlist;
 - `OutboundModelPayloadV1`, `ModelRunRecordV1`, provider attempts, model-run audits, prompt selection, provider/model calls, or model answers;
 - Case-derived retrieval queries, RRF, embeddings, `pgvector`, vector/hybrid search, reranking, or Phase 4B;
@@ -176,4 +176,4 @@ This accepted ADR does not authorize:
 - Research Console assembly/retrieval, reviewer authority, scheduler, worker, or public API;
 - real Case ingestion, protected-window access, outcomes, PnL, replay, training, Paper, Live, exchange, wallet, or real-money activity.
 
-Implementation may begin only after Calvin separately gives explicit Phase 5A implementation-start authorization. Any worker write delegation still requires its own exact-scope approval.
+Implementation is authorized only for the bounded Phase 5A scope in this ADR and its accepted contract. Any worker write delegation still requires its own exact-scope approval.

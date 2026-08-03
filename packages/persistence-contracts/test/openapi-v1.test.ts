@@ -8,6 +8,7 @@ import {
   buildCaseStoreTransportDocumentsV1,
   buildDoctrineApprovalTransportDocumentsV1,
   buildDoctrineRetrievalTransportDocumentsV1,
+  buildPhase5APolicyAssemblyTransportDocumentsV1,
   buildReplayBoundaryTransportDocumentsV1,
   buildReviewWorkflowTransportDocumentsV1,
   buildTransportSchemaDocumentsV1,
@@ -135,6 +136,48 @@ describe("generated Phase 1 transport schemas V1", () => {
     }
     assert.doesNotMatch(JSON.stringify(document), /reviewerToken|embedding|provider|console/i);
     assert.doesNotMatch(JSON.stringify(document), /CREATE EXTENSION|"vector"/i);
+  });
+
+  it("publishes Phase 5A rollback transport separately with a closed activation union", async () => {
+    const generated = buildPhase5APolicyAssemblyTransportDocumentsV1(packageRoot);
+    const [schemaBundle, openapi] = await Promise.all([
+      readJson(resolve(packageRoot, "schemas/phase5a-synthetic-policy-assembly-v1.schema.json")),
+      readJson(resolve(packageRoot, "openapi/phase5a-synthetic-policy-assembly-v1.openapi.json")),
+    ]);
+    assert.deepEqual(schemaBundle, generated.schemaBundle);
+    assert.deepEqual(openapi, generated.openapi);
+    const document = openapi as {
+      readonly paths: Record<string, unknown>;
+      readonly components: {
+        readonly schemas: Record<string, unknown>;
+        readonly securitySchemes: Record<string, unknown>;
+      };
+    };
+    assert.deepEqual(Object.keys(document.paths), [
+      "/v1/doctrine/rollback-activations",
+      "/v1/doctrine/activations/{activationId}",
+      "/v1/policy-assemblies",
+      "/v1/policy-assemblies/{assemblyId}",
+      "/v1/policy-assembly-failures/{failureId}",
+    ]);
+    assert.deepEqual(Object.keys(document.components.securitySchemes), ["operatorToken"]);
+    assert.match(
+      JSON.stringify(document.components.schemas.DoctrineActivationAuthorityV1),
+      /DoctrineCorpusActivationV1.*DoctrineCorpusRollbackActivationV1/,
+    );
+    assert.match(
+      JSON.stringify(document.components.schemas.PolicyAssemblyTerminalV1),
+      /PolicyAssemblyV1.*PolicyAssemblyFailureV1/,
+    );
+    assert.doesNotMatch(
+      JSON.stringify(document),
+      /reviewerToken|embedding|provider|modelRun|console|CREATE EXTENSION|"vector"/i,
+    );
+    for (const reference of collectReferences(document)) {
+      assert.match(reference, /^#\/components\/schemas\/[A-Za-z0-9_]+$/);
+      const name = reference.slice("#/components/schemas/".length);
+      assert.ok(document.components.schemas[name], `unresolved schema: ${name}`);
+    }
   });
 
   it("publishes replay request and result schemas without persisted-record or API authority", async () => {

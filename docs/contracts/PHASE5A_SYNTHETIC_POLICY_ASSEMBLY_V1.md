@@ -1,6 +1,6 @@
 # Phase 5A Synthetic Policy Assembly V1
 
-Status: ACCEPTED PHASE 5A CONTRACT. IMPLEMENTATION NOT YET AUTHORIZED.
+Status: ACCEPTED CONTRACT FOR PHASE 5A IMPLEMENTATION.
 
 Authority: ADR-0008 through ADR-0013, ADR-0015, ADR-0017, ADR-0019, and accepted ADR-0020.
 
@@ -304,7 +304,7 @@ Adding conflicting values to any forbidden table must not change the assembly or
 
 ## Persistence contract
 
-Future implementation requires two ordered forward-only content-hashed migrations:
+The implemented persistence uses two ordered forward-only content-hashed migrations:
 
 1. explicit rollback activation support;
 2. Phase 5A assembly and failure records.
@@ -336,7 +336,7 @@ PGlite may provide fast conformance where supported. Digest-pinned real PostgreS
 
 ## Strict transport
 
-Future generated JSON Schema 2020-12 and OpenAPI 3.1 artifacts must remain separate, closed, and drift-tested.
+The generated JSON Schema 2020-12 and OpenAPI 3.1 artifacts remain separate, closed, and drift-tested.
 
 Proposed operator-only loopback routes are synchronous:
 
@@ -368,7 +368,7 @@ No route or CLI command creates `OutboundModelPayloadV1`, `ModelRunRecordV1`, a 
 
 ## Required tests
 
-An authorized implementation requires tests proving:
+The implementation includes tests proving:
 
 ### Rollback
 
@@ -436,7 +436,7 @@ Phase 5A is complete only when:
 
 ## Explicit exclusions
 
-This accepted contract grants no implementation authority and does not authorize:
+This accepted contract authorizes only its bounded Phase 5A implementation and does not authorize:
 
 - provider/model selection, prompt contract, outbound payload, model run, provider attempt, response, or BrooksDecision creation;
 - embedding, `pgvector`, vector/hybrid retrieval, RRF, reranking, or Case-derived queries;

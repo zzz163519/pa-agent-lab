@@ -1,0 +1,756 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pa-agent-lab.local/schemas/phase5a-synthetic-policy-assembly-v1",
+  "$defs": {
+    "DoctrineCorpusRollbackCommandV1": {
+      "type": "object",
+      "properties": {
+        "targetActivationId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f-\\u009f]*$"
+        }
+      },
+      "required": [
+        "targetActivationId",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "ContractSha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "CreatePolicyAssemblyCommandV1": {
+      "type": "object",
+      "properties": {
+        "caseHash": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "caseHash"
+      ],
+      "additionalProperties": false
+    },
+    "PolicyAssemblyV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "policy-assembly.v1"
+        },
+        "assemblyRulesVersion": {
+          "type": "string",
+          "const": "policy-assembly-rules.v1"
+        },
+        "sourceScope": {
+          "type": "string",
+          "const": "synthetic_fixture_only"
+        },
+        "caseHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "sourceBundleHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "activationKind": {
+          "type": "string",
+          "enum": [
+            "standard",
+            "rollback"
+          ]
+        },
+        "activationId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "activationSequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "qualityReportHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "doctrineContextHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "doctrineContextByteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 524288
+        },
+        "doctrineManifest": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "doctrineId": {
+                "type": "string"
+              },
+              "ragRecordHash": {
+                "$ref": "#/$defs/ContractSha256"
+              }
+            },
+            "required": [
+              "doctrineId",
+              "ragRecordHash"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "charts": {
+          "type": "object",
+          "properties": {
+            "context": {
+              "type": "object",
+              "properties": {
+                "panel": {
+                  "type": "string",
+                  "enum": [
+                    "context",
+                    "detail"
+                  ]
+                },
+                "metadataId": {
+                  "$ref": "#/$defs/ContractSha256"
+                },
+                "artifactId": {
+                  "$ref": "#/$defs/ContractSha256"
+                },
+                "contentHash": {
+                  "$ref": "#/$defs/ContractSha256"
+                }
+              },
+              "required": [
+                "panel",
+                "metadataId",
+                "artifactId",
+                "contentHash"
+              ],
+              "additionalProperties": false
+            },
+            "detail": {
+              "type": "object",
+              "properties": {
+                "panel": {
+                  "type": "string",
+                  "enum": [
+                    "context",
+                    "detail"
+                  ]
+                },
+                "metadataId": {
+                  "$ref": "#/$defs/ContractSha256"
+                },
+                "artifactId": {
+                  "$ref": "#/$defs/ContractSha256"
+                },
+                "contentHash": {
+                  "$ref": "#/$defs/ContractSha256"
+                }
+              },
+              "required": [
+                "panel",
+                "metadataId",
+                "artifactId",
+                "contentHash"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "context",
+            "detail"
+          ],
+          "additionalProperties": false
+        },
+        "policyInput": {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "brooks-policy-input.v1"
+            },
+            "inputHash": {
+              "$ref": "#/$defs/ContractSha256"
+            },
+            "market": {
+              "type": "object",
+              "properties": {
+                "barDurationSeconds": {
+                  "type": "integer",
+                  "const": 300,
+                  "minimum": 0
+                },
+                "lastVisibleBarId": {
+                  "type": "string"
+                },
+                "visibleBarCount": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 120
+                },
+                "isLeftCensored": {
+                  "type": "boolean"
+                },
+                "leftCensoredBarsMissing": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 80
+                },
+                "normalization": {
+                  "type": "object",
+                  "properties": {
+                    "method": {
+                      "type": "string",
+                      "const": "first_visible_close_equals_100"
+                    },
+                    "base": {
+                      "type": "number",
+                      "const": 100
+                    },
+                    "anchorBarId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "method",
+                    "base",
+                    "anchorBarId"
+                  ],
+                  "additionalProperties": false
+                },
+                "bars": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "barId": {
+                        "type": "string"
+                      },
+                      "sequence": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "open": {
+                        "type": "number"
+                      },
+                      "high": {
+                        "type": "number"
+                      },
+                      "low": {
+                        "type": "number"
+                      },
+                      "close": {
+                        "type": "number"
+                      },
+                      "continuityFromPrevious": {
+                        "$ref": "#/$defs/BarContinuityStateV1"
+                      }
+                    },
+                    "required": [
+                      "barId",
+                      "sequence",
+                      "open",
+                      "high",
+                      "low",
+                      "close",
+                      "continuityFromPrevious"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 40,
+                  "maxItems": 120
+                }
+              },
+              "required": [
+                "barDurationSeconds",
+                "lastVisibleBarId",
+                "visibleBarCount",
+                "isLeftCensored",
+                "leftCensoredBarsMissing",
+                "normalization",
+                "bars"
+              ],
+              "additionalProperties": false
+            },
+            "charts": {
+              "type": "object",
+              "properties": {
+                "context": {
+                  "type": "object",
+                  "properties": {
+                    "panel": {
+                      "type": "string",
+                      "enum": [
+                        "context",
+                        "detail"
+                      ]
+                    },
+                    "mediaType": {
+                      "type": "string",
+                      "const": "image/png"
+                    },
+                    "contentHash": {
+                      "$ref": "#/$defs/ContractSha256"
+                    },
+                    "barIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 40,
+                      "maxItems": 120
+                    },
+                    "lastVisibleBarId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "panel",
+                    "mediaType",
+                    "contentHash",
+                    "barIds",
+                    "lastVisibleBarId"
+                  ],
+                  "additionalProperties": false
+                },
+                "detail": {
+                  "type": "object",
+                  "properties": {
+                    "panel": {
+                      "type": "string",
+                      "enum": [
+                        "context",
+                        "detail"
+                      ]
+                    },
+                    "mediaType": {
+                      "type": "string",
+                      "const": "image/png"
+                    },
+                    "contentHash": {
+                      "$ref": "#/$defs/ContractSha256"
+                    },
+                    "barIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 40,
+                      "maxItems": 120
+                    },
+                    "lastVisibleBarId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "panel",
+                    "mediaType",
+                    "contentHash",
+                    "barIds",
+                    "lastVisibleBarId"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "context",
+                "detail"
+              ],
+              "additionalProperties": false
+            },
+            "doctrine": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "doctrineId": {
+                    "type": "string"
+                  },
+                  "concept": {
+                    "type": "string"
+                  },
+                  "rule": {
+                    "type": "string"
+                  },
+                  "appliesWhen": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "avoidWhen": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "decisionEffect": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "doctrineId",
+                  "concept",
+                  "rule",
+                  "appliesWhen",
+                  "avoidWhen",
+                  "decisionEffect"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "inputHash",
+            "market",
+            "charts",
+            "doctrine"
+          ],
+          "additionalProperties": false
+        },
+        "inputHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "operatorPrincipal": {
+          "type": "string",
+          "const": "local:phase2-operator"
+        },
+        "assemblyId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "assemblyRulesVersion",
+        "sourceScope",
+        "caseHash",
+        "sourceBundleHash",
+        "activationKind",
+        "activationId",
+        "activationSequence",
+        "runId",
+        "snapshotId",
+        "profileHash",
+        "qualityReportHash",
+        "doctrineContextHash",
+        "doctrineContextByteLength",
+        "doctrineManifest",
+        "charts",
+        "policyInput",
+        "inputHash",
+        "operatorPrincipal",
+        "assemblyId"
+      ],
+      "additionalProperties": false
+    },
+    "BarContinuityStateV1": {
+      "type": "string",
+      "enum": [
+        "contiguous",
+        "session_boundary",
+        "missing_data",
+        "unknown"
+      ]
+    },
+    "PolicyAssemblyFailureV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "policy-assembly-failure.v1"
+        },
+        "assemblyRulesVersion": {
+          "type": "string",
+          "const": "policy-assembly-rules.v1"
+        },
+        "sourceScope": {
+          "type": "string",
+          "const": "synthetic_fixture_only"
+        },
+        "caseHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "sourceBundleHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "activationKind": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "standard",
+            "rollback",
+            null
+          ]
+        },
+        "activationId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractSha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "activationSequence": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "snapshotId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractSha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedDoctrineCount": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "observedDoctrineContextByteLength": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "errorCodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PolicyAssemblyFailureCodeV1"
+          }
+        },
+        "operatorPrincipal": {
+          "type": "string",
+          "const": "local:phase2-operator"
+        },
+        "failureId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "assemblyRulesVersion",
+        "sourceScope",
+        "caseHash",
+        "sourceBundleHash",
+        "activationKind",
+        "activationId",
+        "activationSequence",
+        "snapshotId",
+        "observedDoctrineCount",
+        "observedDoctrineContextByteLength",
+        "errorCodes",
+        "operatorPrincipal",
+        "failureId"
+      ],
+      "additionalProperties": false
+    },
+    "PolicyAssemblyFailureCodeV1": {
+      "type": "string",
+      "enum": [
+        "ACTIVATION_UNAVAILABLE",
+        "ACTIVE_CORPUS_INELIGIBLE",
+        "DOCTRINE_COUNT_EXCEEDED",
+        "DOCTRINE_CONTEXT_BYTES_EXCEEDED"
+      ]
+    },
+    "PolicyAssemblyTerminalV1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PolicyAssemblyV1"
+        },
+        {
+          "$ref": "#/$defs/PolicyAssemblyFailureV1"
+        }
+      ]
+    },
+    "DoctrineCorpusActivationV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-corpus-activation.v1"
+        },
+        "activationSequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "qualityReportHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "operatorPrincipal": {
+          "type": "string",
+          "const": "local:phase2-operator"
+        },
+        "activationId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "activationSequence",
+        "runId",
+        "snapshotId",
+        "profileHash",
+        "qualityReportHash",
+        "operatorPrincipal",
+        "activationId"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineCorpusRollbackActivationV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-corpus-rollback-activation.v1"
+        },
+        "activationKind": {
+          "type": "string",
+          "const": "rollback"
+        },
+        "activationSequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "replacesActivationId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "targetActivationId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "qualityReportHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "reasonHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "operatorPrincipal": {
+          "type": "string",
+          "const": "local:phase2-operator"
+        },
+        "activationId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "activationKind",
+        "activationSequence",
+        "replacesActivationId",
+        "targetActivationId",
+        "runId",
+        "snapshotId",
+        "profileHash",
+        "qualityReportHash",
+        "reason",
+        "reasonHash",
+        "operatorPrincipal",
+        "activationId"
+      ],
+      "additionalProperties": false
+    },
+    "DoctrineActivationAuthorityV1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DoctrineCorpusActivationV1"
+        },
+        {
+          "$ref": "#/$defs/DoctrineCorpusRollbackActivationV1"
+        }
+      ]
+    },
+    "CaseApiErrorV1": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string"
+        },
+        "code": {
+          "$ref": "#/$defs/CaseApiErrorCodeV1"
+        },
+        "message": {
+          "type": "string"
+        },
+        "schemaVersion": {
+          "type": "string",
+          "const": "case-api-error.v1"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "requestId",
+        "schemaVersion"
+      ],
+      "additionalProperties": false
+    },
+    "CaseApiErrorCodeV1": {
+      "type": "string",
+      "enum": [
+        "INVALID_JSON",
+        "INVALID_RECORD",
+        "UNAUTHORIZED",
+        "FORBIDDEN",
+        "NOT_FOUND",
+        "IDENTITY_CONFLICT",
+        "BODY_TOO_LARGE",
+        "DEPENDENCY_UNAVAILABLE",
+        "INTERNAL_ERROR"
+      ]
+    }
+  }
+}

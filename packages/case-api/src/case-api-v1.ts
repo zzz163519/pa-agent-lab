@@ -29,10 +29,13 @@ import {
   CASE_API_ROUTE_MANIFEST_V1,
   DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1,
   DOCTRINE_RETRIEVAL_ROUTE_MANIFEST_V1,
+  PHASE5A_POLICY_ASSEMBLY_ROUTE_MANIFEST_V1,
   REVIEW_WORKFLOW_ROUTE_MANIFEST_V1,
   PersistenceContractError,
   assertApproveDoctrineCommand,
   assertDoctrineActivationCommand,
+  assertDoctrineCorpusRollbackCommand,
+  assertCreatePolicyAssemblyCommand,
   assertDoctrineIngestionCommand,
   assertDoctrineRetrievalQueryCommand,
   assertRetireDoctrineCommand,
@@ -45,6 +48,8 @@ import {
   type CaseAuditViewV1,
   type ApproveDoctrineCommandV1,
   type DoctrineActivationCommandV1,
+  type DoctrineCorpusRollbackCommandV1,
+  type CreatePolicyAssemblyCommandV1,
   type DoctrineIngestionCommandV1,
   type DoctrineRetrievalQueryCommandV1,
   type DoctrineApprovalMutationResultV1,
@@ -66,6 +71,8 @@ const DOCTRINE_APPROVAL_SCHEMA_ID =
   "https://pa-agent-lab.local/schemas/phase3b-doctrine-approval-v1";
 const DOCTRINE_RETRIEVAL_SCHEMA_ID =
   "https://pa-agent-lab.local/schemas/phase4a-doctrine-retrieval-v1";
+const PHASE5A_POLICY_ASSEMBLY_SCHEMA_ID =
+  "https://pa-agent-lab.local/schemas/phase5a-synthetic-policy-assembly-v1";
 const SHA256_PATTERN = "^sha256:[0-9a-f]{64}$";
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 const schemaBundle = JSON.parse(
@@ -112,6 +119,19 @@ const doctrineRetrievalSchemaBundle = JSON.parse(
 ) as Record<string, unknown>;
 const fastifyDoctrineRetrievalSchemaBundle = structuredClone(doctrineRetrievalSchemaBundle);
 delete fastifyDoctrineRetrievalSchemaBundle.$schema;
+const phase5aPolicyAssemblySchemaBundle = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../persistence-contracts/schemas/phase5a-synthetic-policy-assembly-v1.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+) as Record<string, unknown>;
+const fastifyPhase5APolicyAssemblySchemaBundle = structuredClone(
+  phase5aPolicyAssemblySchemaBundle,
+);
+delete fastifyPhase5APolicyAssemblySchemaBundle.$schema;
 
 export interface OperatorPrincipalV1 {
   readonly principalId: "local:phase2-operator";
@@ -175,6 +195,7 @@ export async function createCaseApiV1(
   app.addSchema(fastifyReviewSchemaBundle);
   app.addSchema(fastifyDoctrineSchemaBundle);
   app.addSchema(fastifyDoctrineRetrievalSchemaBundle);
+  app.addSchema(fastifyPhase5APolicyAssemblySchemaBundle);
   await app.register(fastifyHelmet, {
     global: true,
     contentSecurityPolicy: {
@@ -233,6 +254,10 @@ export async function createCaseApiV1(
       (entry) =>
         entry.path === request.routeOptions.url && entry.method === request.method,
     );
+    const phase5aRoute = PHASE5A_POLICY_ASSEMBLY_ROUTE_MANIFEST_V1.find(
+      (entry) =>
+        entry.path === request.routeOptions.url && entry.method === request.method,
+    );
     const workflowRoute = REVIEW_WORKFLOW_ROUTE_MANIFEST_V1.find(
       (entry) => entry.path === request.routeOptions.url,
     );
@@ -241,6 +266,7 @@ export async function createCaseApiV1(
     );
     const authentication =
       doctrineRoute?.authentication ??
+      phase5aRoute?.authentication ??
       retrievalRoute?.authentication ??
       workflowRoute?.authentication ??
       caseRoute?.authentication;
@@ -663,6 +689,38 @@ export async function createCaseApiV1(
         .send(created.activation);
     },
   );
+  app.post<{ Body: DoctrineCorpusRollbackCommandV1 }>(
+    "/v1/doctrine/rollback-activations",
+    {
+      schema: {
+        body: phase5aPolicyAssemblySchemaRef(
+          "DoctrineCorpusRollbackCommandV1",
+        ),
+      },
+    },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      assertDoctrineCorpusRollbackCommand(request.body);
+      const created = await options.store.createDoctrineCorpusRollback(
+        request.body,
+      );
+      return reply
+        .code(created.status === "inserted" ? 201 : 200)
+        .send(created.activation);
+    },
+  );
+  app.get<{ Params: { readonly activationId: ContractSha256 } }>(
+    "/v1/doctrine/activations/:activationId",
+    { schema: { params: hashParamsSchema("activationId") } },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      const activation = await options.store.getDoctrineActivation(
+        request.params.activationId,
+      );
+      if (activation === null) throw notFound("Doctrine corpus activation");
+      return reply.send(activation);
+    },
+  );
   app.get(
     "/v1/doctrine/activations/current",
     async (request, reply) => {
@@ -670,6 +728,66 @@ export async function createCaseApiV1(
       const activation = await options.store.getCurrentDoctrineActivation();
       if (activation === null) throw notFound("Doctrine corpus activation");
       return reply.send(activation);
+    },
+  );
+  app.post<{ Body: CreatePolicyAssemblyCommandV1 }>(
+    "/v1/policy-assemblies",
+    {
+      schema: {
+        body: phase5aPolicyAssemblySchemaRef(
+          "CreatePolicyAssemblyCommandV1",
+        ),
+        response: {
+          200: phase5aPolicyAssemblySchemaRef("PolicyAssemblyTerminalV1"),
+          201: phase5aPolicyAssemblySchemaRef("PolicyAssemblyTerminalV1"),
+        },
+      },
+    },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      assertCreatePolicyAssemblyCommand(request.body);
+      const created = await options.store.createPolicyAssembly(request.body);
+      return reply
+        .code(created.status === "inserted" ? 201 : 200)
+        .send(created.terminal);
+    },
+  );
+  app.get<{ Params: { readonly assemblyId: ContractSha256 } }>(
+    "/v1/policy-assemblies/:assemblyId",
+    {
+      schema: {
+        params: hashParamsSchema("assemblyId"),
+        response: {
+          200: phase5aPolicyAssemblySchemaRef("PolicyAssemblyV1"),
+        },
+      },
+    },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      const assembly = await options.store.getPolicyAssembly(
+        request.params.assemblyId,
+      );
+      if (assembly === null) throw notFound("Policy Assembly");
+      return reply.send(assembly);
+    },
+  );
+  app.get<{ Params: { readonly failureId: ContractSha256 } }>(
+    "/v1/policy-assembly-failures/:failureId",
+    {
+      schema: {
+        params: hashParamsSchema("failureId"),
+        response: {
+          200: phase5aPolicyAssemblySchemaRef("PolicyAssemblyFailureV1"),
+        },
+      },
+    },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      const failure = await options.store.getPolicyAssemblyFailure(
+        request.params.failureId,
+      );
+      if (failure === null) throw notFound("Policy Assembly failure");
+      return reply.send(failure);
     },
   );
   app.post<{ Body: DoctrineRetrievalQueryCommandV1 }>(
@@ -870,6 +988,14 @@ function doctrineRetrievalSchemaRef(component: string): { readonly $ref: string 
   return { $ref: `${DOCTRINE_RETRIEVAL_SCHEMA_ID}#/$defs/${component}` };
 }
 
+function phase5aPolicyAssemblySchemaRef(
+  component: string,
+): { readonly $ref: string } {
+  return {
+    $ref: `${PHASE5A_POLICY_ASSEMBLY_SCHEMA_ID}#/$defs/${component}`,
+  };
+}
+
 function doctrineMutationResponseSchemas(): Record<number, unknown> {
   const result = doctrineSchemaRef("DoctrineApprovalMutationResultV1");
   return { 200: result, 201: result };
@@ -1041,6 +1167,12 @@ function mapError(error: unknown): {
     return { statusCode: 400, code: "INVALID_JSON", message: error.message };
   }
   if (error instanceof CaseStoreError) {
+    if (error.code === "NOT_FOUND") {
+      return { statusCode: 404, code: "NOT_FOUND", message: error.message };
+    }
+    if (error.code === "FORBIDDEN") {
+      return { statusCode: 403, code: "FORBIDDEN", message: error.message };
+    }
     if (error.code === "IDENTITY_CONFLICT") {
       return { statusCode: 409, code: "IDENTITY_CONFLICT", message: error.message };
     }

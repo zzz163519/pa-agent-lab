@@ -24,9 +24,14 @@ GRANT SELECT, INSERT ON
   pa_doctrine_quality_reports,
   pa_doctrine_corpus_activations,
   pa_doctrine_retrieval_queries,
-  pa_doctrine_retrieval_evidence
+  pa_doctrine_retrieval_evidence,
+  pa_policy_assemblies,
+  pa_policy_assembly_bindings,
+  pa_policy_assembly_doctrine_bindings,
+  pa_policy_assembly_failures
 TO pa_app;
 GRANT SELECT ON
+  pa_doctrine_activation_authority_v1,
   pa_model_runs,
   pa_provider_attempts,
   pa_model_run_audits
@@ -41,5 +46,12 @@ GRANT EXECUTE ON FUNCTION pa_validate_doctrine_ingestion() TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_validate_doctrine_quality_suite() TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_validate_doctrine_quality_report() TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_validate_doctrine_activation() TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_doctrine_source_is_phase4a_allowed(text,text) TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_serialize_doctrine_retirement() TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_validate_doctrine_evidence() TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_phase2_source_bundle_hash(text) TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_serialize_policy_assembly_authority() TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_lock_policy_assembly_authority() TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_validate_policy_assembly() TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_validate_policy_assembly_failure() TO pa_app;
 GRANT USAGE ON SEQUENCE pa_doctrine_corpus_activation_sequence_seq TO pa_app;

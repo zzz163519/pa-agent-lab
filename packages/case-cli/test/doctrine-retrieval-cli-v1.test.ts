@@ -15,6 +15,8 @@ describe("Phase 4A Doctrine retrieval CLI",()=>{
       ["inspect-doctrine-ingestion",HASH],
       ["activate-doctrine-corpus",HASH,HASH],
       ["inspect-current-doctrine-activation"],
+      ["rollback-doctrine-corpus",HASH,"--reason","Restore prior eligible corpus."],
+      ["inspect-doctrine-activation",HASH],
       ["query-doctrine","--query","breakout context","--limit","5"],
       ["inspect-doctrine-evidence",HASH],
     ]){
@@ -27,9 +29,32 @@ describe("Phase 4A Doctrine retrieval CLI",()=>{
       `/v1/doctrine/ingestion-runs/${HASH}`,
       "/v1/doctrine/activations",
       "/v1/doctrine/activations/current",
+      "/v1/doctrine/rollback-activations",
+      `/v1/doctrine/activations/${HASH}`,
       "/v1/doctrine/retrieval-queries",
       `/v1/doctrine/retrieval-evidence/${HASH}`,
     ]);
-    assert.deepEqual(requested[5]!.body,{query:"breakout context",limit:5});
+    assert.deepEqual(requested[5]!.body,{targetActivationId:HASH,reason:"Restore prior eligible corpus."});
+    assert.deepEqual(requested[7]!.body,{query:"breakout context",limit:5});
+  });
+
+  it("rejects rollback reason controls before making an HTTP request", async () => {
+    let requested = false;
+    const errors: string[] = [];
+    assert.equal(
+      await runCaseCliV1({
+        argv: ["rollback-doctrine-corpus", HASH, "--reason", "invalid\u0000reason"],
+        env: { PA_API_TOKEN: token },
+        stdout: () => {},
+        stderr: (value) => errors.push(value),
+        fetchImpl: async () => {
+          requested = true;
+          throw new Error("control-bearing reason must not reach HTTP");
+        },
+      }),
+      1,
+    );
+    assert.equal(requested, false);
+    assert.match(errors[0] ?? "", /control-free/);
   });
 });

@@ -477,6 +477,79 @@
       ],
       "additionalProperties": false
     },
+    "DoctrineActivationAuthorityV1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DoctrineCorpusActivationV1"
+        },
+        {
+          "$ref": "#/$defs/DoctrineCorpusRollbackActivationV1"
+        }
+      ]
+    },
+    "DoctrineCorpusRollbackActivationV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "doctrine-corpus-rollback-activation.v1"
+        },
+        "activationKind": {
+          "type": "string",
+          "const": "rollback"
+        },
+        "activationSequence": {
+          "type": "number"
+        },
+        "replacesActivationId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "targetActivationId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "runId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "profileHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "qualityReportHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "reasonHash": {
+          "$ref": "#/$defs/ContractSha256"
+        },
+        "operatorPrincipal": {
+          "type": "string",
+          "const": "local:phase2-operator"
+        },
+        "activationId": {
+          "$ref": "#/$defs/ContractSha256"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "activationKind",
+        "activationSequence",
+        "replacesActivationId",
+        "targetActivationId",
+        "runId",
+        "snapshotId",
+        "profileHash",
+        "qualityReportHash",
+        "reason",
+        "reasonHash",
+        "operatorPrincipal",
+        "activationId"
+      ],
+      "additionalProperties": false
+    },
     "DoctrineRetrievalQueryV1": {
       "type": "object",
       "properties": {

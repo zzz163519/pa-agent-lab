@@ -11,6 +11,7 @@ import {
 } from "../src/case-store-transport-v1.ts";
 import { DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1 } from "../src/doctrine-approval-transport-v1.ts";
 import { DOCTRINE_RETRIEVAL_ROUTE_MANIFEST_V1 } from "../src/doctrine-retrieval-transport-v1.ts";
+import { PHASE5A_POLICY_ASSEMBLY_ROUTE_MANIFEST_V1 } from "../src/policy-assembly-transport-v1.ts";
 import { REVIEW_WORKFLOW_ROUTE_MANIFEST_V1 } from "../src/review-workflow-transport-v1.ts";
 import { createGenerator } from "ts-json-schema-generator";
 
@@ -144,6 +145,7 @@ const DOCTRINE_RETRIEVAL_TARGETS = [
   { component: "DoctrineRetrievalQualitySuiteV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
   { component: "DoctrineRetrievalQualityReportV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
   { component: "DoctrineCorpusActivationV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
+  { component: "DoctrineActivationAuthorityV1", source: "../contracts/src/doctrine-corpus-rollback-v1.ts" },
   { component: "DoctrineRetrievalQueryV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
   { component: "DoctrineRetrievalEvidenceV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
   { component: "DoctrineRetrievalResponseV1", source: "../contracts/src/doctrine-retrieval-v1.ts" },
@@ -153,6 +155,45 @@ const DOCTRINE_RETRIEVAL_TARGETS = [
   { component: "DoctrineRetrievalMutationResultV1", source: "src/doctrine-retrieval-transport-v1.ts" },
   { component: "CaseApiErrorV1", source: "src/case-store-transport-v1.ts" },
 ] as const;
+const PHASE5A_POLICY_ASSEMBLY_TARGETS = [
+  {
+    component: "DoctrineCorpusRollbackCommandV1",
+    source: "src/policy-assembly-transport-v1.ts",
+  },
+  {
+    component: "CreatePolicyAssemblyCommandV1",
+    source: "src/policy-assembly-transport-v1.ts",
+  },
+  {
+    component: "PolicyAssemblyV1",
+    source: "../contracts/src/policy-assembly-v1.ts",
+  },
+  {
+    component: "PolicyAssemblyFailureV1",
+    source: "../contracts/src/policy-assembly-v1.ts",
+  },
+  {
+    component: "PolicyAssemblyTerminalV1",
+    source: "src/policy-assembly-transport-v1.ts",
+  },
+  {
+    component: "DoctrineCorpusActivationV1",
+    source: "../contracts/src/doctrine-retrieval-v1.ts",
+  },
+  {
+    component: "DoctrineCorpusRollbackActivationV1",
+    source: "../contracts/src/doctrine-corpus-rollback-v1.ts",
+  },
+  {
+    component: "DoctrineActivationAuthorityV1",
+    source: "../contracts/src/doctrine-corpus-rollback-v1.ts",
+  },
+  {
+    component: "CaseApiErrorV1",
+    source: "src/case-store-transport-v1.ts",
+  },
+] as const;
+
 const DOCTRINE_APPROVAL_TARGETS = [
   {
     component: "DoctrineProposalBundleV1",
@@ -456,9 +497,11 @@ function buildDoctrineRetrievalOpenApiPaths(): Record<string, unknown> {
           ? "DoctrineIngestionRunV1"
           : route.operationId === "getDoctrineCorpusSnapshot"
             ? "DoctrineCorpusSnapshotV1"
-            : route.operationId === "createDoctrineCorpusActivation" || route.operationId === "getCurrentDoctrineActivation"
+            : route.operationId === "createDoctrineCorpusActivation"
               ? "DoctrineCorpusActivationV1"
-              : route.operationId === "createDoctrineRetrievalQuery"
+              : route.operationId === "getCurrentDoctrineActivation"
+                ? "DoctrineActivationAuthorityV1"
+                : route.operationId === "createDoctrineRetrievalQuery"
                 ? "DoctrineRetrievalResponseV1"
                 : "DoctrineRetrievalEvidenceV1";
       const requestComponent =
@@ -501,6 +544,181 @@ function buildDoctrineRetrievalOpenApiPaths(): Record<string, unknown> {
     }),
   );
 }
+export function buildPhase5APolicyAssemblyTransportDocumentsV1(
+  packageRoot: string,
+): GeneratedTransportDocumentsV1 {
+  const documents = buildSchemaDocuments(
+    packageRoot,
+    PHASE5A_POLICY_ASSEMBLY_TARGETS,
+    {
+      schemaId:
+        "https://pa-agent-lab.local/schemas/phase5a-synthetic-policy-assembly-v1",
+      title: "PA Agent Lab Phase 5A Synthetic Policy Assembly V1",
+      extensions: {
+        "x-pa-phase5a-record-kinds": {
+          doctrine_corpus_rollback_activation:
+            "DoctrineCorpusRollbackActivationV1",
+          policy_assembly: "PolicyAssemblyV1",
+          policy_assembly_failure: "PolicyAssemblyFailureV1",
+        },
+        "x-pa-route-manifest": PHASE5A_POLICY_ASSEMBLY_ROUTE_MANIFEST_V1,
+        "x-pa-runtime-authority":
+          "synthetic_only_local_policy_assembly_no_remote_calls_replay_or_trading_authority",
+      },
+    },
+    refinePhase5APolicyAssemblyComponents,
+  );
+  const openapi = asRecord(documents.openapi);
+  const components = asRecord(openapi.components);
+  return {
+    schemaBundle: documents.schemaBundle,
+    openapi: {
+      ...openapi,
+      paths: buildPhase5APolicyAssemblyOpenApiPaths(),
+      components: {
+        ...components,
+        securitySchemes: {
+          operatorToken: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "PA-Local-Operator-Token",
+          },
+        },
+      },
+    },
+  };
+}
+
+function refinePhase5APolicyAssemblyComponents(
+  components: Record<string, unknown>,
+): void {
+  const command = asRecord(components.DoctrineCorpusRollbackCommandV1);
+  const commandProperties = asRecord(command.properties);
+  Object.assign(asRecord(commandProperties.reason), {
+    minLength: 1,
+    maxLength: 500,
+    pattern: "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f-\\u009f]*$",
+  });
+  for (const componentName of [
+    "DoctrineCorpusActivationV1",
+    "DoctrineCorpusRollbackActivationV1",
+  ]) {
+    const component = asRecord(components[componentName]);
+    const properties = asRecord(component.properties);
+    Object.assign(asRecord(properties.activationSequence), {
+      type: "integer",
+      minimum: 1,
+    });
+  }
+  const rollback = asRecord(components.DoctrineCorpusRollbackActivationV1);
+  const rollbackProperties = asRecord(rollback.properties);
+  Object.assign(asRecord(rollbackProperties.reason), {
+    minLength: 1,
+    maxLength: 500,
+  });
+  const assembly = asRecord(components.PolicyAssemblyV1);
+  const assemblyProperties = asRecord(assembly.properties);
+  Object.assign(asRecord(assemblyProperties.activationSequence), {
+    type: "integer",
+    minimum: 1,
+  });
+  Object.assign(asRecord(assemblyProperties.doctrineContextByteLength), {
+    type: "integer",
+    minimum: 1,
+    maximum: 524288,
+  });
+  Object.assign(asRecord(assemblyProperties.doctrineManifest), {
+    minItems: 1,
+    maxItems: 32,
+  });
+}
+
+function buildPhase5APolicyAssemblyOpenApiPaths(): Record<string, unknown> {
+  return Object.fromEntries(
+    PHASE5A_POLICY_ASSEMBLY_ROUTE_MANIFEST_V1.map((route) => {
+      const errors = Object.fromEntries(
+        ["400", "401", "403", "404", "409", "422", "503"].map(
+          (status) => [
+            status,
+            {
+              description: "Rejected by the Phase 5A contract",
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/CaseApiErrorV1" },
+                },
+              },
+            },
+          ],
+        ),
+      );
+      const requestComponent =
+        route.operationId === "createDoctrineCorpusRollbackActivation"
+          ? "DoctrineCorpusRollbackCommandV1"
+          : route.operationId === "createPolicyAssembly"
+            ? "CreatePolicyAssemblyCommandV1"
+            : null;
+      const responseComponent =
+        route.operationId === "createDoctrineCorpusRollbackActivation" ||
+        route.operationId === "getDoctrineActivation"
+          ? "DoctrineActivationAuthorityV1"
+          : route.operationId === "createPolicyAssembly"
+            ? "PolicyAssemblyTerminalV1"
+            : route.operationId === "getPolicyAssembly"
+              ? "PolicyAssemblyV1"
+              : "PolicyAssemblyFailureV1";
+      const parameterName = route.openapiPath.includes("{activationId}")
+        ? "activationId"
+        : route.openapiPath.includes("{assemblyId}")
+          ? "assemblyId"
+          : route.openapiPath.includes("{failureId}")
+            ? "failureId"
+            : null;
+      const mutation = route.method === "POST";
+      return [
+        route.openapiPath,
+        {
+          [route.method.toLowerCase()]: {
+            operationId: route.operationId,
+            security: [{ operatorToken: [] }],
+            ...(requestComponent === null
+              ? {}
+              : {
+                  requestBody: {
+                    required: true,
+                    content: {
+                      "application/json": {
+                        schema: {
+                          $ref: `#/components/schemas/${requestComponent}`,
+                        },
+                      },
+                    },
+                  },
+                }),
+            ...(parameterName === null
+              ? {}
+              : { parameters: [pathHashParameter(parameterName)] }),
+            responses: {
+              "200": jsonResponse(
+                responseComponent,
+                mutation ? "Exact Phase 5A resource already exists" : "Phase 5A resource",
+              ),
+              ...(mutation
+                ? {
+                    "201": jsonResponse(
+                      responseComponent,
+                      "Phase 5A resource inserted",
+                    ),
+                  }
+                : {}),
+              ...errors,
+            },
+          },
+        },
+      ];
+    }),
+  );
+}
+
 export function buildReviewWorkflowTransportDocumentsV1(
   packageRoot: string,
 ): GeneratedTransportDocumentsV1 {
