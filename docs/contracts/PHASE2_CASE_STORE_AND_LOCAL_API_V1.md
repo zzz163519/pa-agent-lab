@@ -93,11 +93,17 @@ The image contains pgvector but Phase 2 does not install the vector extension. P
 
 ```text
 seed-synthetic
+inspect-case <caseHash>
+get-chart <artifactId> --output <path>
 get-case <caseHash>
 get-audit <caseHash>
 ```
 
-`seed-synthetic` creates 120 deterministic closed synthetic bars, two synthetic doctrine fixtures, anonymous charts, one `no_trade` BrooksDecision, one agreeing whole-decision CalvinReview, and the deterministic audit view. These values are software fixtures only and carry no Brooks-source, strategy, result, or profitability authority.
+`seed-synthetic` creates 120 deterministic closed synthetic bars, two synthetic doctrine fixtures, anonymous charts, one `no_trade` BrooksDecision, one agreeing whole-decision CalvinReview, and the deterministic audit view. Its concise JSON reports each mutation as `inserted` or `existing` and exposes both panels' `artifactId` and `contentHash`.
+
+`inspect-case` returns a bounded terminal-oriented summary containing Case/input/cutoff identity, bar count, decision/review/conflict state, and both chart identities. The existing `get-case` and `get-audit` commands retain complete single-line JSON for machine consumers.
+
+`get-chart` requests the existing authenticated PNG endpoint, rejects redirects and responses over 4 MiB, checks `image/png`, signature, and the fixed `1200x720` dimensions, reports the locally computed SHA-256 content hash, and creates the output file without overwriting an existing path. The API independently revalidates the stored metadata hash before returning bytes. These values are software fixtures only and carry no Brooks-source, strategy, result, or profitability authority.
 
 ## Verified behavior
 
@@ -109,7 +115,7 @@ Tests cover:
 - PGlite migration constraints and content-hashed migration drift;
 - Case Store exact retry, conflict, rollback, and reconstruction;
 - raw HTTP duplicate keys, unknown fields, auth, Host/Origin, size limits, missing/corrupt PNG, unsupported verbs, audit, and binary content;
-- CLI seed over actual loopback HTTP;
+- CLI seed, exact retry status, concise inspection, chart download/integrity/overwrite behavior, and complete raw reads over actual loopback HTTP;
 - real PostgreSQL migration rerun, concurrent idempotency, object ownership, app-role privilege denial, no vector extension, and loopback-only Docker publication.
 
 These tests prove software contracts, not Price Action correctness, model quality, replay correctness, or profitability.

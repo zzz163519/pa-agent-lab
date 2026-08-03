@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readdir, rm } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -86,13 +86,120 @@ describe("Phase 2 synthetic Case CLI", () => {
         readonly decisionHash: string;
         readonly reviewHash: string;
         readonly conflictKinds: readonly string[];
+        readonly mutations: {
+          readonly caseBundle: string;
+          readonly brooksDecision: string;
+          readonly calvinReview: string;
+        };
+        readonly chartArtifacts: {
+          readonly context: {
+            readonly artifactId: string;
+            readonly contentHash: string;
+          };
+          readonly detail: {
+            readonly artifactId: string;
+            readonly contentHash: string;
+          };
+        };
       };
       assert.match(seeded.caseHash, /^sha256:[0-9a-f]{64}$/);
       assert.match(seeded.decisionHash, /^sha256:[0-9a-f]{64}$/);
       assert.match(seeded.reviewHash, /^sha256:[0-9a-f]{64}$/);
       assert.deepEqual(seeded.conflictKinds, ["none"]);
+      assert.deepEqual(seeded.mutations, {
+        caseBundle: "inserted",
+        brooksDecision: "inserted",
+        calvinReview: "inserted",
+      });
+      assert.deepEqual(seeded.chartArtifacts, {
+        context: {
+          artifactId:
+            authorizedFixture.caseBundle.chartMetadata.context.artifactId,
+          contentHash:
+            authorizedFixture.caseBundle.chartMetadata.context.contentHash,
+        },
+        detail: {
+          artifactId:
+            authorizedFixture.caseBundle.chartMetadata.detail.artifactId,
+          contentHash:
+            authorizedFixture.caseBundle.chartMetadata.detail.contentHash,
+        },
+      });
       assert.equal((await readdir(artifactRoot)).filter((name) => name.endsWith(".png")).length, 2);
       assert.doesNotMatch(output.join("\n"), /2025-02|2025-05|2025-08|symbol|venue|outcome/i);
+
+      const retryOutput: string[] = [];
+      const retryExitCode = await runCaseCliV1({
+        argv: [
+          "seed-synthetic",
+          "--api-url",
+          address,
+          "--artifact-root",
+          artifactRoot,
+        ],
+        env: { PA_API_TOKEN: localToken },
+        stdout: (line) => retryOutput.push(line),
+        stderr: (line) => retryOutput.push(`ERROR:${line}`),
+      });
+      assert.equal(retryExitCode, 0, retryOutput.join("\n"));
+      assert.deepEqual(JSON.parse(retryOutput.at(-1)!).mutations, {
+        caseBundle: "existing",
+        brooksDecision: "existing",
+        calvinReview: "existing",
+      });
+
+      const inspectionOutput: string[] = [];
+      const inspectionExit = await runCaseCliV1({
+        argv: ["inspect-case", seeded.caseHash, "--api-url", address],
+        env: { PA_API_TOKEN: localToken },
+        stdout: (line) => inspectionOutput.push(line),
+        stderr: (line) => inspectionOutput.push(`ERROR:${line}`),
+      });
+      assert.equal(inspectionExit, 0, inspectionOutput.join("\n"));
+      assert.ok(inspectionOutput[0]!.length < 2_048);
+      const inspection = JSON.parse(inspectionOutput[0]!);
+      assert.match(inspection.auditHash, /^sha256:[0-9a-f]{64}$/);
+      const { auditHash: _auditHash, ...inspectionBody } = inspection;
+      assert.deepEqual(inspectionBody, {
+        caseHash: authorizedFixture.caseBundle.policyCase.caseHash,
+        caseId: authorizedFixture.caseBundle.policyCase.caseId,
+        sourceScope: "synthetic_fixture_only",
+        inputHash: authorizedFixture.caseBundle.policyInput.inputHash,
+        barCount: 120,
+        barDurationSeconds: 300,
+        lastVisibleBarId:
+          authorizedFixture.caseBundle.policyCase.lastVisibleBarId,
+        decision: {
+          decisionHash: authorizedFixture.decision.decisionHash,
+          verdict: "no_trade",
+        },
+        review: {
+          reviewHash: authorizedFixture.review.reviewHash,
+          disposition: "agree",
+        },
+        conflict: {
+          kinds: ["none"],
+          status: "closed",
+        },
+        chartArtifacts: {
+          context: {
+            artifactId:
+              authorizedFixture.caseBundle.chartMetadata.context.artifactId,
+            contentHash:
+              authorizedFixture.caseBundle.chartMetadata.context.contentHash,
+            widthPx: 1200,
+            heightPx: 720,
+          },
+          detail: {
+            artifactId:
+              authorizedFixture.caseBundle.chartMetadata.detail.artifactId,
+            contentHash:
+              authorizedFixture.caseBundle.chartMetadata.detail.contentHash,
+            widthPx: 1200,
+            heightPx: 720,
+          },
+        },
+      });
 
       const auditOutput: string[] = [];
       const auditExit = await runCaseCliV1({
@@ -103,10 +210,96 @@ describe("Phase 2 synthetic Case CLI", () => {
       });
       assert.equal(auditExit, 0, auditOutput.join("\n"));
       assert.equal(JSON.parse(auditOutput[0]!).caseHash, seeded.caseHash);
+
+      const downloadedPath = resolve(artifactRoot, "downloaded-context.png");
+      const chartOutput: string[] = [];
+      const chartExit = await runCaseCliV1({
+        argv: [
+          "get-chart",
+          authorizedFixture.caseBundle.chartMetadata.context.artifactId,
+          "--api-url",
+          address,
+          "--output",
+          downloadedPath,
+        ],
+        env: { PA_API_TOKEN: localToken },
+        stdout: (line) => chartOutput.push(line),
+        stderr: (line) => chartOutput.push(`ERROR:${line}`),
+      });
+      assert.equal(chartExit, 0, chartOutput.join("\n"));
+      assert.deepEqual(JSON.parse(chartOutput[0]!), {
+        artifactId:
+          authorizedFixture.caseBundle.chartMetadata.context.artifactId,
+        outputPath: downloadedPath,
+        byteLength:
+          authorizedFixture.caseBundle.chartMetadata.context.byteLength,
+        contentHash:
+          authorizedFixture.caseBundle.chartMetadata.context.contentHash,
+        widthPx: 1200,
+        heightPx: 720,
+      });
+      assert.deepEqual(
+        await readFile(downloadedPath),
+        await readFile(
+          resolve(
+            artifactRoot,
+            `${authorizedFixture.caseBundle.chartMetadata.context.contentHash.slice("sha256:".length)}.png`,
+          ),
+        ),
+      );
+
+      const overwriteOutput: string[] = [];
+      const overwriteExit = await runCaseCliV1({
+        argv: [
+          "get-chart",
+          authorizedFixture.caseBundle.chartMetadata.context.artifactId,
+          "--api-url",
+          address,
+          "--output",
+          downloadedPath,
+        ],
+        env: { PA_API_TOKEN: localToken },
+        stdout: (line) => overwriteOutput.push(line),
+        stderr: (line) => overwriteOutput.push(`ERROR:${line}`),
+      });
+      assert.equal(overwriteExit, 1);
+      assert.match(overwriteOutput.join("\n"), /already exists/);
     } finally {
       await app.close();
       await db.close();
       await rm(artifactRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects an invalid chart response before creating an output file", async () => {
+    const root = await mkdtemp(resolve(tmpdir(), "pa-phase2-cli-download-"));
+    const outputPath = resolve(root, "invalid.png");
+    const output: string[] = [];
+    const fakeFetch = (async (_input, init) => {
+      assert.equal(init?.redirect, "error");
+      return new Response(Buffer.from("not-a-png"), {
+        status: 200,
+        headers: { "content-type": "image/png" },
+      });
+    }) as typeof fetch;
+    try {
+      const exitCode = await runCaseCliV1({
+        argv: [
+          "get-chart",
+          `sha256:${"a".repeat(64)}`,
+          "--output",
+          outputPath,
+        ],
+        env: { PA_API_TOKEN: localToken },
+        stdout: (line) => output.push(line),
+        stderr: (line) => output.push(`ERROR:${line}`),
+        fetchImpl: fakeFetch,
+      });
+      assert.equal(exitCode, 1);
+      assert.match(output.join("\n"), /not a valid Phase 2 anonymous PNG/);
+      await assert.rejects(() => readFile(outputPath), { code: "ENOENT" });
+    } finally {
+      await rm(root, { recursive: true, force: true });
     }
   });
 });
