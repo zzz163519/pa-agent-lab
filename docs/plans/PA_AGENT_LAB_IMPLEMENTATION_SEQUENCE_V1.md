@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, AND PHASE 5A ARE IMPLEMENTED. PHASE 4B, PHASE 5B, SELECTOR V2, AND LATER AUTHORITY REMAIN SEPARATE.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, AND PHASE 5A ARE IMPLEMENTED. THE PHASE 5B1 EXACT PROMPT PACKAGE HASH IS APPROVED, BUT ITS ADR, CONTRACT, IMPLEMENTATION, AND ACTIVATION REMAIN PROPOSED; PHASE 4B, PHASE 5B IMPLEMENTATION, SELECTOR V2, AND LATER AUTHORITY REMAIN SEPARATE.
 
 ## Delivery model
 
@@ -118,7 +118,7 @@ Still requires a separate ADR, contract, and implementation approval before addi
 
 ## Phase 5: Brooks Policy Agent vertical slice
 
-ADR-0020 splits Phase 5 into an accepted synthetic assembly slice and a separately decided future inference slice.
+ADR-0020 splits Phase 5 into an implemented synthetic assembly slice and a separately decided inference track. Proposed ADR-0021 further divides that inference track into an offline Prompt Package boundary and a later provider-call boundary.
 
 ### Phase 5A: explicit corpus rollback and synthetic Policy Assembly
 
@@ -137,16 +137,36 @@ Implemented and freshly verified under ADR-0020 and the accepted Phase 5A contra
 
 Exit condition met: a still-eligible historical corpus can become current only through a new explicit rollback identity, and one existing deployment-authorized synthetic Case can produce an immutable full-current-corpus policy input with complete provenance and no model call.
 
-### Phase 5B: provider-bound Brooks Policy inference
+### Phase 5B1: Brooks Prompt Package and offline validation
 
-Still requires separate ADRs, contracts, and implementation approvals before any work on:
+Proposed ADR-0021, its contract, and its implementation plan define a docs-only package boundary. Calvin has approved the exact Prompt Package hash recorded in `docs/prompts/BROOKS_PROMPT_PACKAGE_V1.approval.json`; the ADR, contract, implementation, and activation remain unapproved.
 
-- prompt and output-schema identity;
-- provider/model selection and image transport;
-- `OutboundModelPayloadV1`, ModelRun, retries, attempts, response validation, and BrooksDecision creation;
+The proposed boundary would:
+
+- bind one fixed English prompt, one closed identity-free response schema, the BrooksDecision contract version, and the local validator version into one canonical package hash;
+- bind the exact Calvin-approved package hash, then require separate explicit operator activation with no latest-file activation or automatic fallback;
+- keep the provider response to the 18 BrooksDecision V1 semantic fields while binding seven local/derived identity fields locally;
+- describe those 18 fields only as complete for accepted BrooksDecision V1, not for all possible Price Action semantics;
+- deterministically prepare the existing `OutboundModelPayloadV1` from one successful synthetic Policy Assembly and wrap it with complete package/assembly identity;
+- parse and validate invented identity-free response fixtures offline without repair;
+- use only explicit invented `PlannedTradeGeometryV1` in compatibility tests and preserve the missing production geometry-source contract as a Phase 5B2 prerequisite;
+- create no ModelCall, ModelRun, ProviderAttempt, ModelRunAudit, production BrooksDecision, provider request, or model answer.
+
+The exact package hash is approved for content identity only. This does not authorize Phase 5B1 implementation, package activation, or any Phase 5B2 capability.
+
+Future Phase 5B1 implementation exit direction: one exact Calvin-approved package can be explicitly activated, one existing synthetic Policy Assembly can produce one immutable prepared payload wrapper, and invented responses pass or reject without repair under the frozen schema/validator while no external call or formal model-run record exists.
+
+### Phase 5B2: controlled provider-bound Brooks inference
+
+Still requires separate ADRs, contracts, privacy review, provider/model selection, geometry-source decision, and explicit external-call approval before any work on:
+
+- exact provider/model identities and retirement behavior;
+- provider-specific PNG transport and structured-output adaptation;
+- real `ModelCallRecordV1`, `ModelRunRecordV1`, retries, attempts, raw responses, validation audits, and BrooksDecision creation;
+- timeout, rate limit, batching, retention, usage, cost, and quality gates;
 - any Case-aware selector, retrieval query construction, or asynchronous model job.
 
-Future Phase 5B exit direction: one Brooks decision is repeatable under a fixed model/prompt identity and fails closed under adversarial causal tests. This direction grants no present implementation or provider authority.
+Future Phase 5B2 exit direction: one Brooks decision is repeatable under an exact model/package identity and fails closed under adversarial causal tests. This direction grants no present implementation or provider authority.
 
 ## Phase 6: Semantic evaluation
 

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "brooks-prompt-package-manifest.v1",
+  "packageVersion": "brooks-prompt-package.v1",
+  "prompt": {
+    "mediaType": "text/plain; charset=utf-8",
+    "byteLength": 5217,
+    "contentHash": "sha256:99db77812497107f4e0daacbca8969d308523b40eee77825aca18b53be72a267"
+  },
+  "responseSchema": {
+    "schemaId": "https://pa-agent-lab.local/schemas/brooks-identity-free-response-v1",
+    "schemaVersion": "brooks-identity-free-response.schema.v1",
+    "mediaType": "application/schema+json",
+    "byteLength": 24951,
+    "contentHash": "sha256:1017e462dd312177f7d4b50dbc4ee37e6041029e40ae10471f6a3118a73db53a"
+  },
+  "brooksDecisionContractVersion": "brooks-decision.v1",
+  "validatorVersion": "brooks-identity-free-response-validator.v1",
+  "packageHash": "sha256:b67896d15d5e2542c7bebaeca2b60c67cbb5510ef359efaca7f44e42fa17b0d9"
+}

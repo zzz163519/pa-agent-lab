@@ -38,7 +38,9 @@ ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 vers
 
 Still open:
 
-- pin exact provider/model versions and retirement behavior;
+- decide whether to accept ADR-0021 and the Phase 5B1 contract and authorize the offline implementation; the exact Prompt Package hash is already approved but not activated;
+- define the deterministic source of `PlannedTradeGeometryV1` for provider responses before any production Long/Short acceptance;
+- pin exact provider/model versions and retirement behavior for Phase 5B2;
 - verify provider endpoints accept the approved image and structured-output contract;
 - freeze retry counts, timeout policy, rate limits, batching, usage audit, and valid-decision cost without changing logical decision-point symmetry;
 - freeze provider-specific invalid-response codes and external retention configuration;
@@ -53,7 +55,8 @@ Still open:
 
 - approve Phase 4B embedding runtime, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider/privacy boundaries, and associated quality contract;
 - define and approve any future Selector V2, including deterministic Case-to-query construction, multi-query union/deduplication, RRF, immutable selector evidence, and policy-worker retrieval authority;
-- define Phase 5B prompt/provider/model/transport/validation authority before any outbound payload or ModelRun;
+- decide whether to accept and implement the proposed Phase 5B1 offline package-governance/payload-preparation/fixture-validation contract; its exact package hash is approved, but no implementation or activation is authorized;
+- define and approve Phase 5B2 provider/model/transport/call/retention/retry/cost authority before any ModelRun or external request;
 - expand the exact public source allowlist only through a separately approved versioned decision.
 
 ## API and user interface

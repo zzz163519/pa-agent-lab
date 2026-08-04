@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "brooks-prompt-package-approval.v1",
+  "approvalId": "brooks-prompt-package-v1-calvin-approval",
+  "packageVersion": "brooks-prompt-package.v1",
+  "packageHash": "sha256:b67896d15d5e2542c7bebaeca2b60c67cbb5510ef359efaca7f44e42fa17b0d9",
+  "approvedBy": "Calvin",
+  "approvedAt": "2026-08-04T16:50:31+08:00",
+  "approvalMethod": "direct-calvin-instruction",
+  "approvalScope": "exact-package-content-only",
+  "phase5b1ImplementationAuthorized": false,
+  "packageActivationPerformed": false,
+  "providerCallsAuthorized": false,
+  "approvalRecordHash": "sha256:d1c0ddbac5c14ec2d455de5ba85d0de381f8561dd928c8362207f7c41370389e"
+}
