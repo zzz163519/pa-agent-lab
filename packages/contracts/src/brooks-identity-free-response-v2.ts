@@ -82,6 +82,9 @@ export function createOfflineBrooksResponseValidationV2(
     );
 
     validateGeometryBranch(response);
+    validateEntryGeometryRelation(response);
+    validateProtectionGeometryRelation(response);
+    validateObjectiveGeometryRelation(response);
     if (response.tradePlan?.entry.entryType === "market_next_event") {
       fail("market_next_event is unsupported by the provider-bound V2 profile");
     }
@@ -137,6 +140,91 @@ function validateGeometryBranch(response: BrooksIdentityFreeResponseV2): void {
     if (typeof value !== "number" || !Number.isFinite(value)) {
       fail(`plannedGeometry.${field} must be finite`);
     }
+  }
+}
+
+function validateEntryGeometryRelation(response: BrooksIdentityFreeResponseV2): void {
+  const plan = response.tradePlan;
+  const geometry = response.plannedGeometry;
+  if (plan === null || geometry === null) return;
+
+  if (plan.entry.entryType === "stop") {
+    const anchorPrice = plan.entry.anchor.normalizedReferencePrice;
+    if (
+      plan.direction === "long" &&
+      geometry.entryNormalizedPrice <= anchorPrice
+    ) {
+      fail("long stop entry must be strictly above its visible anchor");
+    }
+    if (
+      plan.direction === "short" &&
+      geometry.entryNormalizedPrice >= anchorPrice
+    ) {
+      fail("short stop entry must be strictly below its visible anchor");
+    }
+    return;
+  }
+
+  if (plan.entry.entryType === "limit") {
+    const structureId = plan.entry.structureId;
+    const structure = response.structures.find(
+      (candidate) => candidate.structureId === structureId,
+    );
+    if (
+      structure !== undefined &&
+      !structure.anchors.some(
+        (anchor) =>
+          anchor.normalizedReferencePrice === geometry.entryNormalizedPrice,
+      )
+    ) {
+      fail("limit entry must equal an anchor in its referenced structure");
+    }
+  }
+}
+
+function validateProtectionGeometryRelation(
+  response: BrooksIdentityFreeResponseV2,
+): void {
+  const plan = response.tradePlan;
+  const geometry = response.plannedGeometry;
+  if (plan === null || geometry === null) return;
+
+  const anchorPrice = plan.protection.anchor.normalizedReferencePrice;
+  if (
+    plan.direction === "long" &&
+    geometry.protectionNormalizedPrice >= anchorPrice
+  ) {
+    fail("long protection must be strictly below its visible anchor");
+  }
+  if (
+    plan.direction === "short" &&
+    geometry.protectionNormalizedPrice <= anchorPrice
+  ) {
+    fail("short protection must be strictly above its visible anchor");
+  }
+}
+
+function validateObjectiveGeometryRelation(
+  response: BrooksIdentityFreeResponseV2,
+): void {
+  const plan = response.tradePlan;
+  const geometry = response.plannedGeometry;
+  if (plan === null || geometry === null) return;
+
+  const magnet = response.magnets.find(
+    (candidate) => candidate.magnetId === plan.objective.magnetId,
+  );
+  const structure = response.structures.find(
+    (candidate) => candidate.structureId === magnet?.structureId,
+  );
+  if (
+    structure !== undefined &&
+    !structure.anchors.some(
+      (anchor) =>
+        anchor.normalizedReferencePrice === geometry.objectiveNormalizedPrice,
+    )
+  ) {
+    fail("objective must equal an anchor in its magnet structure");
   }
 }
 

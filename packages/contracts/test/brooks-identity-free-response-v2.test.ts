@@ -56,6 +56,53 @@ function semanticContext() {
   return context;
 }
 
+function makeValidShortGeometryDecision(): BrooksDecisionInputV1 {
+  const full = makeValidShortDecision();
+  return {
+    ...full,
+    structures: [
+      ...full.structures,
+      {
+        structureId: "structure:short-target",
+        kind: "prior_low",
+        anchors: [
+          {
+            barId: "bar:117",
+            field: "low",
+            normalizedReferencePrice: 99,
+          },
+        ],
+        claimIds: ["claim-objective"],
+      },
+    ],
+    magnets: full.magnets.map((magnet) => ({
+      ...magnet,
+      structureId: "structure:short-target",
+    })),
+  };
+}
+
+function assertGeometryRejected(
+  value: BrooksIdentityFreeResponseV2,
+  decisionId: string,
+  expected: RegExp,
+): void {
+  assert.throws(
+    () => createOfflineBrooksResponseValidationV2({
+      response: value,
+      binding: {
+        decisionId,
+        caseId: "case:fixture",
+        inputHash: `sha256:${"a".repeat(64)}`,
+        lastVisibleBarId: "bar:119",
+        barDurationSeconds: 300,
+      },
+      context: semanticContext(),
+    }),
+    expected,
+  );
+}
+
 describe("Phase 5B2B identity-free Brooks response V2", () => {
   it("takes exact provider geometry through the existing semantic gate", () => {
     const value = response(makeValidLongDecision(), {
@@ -90,7 +137,7 @@ describe("Phase 5B2B identity-free Brooks response V2", () => {
   it("accepts invented stop and limit geometry for both directions", () => {
     const longLimit = makeValidLongDecision("scalp");
     if (longLimit.tradePlan === null) throw new Error("fixture requires plan");
-    const withLimit: BrooksDecisionInputV1 = {
+    const longWithLimit: BrooksDecisionInputV1 = {
       ...longLimit,
       tradePlan: {
         ...longLimit.tradePlan,
@@ -104,14 +151,35 @@ describe("Phase 5B2B identity-free Brooks response V2", () => {
         },
       },
     };
+    const shortLimit = makeValidShortGeometryDecision();
+    if (shortLimit.tradePlan === null) throw new Error("fixture requires plan");
+    const shortWithLimit: BrooksDecisionInputV1 = {
+      ...shortLimit,
+      tradePlan: {
+        ...shortLimit.tradePlan,
+        entry: {
+          entryType: "limit",
+          relation: "pullback_to",
+          structureId: "structure:support",
+          validAfterBarId: "bar:119",
+          validForClosedBars: 1,
+          claimIds: ["claim-entry"],
+        },
+      },
+    };
     const cases = [
-      response(withLimit, {
-        entryNormalizedPrice: 101,
+      response(longWithLimit, {
+        entryNormalizedPrice: 100.5,
         protectionNormalizedPrice: 100.4,
         objectiveNormalizedPrice: 112,
       }),
-      response(makeValidShortDecision(), {
+      response(makeValidShortGeometryDecision(), {
         entryNormalizedPrice: 100.4,
+        protectionNormalizedPrice: 103.1,
+        objectiveNormalizedPrice: 99,
+      }),
+      response(shortWithLimit, {
+        entryNormalizedPrice: 100.5,
         protectionNormalizedPrice: 103.1,
         objectiveNormalizedPrice: 99,
       }),
@@ -217,6 +285,114 @@ describe("Phase 5B2B identity-free Brooks response V2", () => {
       }),
       /protection.*below|geometry/i,
     );
+  });
+
+  it("requires a long stop entry to be strictly above its visible anchor", () => {
+    const value = response(makeValidLongDecision(), {
+      entryNormalizedPrice: 103,
+      protectionNormalizedPrice: 100.4,
+      objectiveNormalizedPrice: 112,
+    });
+
+    assertGeometryRejected(
+      value,
+      "decision:v2-stop-entry-at-anchor",
+      /long stop entry.*strictly above.*anchor/i,
+    );
+  });
+
+  it("requires a short stop entry to be strictly below its visible anchor", () => {
+    const value = response(makeValidShortGeometryDecision(), {
+      entryNormalizedPrice: 100.5,
+      protectionNormalizedPrice: 103.1,
+      objectiveNormalizedPrice: 99,
+    });
+
+    assertGeometryRejected(
+      value,
+      "decision:v2-short-stop-entry-at-anchor",
+      /short stop entry.*strictly below.*anchor/i,
+    );
+  });
+
+  it("requires a limit entry to equal an anchor in its referenced structure", () => {
+    const full = makeValidLongDecision("scalp");
+    if (full.tradePlan === null) throw new Error("fixture requires plan");
+    const value = response({
+      ...full,
+      tradePlan: {
+        ...full.tradePlan,
+        entry: {
+          entryType: "limit",
+          relation: "pullback_to",
+          structureId: "structure:support",
+          validAfterBarId: "bar:119",
+          validForClosedBars: 1,
+          claimIds: ["claim-entry"],
+        },
+      },
+    }, {
+      entryNormalizedPrice: 101,
+      protectionNormalizedPrice: 100.4,
+      objectiveNormalizedPrice: 112,
+    });
+
+    assertGeometryRejected(
+      value,
+      "decision:v2-limit-entry-off-structure",
+      /limit entry.*anchor.*referenced structure/i,
+    );
+  });
+
+  it("requires long protection to be strictly below its visible anchor", () => {
+    const value = response(makeValidLongDecision(), {
+      entryNormalizedPrice: 103.1,
+      protectionNormalizedPrice: 100.5,
+      objectiveNormalizedPrice: 112,
+    });
+
+    assertGeometryRejected(
+      value,
+      "decision:v2-long-protection-at-anchor",
+      /long protection.*strictly below.*anchor/i,
+    );
+  });
+
+  it("requires short protection to be strictly above its visible anchor", () => {
+    const value = response(makeValidShortGeometryDecision(), {
+      entryNormalizedPrice: 100.4,
+      protectionNormalizedPrice: 103,
+      objectiveNormalizedPrice: 99,
+    });
+
+    assertGeometryRejected(
+      value,
+      "decision:v2-short-protection-at-anchor",
+      /short protection.*strictly above.*anchor/i,
+    );
+  });
+
+  it("requires the objective to equal an anchor in its magnet structure", () => {
+    const cases = [
+      response(makeValidLongDecision(), {
+        entryNormalizedPrice: 103.1,
+        protectionNormalizedPrice: 100.4,
+        objectiveNormalizedPrice: 111,
+      }),
+      response(makeValidShortGeometryDecision(), {
+        entryNormalizedPrice: 100.4,
+        protectionNormalizedPrice: 103.1,
+        objectiveNormalizedPrice: 98,
+      }),
+    ];
+
+    for (const value of cases) {
+      assertGeometryRejected(
+        value,
+        `decision:v2-${value.verdict}-objective-off-magnet`,
+        /objective.*anchor.*magnet structure/i,
+      );
+    }
   });
 });
 
