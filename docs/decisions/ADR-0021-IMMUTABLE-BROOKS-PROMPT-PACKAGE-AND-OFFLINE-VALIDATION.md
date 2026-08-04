@@ -1,6 +1,6 @@
 # ADR-0021: Immutable Brooks Prompt Package and Offline Validation Boundary
 
-Status: ACCEPTED FOR PHASE 5B1. EXACT PACKAGE HASH APPROVED BY CALVIN. OFFLINE IMPLEMENTATION AUTHORIZED; PACKAGE ACTIVATION AND PROVIDER AUTHORITY REMAIN UNAUTHORIZED.
+Status: ACCEPTED FOR PHASE 5B1. EXACT PACKAGE HASH APPROVED BY CALVIN. OFFLINE IMPLEMENTATION AUTHORIZED; FIRST EXACT LOCAL SYNTHETIC STANDARD ACTIVATION SEPARATELY AUTHORIZED AND PERFORMED; PROVIDER AUTHORITY REMAINS UNAUTHORIZED.
 
 ## Context
 
@@ -147,7 +147,7 @@ Calvin explicitly approved this exact package content identity on `2026-08-04T16
 
 The separate immutable approval artifact is `docs/prompts/BROOKS_PROMPT_PACKAGE_V1.approval.json`, with record hash `sha256:d1c0ddbac5c14ec2d455de5ba85d0de381f8561dd928c8362207f7c41370389e`. Its record hash is SHA-256 over the canonical approval object after removing `approvalRecordHash`, using the same sorted-key and array-order rules as the package manifest. The approval artifact is outside the Prompt Package preimage and does not change the approved package hash.
 
-This approval is exact-package-content-only. It does not itself authorize Phase 5B1 implementation, package activation, provider calls, or model runs. Calvin's separate implementation authorization is recorded in `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`; that record authorizes only the offline implementation boundary above and explicitly leaves activation and provider/model authority false.
+This approval is exact-package-content-only. It does not itself authorize Phase 5B1 implementation, package activation, provider calls, or model runs. Calvin's separate implementation authorization is recorded in `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`; that immutable record authorizes only the offline implementation boundary above and explicitly leaves activation and provider/model authority false. Calvin later authorized one exact local synthetic standard activation and one prepared payload in `docs/decisions/PHASE5B1_PACKAGE_ACTIVATION_AUTHORIZATION_V1.json`, record hash `sha256:81dfbfba121675cde6130f6118097a23a112de1e5b1f96a3531a98f6c68fb626`. Activation sequence 1 was performed and independently read back as recorded by `docs/decisions/PHASE5B1_FIRST_PACKAGE_ACTIVATION_EXECUTION_V1.json`, record hash `sha256:06dfddd45f6e1059f6891561b38b7868d04e51489e116df1400f1c607b1194f8`; payload preparation stopped because the deployment contained no successful PolicyAssembly.
 
 ## Reuse decision
 
@@ -170,7 +170,7 @@ The complete evidence is recorded in `docs/research/PHASE5B1_PROMPT_PACKAGE_REUS
 
 This accepted decision and separate implementation authorization do not authorize:
 
-- performing a package activation or rollback, despite implementing the operator-only capabilities;
+- any additional standard activation or any package rollback; the separately authorized first exact local synthetic standard activation has already been performed;
 - provider/model selection, provider SDK, credentials, network requests, external retention, usage, or cost;
 - ModelCall, ModelRun, ProviderAttempt, ModelRunAudit, BrooksDecision, or real raw-response records;
 - response repair, secondary-model repair, prompt variants, dynamic prompt selection, or provider-hosted prompt authority;

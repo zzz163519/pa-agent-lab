@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, PHASE 5A, AND PHASE 5B1 CONTRACT/IMPLEMENTATION AUTHORITY ARE ACCEPTED. PHASE 5B1 PACKAGE ACTIVATION, PHASE 4B, PHASE 5B2, SELECTOR V2, AND LATER AUTHORITY REMAIN SEPARATE.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, PHASE 5A, AND PHASE 5B1 CONTRACT/IMPLEMENTATION AUTHORITY ARE ACCEPTED; THE FIRST EXACT PHASE 5B1 STANDARD PACKAGE ACTIVATION WAS SEPARATELY AUTHORIZED AND PERFORMED. PHASE 4B, PHASE 5B2, SELECTOR V2, AND LATER AUTHORITY REMAIN SEPARATE.
 
 ## Delivery model
 
@@ -139,7 +139,7 @@ Exit condition met: a still-eligible historical corpus can become current only t
 
 ### Phase 5B1: Brooks Prompt Package and offline validation
 
-Accepted ADR-0021, its contract, implementation plan, exact Prompt Package approval, and `PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json` authorize only the offline implementation boundary. No package activation has been performed or authorized.
+Accepted ADR-0021, its contract, implementation plan, exact Prompt Package approval, and `PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json` authorize only the offline implementation boundary. `PHASE5B1_PACKAGE_ACTIVATION_AUTHORIZATION_V1.json` later authorized one exact local synthetic standard activation and one prepared payload. Activation sequence 1 was performed and recorded by `PHASE5B1_FIRST_PACKAGE_ACTIVATION_EXECUTION_V1.json`; preparation remains pending because the persistent deployment has no successful PolicyAssembly.
 
 The implemented boundary:
 
@@ -152,9 +152,9 @@ The implemented boundary:
 - use only explicit invented `PlannedTradeGeometryV1` in compatibility tests and preserve the missing production geometry-source contract as a Phase 5B2 prerequisite;
 - create no ModelCall, ModelRun, ProviderAttempt, ModelRunAudit, production BrooksDecision, provider request, or model answer.
 
-The immutable exact-content approval remains separate from the accepted ADR/contract and offline implementation authorization. None authorizes performing package activation or any Phase 5B2 capability.
+The immutable exact-content approval remains separate from the accepted ADR/contract, offline implementation authorization, bounded activation authorization, and execution evidence. The performed sequence-1 activation authorizes no additional activation, rollback, or Phase 5B2 capability.
 
-Phase 5B1 implementation exit gate: one exact Calvin-approved package can be explicitly activated after separate authorization, one existing synthetic Policy Assembly can produce one immutable prepared payload wrapper, and invented responses pass or reject without repair under the frozen schema/validator while no external call or formal model-run record exists.
+Phase 5B1 implementation exit gate is met by the verified code and adversarial tests. Operationally, the exact package is current; the one authorized local prepared wrapper remains pending until Calvin separately decides whether the empty Doctrine/corpus/PolicyAssembly prerequisites may be created.
 
 ### Phase 5B2: controlled provider-bound Brooks inference
 

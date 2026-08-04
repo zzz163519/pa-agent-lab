@@ -38,7 +38,6 @@ ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 vers
 
 Still open:
 
-- decide when Calvin will authorize an authenticated operator to perform the first package activation; the exact package content and offline activation capability are approved, but no activation has been performed or authorized;
 - define the deterministic source of `PlannedTradeGeometryV1` for provider responses before any production Long/Short acceptance;
 - pin exact provider/model versions and retirement behavior for Phase 5B2;
 - verify provider endpoints accept the approved image and structured-output contract;
@@ -53,9 +52,10 @@ Accepted: ADR-0019 and the Phase 4A contract fix the initial exact six-source pu
 
 Still open:
 
+- decide whether to authorize the minimum local prerequisite chain for the one already-authorized prepared payload: the persistent deployment has one synthetic Case but no Doctrine proposal, approval, ingestion run, quality report, corpus activation, or successful PolicyAssembly; no prerequisite may be synthesized implicitly;
 - approve Phase 4B embedding runtime, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider/privacy boundaries, and associated quality contract;
 - define and approve any future Selector V2, including deterministic Case-to-query construction, multi-query union/deduplication, RRF, immutable selector evidence, and policy-worker retrieval authority;
-- authorize the first explicit Phase 5B1 package activation only through a separate Calvin decision; the accepted implementation provides the capability but neither performs nor authorizes activation;
+- authorize any future Prompt Package activation or rollback only through a new separate Calvin decision; the first exact standard activation has been performed and is current;
 - define and approve Phase 5B2 provider/model/transport/call/retention/retry/cost authority before any ModelRun or external request;
 - expand the exact public source allowlist only through a separately approved versioned decision.
 

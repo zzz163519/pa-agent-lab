@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "phase5b1-first-package-activation-execution.v1",
+  "executionScope": "first-exact-local-synthetic-standard-package-activation",
+  "executedBy": "Direct Pi",
+  "operatorPrincipal": "local:phase2-operator",
+  "executedAt": "2026-08-04T19:49:57+08:00",
+  "authorizationRecordHash": "sha256:81dfbfba121675cde6130f6118097a23a112de1e5b1f96a3531a98f6c68fb626",
+  "deployedRepositoryCommit": "b8fb179",
+  "deploymentBoundary": "repository-owned trusted-loopback synthetic-only Docker deployment",
+  "databaseMigrationHashes": {
+    "0008_phase5b1_prompt_package_activation_v1.sql": "sha256:8479573895908490f3da5a9b8971afa5cc31c71773d81c37a0d86a630d9bec60",
+    "0009_phase5b1_prepared_policy_payload_v1.sql": "sha256:7fb89e05e3a474dd4ae277602d1e222d1262692cfe294b749ef7e1d986122a8b"
+  },
+  "activation": {
+    "schemaVersion": "brooks-prompt-package-activation.v1",
+    "activationKind": "standard",
+    "activationSequence": 1,
+    "activationId": "sha256:eaf1ab36f8dbcba6ab810944d368f8a8a669461e7984862f7e45270d3b227ddc",
+    "packageHash": "sha256:b67896d15d5e2542c7bebaeca2b60c67cbb5510ef359efaca7f44e42fa17b0d9",
+    "approvalRecordHash": "sha256:d1c0ddbac5c14ec2d455de5ba85d0de381f8561dd928c8362207f7c41370389e",
+    "operatorPrincipal": "local:phase2-operator"
+  },
+  "activationReadbackMatched": true,
+  "observedPrerequisiteCounts": {
+    "doctrineProposals": 0,
+    "doctrineApprovals": 0,
+    "doctrineIngestionRuns": 0,
+    "doctrineQualityReports": 0,
+    "doctrineCorpusActivations": 0,
+    "policyAssemblies": 0,
+    "syntheticPolicyCases": 1
+  },
+  "preparedPayloadStatus": "not_performed_missing_successful_policy_assembly",
+  "preparedPayloadCount": 0,
+  "modelRunCount": 0,
+  "providerAttemptCount": 0,
+  "modelRunAuditCount": 0,
+  "providerOrModelCallPerformed": false,
+  "productionBrooksDecisionCreated": false,
+  "realDataAccessed": false,
+  "protectedWindowAccessed": false,
+  "replayPerformed": false,
+  "trainingPerformed": false,
+  "paperOrLivePerformed": false,
+  "tradingPerformed": false,
+  "terminalBoundary": "activation completed; payload preparation stopped before creating or approving missing Doctrine/corpus/assembly prerequisites",
+  "executionRecordHash": "sha256:06dfddd45f6e1059f6891561b38b7868d04e51489e116df1400f1c607b1194f8"
+}
