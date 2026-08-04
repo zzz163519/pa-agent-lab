@@ -171,14 +171,14 @@ Accepted design-only ADR-0022, its contract, reuse scan, implementation plan, an
 
 Phase 5B2A design is complete. At its accepted design commit it added no code, dependency, configuration, credential, V2 package bytes, subprocess invocation, provider request, ModelRun, response, or BrooksDecision. The later offline code below exists only under the separate Phase 5B2B implementation authorization.
 
-### Phase 5B2B: accepted fake-only offline controlled-adapter foundation
+### Phase 5B2B: accepted fake-only offline controlled-adapter foundation and geometry correction
 
-`PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorized only contracts, offline workspace/process code, repository fake executables/tests, an exact Prompt Package V2 proposal, exports, and governance synchronization. `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`, accepts exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` and tree `d99df5d3a794d3056617383411f1caa78729666e` only within that fake-only offline boundary.
+`PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorized only contracts, offline workspace/process code, repository fake executables/tests, an exact Prompt Package V2 proposal, exports, and governance synchronization. `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`, accepts exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` and tree `d99df5d3a794d3056617383411f1caa78729666e` only within that fake-only offline boundary. The separately authorized geometry correction is accepted by `PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_ACCEPTANCE_V1.json`, hash `sha256:d5358718426069376660ee7d381ca7062f7141926105edd0237d4b5197054d76`, which binds exact commit `7e44a44b34fc4b5695af6f00d7366b989a42e716` and tree `b1c9a15b822ef76344d3e7a66d73961621a40bed` only to the four offline V2 relation checks.
 
 The implemented offline boundary:
 
 - fixes candidate/request/terminal evidence contracts, exact model identities, one attempt, 300-second timeout, stdout `262144`, stderr `65536`, terminal JSON `131072`, global concurrency one, no retry, and no batching;
-- adds identity-free response V2 with explicit normalized stop/limit entry, protection, and objective values, while rejecting `market_next_event` and preserving the existing BrooksDecision semantic gate;
+- adds identity-free response V2 with explicit normalized stop/limit entry, protection, and objective values, while rejecting `market_next_event`, preserving the existing BrooksDecision semantic gate, and enforcing accepted strict stop-entry/protection-side relations plus exact visible-anchor equality for limit entries and objectives;
 - drafts unapproved Prompt Package V2, package hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`, without changing V1 bytes;
 - stages only five generic hash-verified anonymous files in restrictive isolated temporary workspaces;
 - supervises only one repository-owned content-hashed fake executable with `shell: false`, an exact child environment, bounded output, complete process-group termination including resistant descendants, and no retry;
@@ -195,7 +195,7 @@ Still requires separate immutable decisions for:
 - any production cleanup/supervisor and persistence seam plus a separately authorized first bounded synthetic external call;
 - any later evaluation expansion under frozen Phase 6 gates.
 
-Current exit: the exact fake-only offline process, parser, geometry, resource, and authority foundation is accepted. Work remains stopped before package approval and before every installed-CLI, external-provider, runtime-record, production-data, replay, training, or trading operation.
+Current exit: the exact fake-only offline process, parser, resource, and authority foundation plus the four-rule V2 geometry correction are accepted. Work remains stopped before package approval and before every installed-CLI, external-provider, runtime-record, production-data, replay, training, or trading operation.
 
 ## Phase 6: Semantic evaluation
 

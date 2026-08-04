@@ -1,6 +1,6 @@
 # Phase 5B2A Controlled CLI Provider Adapter Design Contract V1
 
-Status: ACCEPTED DESIGN CONTRACT. EXACT OFFLINE IMPLEMENTATION COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY FOUNDATION UNDER `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`; PROMPT V2 APPROVAL/ACTIVATION, INSTALLED-CLI CAPABILITY/PRIVACY PROOF, REAL CLI INVOCATION, CREDENTIALS, PERSISTENCE, DEPLOYMENT, AND ALL PROVIDER/MODEL CALLS REMAIN UNAUTHORIZED.
+Status: ACCEPTED DESIGN CONTRACT. EXACT OFFLINE IMPLEMENTATION COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY FOUNDATION, AND EXACT CORRECTION COMMIT `7e44a44b34fc4b5695af6f00d7366b989a42e716` IS ACCEPTED ONLY FOR THE FOUR OFFLINE V2 GEOMETRY RELATION CHECKS. PROMPT V2 APPROVAL/ACTIVATION, INSTALLED-CLI CAPABILITY/PRIVACY PROOF, REAL CLI INVOCATION, CREDENTIALS, PERSISTENCE, DEPLOYMENT, AND ALL PROVIDER/MODEL CALLS REMAIN UNAUTHORIZED.
 
 Authority: ADR-0005, ADR-0010 through ADR-0022, and `docs/decisions/PHASE5B2A_DESIGN_AUTHORIZATION_V1.json`.
 
@@ -8,7 +8,7 @@ Authority: ADR-0005, ADR-0010 through ADR-0022, and `docs/decisions/PHASE5B2A_DE
 
 Define the fail-closed contract a future synthetic-only CLI provider adapter must satisfy before any implementation or external-call authorization can be considered.
 
-This document does not itself authorize code, credentials, configuration changes, subprocess inference, external requests, or runtime records. The later immutable implementation authorization permitted only its exact offline boundary, and the separate exact-commit acceptance record verifies that bounded fake-only foundation without changing any external/provider authority from false.
+This document does not itself authorize code, credentials, configuration changes, subprocess inference, external requests, or runtime records. The later immutable implementation authorization permitted only its exact offline boundary. Separate exact-commit acceptance records verify that bounded fake-only foundation and its four-rule V2 geometry correction without changing any external/provider authority from false.
 
 ## Fixed candidate profile
 

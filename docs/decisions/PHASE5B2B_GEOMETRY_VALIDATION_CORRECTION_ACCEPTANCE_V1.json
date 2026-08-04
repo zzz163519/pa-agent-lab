@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "phase5b2b-geometry-validation-correction-acceptance.v1",
+  "acceptanceId": "phase5b2b-v2-geometry-validation-correction-7e44a44-v1",
+  "decisionStatus": "accepted",
+  "acceptanceScope": "exact-commit-four-rule-offline-v2-geometry-correction-only",
+  "acceptedBy": "Calvin",
+  "recordedBy": "Direct Pi",
+  "acceptedAt": "2026-08-05T02:15:25+08:00",
+  "approvalMethod": "direct-conversation-approval-after-fresh-context-read-only-review",
+  "acceptedAdr": "ADR-0022",
+  "acceptedContract": "phase5b2a-controlled-cli-provider-adapter-design.v1",
+  "correctionAuthorizationHash": "sha256:3ae8d0ace9dc610a78db6fcabb300ffecbfd24b7f62f8c54ff743a3b3de28aef",
+  "priorImplementationAcceptanceHash": "sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7",
+  "acceptedImplementationCommit": "7e44a44b34fc4b5695af6f00d7366b989a42e716",
+  "acceptedImplementationTree": "b1c9a15b822ef76344d3e7a66d73961621a40bed",
+  "acceptedImplementationParent": "2aa493fad826224af2bb089b2c138dc73c97c336",
+  "implementationAccepted": true,
+  "acceptedGeometryRules": {
+    "stopEntry": "long entryNormalizedPrice is strictly greater than its referenced visible anchor price and short is strictly less, with no tick or minimum distance inferred",
+    "protection": "long protectionNormalizedPrice is strictly less than its referenced visible anchor price and short is strictly greater, with no tick or buffer inferred",
+    "limitEntry": "entryNormalizedPrice exactly equals at least one visible anchor price in the referenced structure",
+    "objective": "objectiveNormalizedPrice exactly equals at least one visible anchor price in the structure referenced by the selected objective magnet"
+  },
+  "acceptedImplementationBoundary": [
+    "four deterministic V2 geometry relation checks in packages/contracts/src/brooks-identity-free-response-v2.ts",
+    "synthetic public-boundary positive, negative, and equality-boundary tests in packages/contracts/test/brooks-identity-free-response-v2.test.ts",
+    "existing BrooksDecision V1 semantic gate remains authoritative for visible-prefix and reference integrity",
+    "Prompt Package V1 and V2 prompt, schema, manifest, validator-version literal, and proposal hash remain unchanged"
+  ],
+  "verificationEvidence": {
+    "focusedV2Tests": {
+      "tests": 10,
+      "passed": 10,
+      "failed": 0
+    },
+    "repositoryNodeTests": {
+      "tests": 246,
+      "passed": 245,
+      "failed": 0,
+      "skipped": 1
+    },
+    "researchConsoleTests": {
+      "tests": 7,
+      "passed": 7,
+      "failed": 0
+    },
+    "typecheckPassed": true,
+    "lspDiagnosticsPassed": true,
+    "gitDiffCheckPassed": true,
+    "exactTwoFileImplementationScopeVerified": true,
+    "promptPackageBytesUnchanged": true,
+    "promptPackageV2ProposalHash": "sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598",
+    "promptPackageV2ProposalStatus": "unapproved",
+    "providerOrModelCallPerformed": false
+  },
+  "independentReviewEvidence": {
+    "freshContextReadOnlyReviewCount": 1,
+    "acceptanceBlockersReported": 0,
+    "nonBlockingNotesReviewedByDirectPi": true,
+    "directPiRetainedFinalScopeAdjudication": true
+  },
+  "residualHardGates": [
+    "Prompt Package V2 exact content remains unapproved and requires separate approval, activation, and prepared-payload authorization",
+    "unknown structure, magnet, and visible-anchor references remain rejected by the existing downstream BrooksDecision V1 semantic gate rather than duplicated by the V2 relation helper",
+    "installed Codex and Antigravity privacy, isolation, machine-output, PNG transport, and hidden-retry proofs remain unaccepted",
+    "production signal cleanup, cross-process supervision, terminal response-source authority, persistence, migration, deployment, and credentials remain unimplemented or unauthorized",
+    "any first synthetic external call still requires a separate immutable authorization binding the exact active package, prepared payload, candidate, proof, call count, and terminal boundary"
+  ],
+  "promptPackageV2ContentApprovalGranted": false,
+  "promptPackageV2ActivationAuthorized": false,
+  "preparedPayloadV2CreationAuthorized": false,
+  "installedCliCapabilityProofAccepted": false,
+  "runtimeAdapterChangeAuthorized": false,
+  "migrationAuthorized": false,
+  "persistenceAuthorized": false,
+  "operatorApiOrCliAuthorized": false,
+  "deploymentOrCredentialChangeAuthorized": false,
+  "realCliInvocationAuthorized": false,
+  "providerCallsAuthorized": false,
+  "externalRequestsAuthorized": false,
+  "runtimeRecordsAuthorized": false,
+  "productionBrooksDecisionsAuthorized": false,
+  "realDataOrProtectedWindowAccessAuthorized": false,
+  "replayOrTrainingAuthorized": false,
+  "paperOrLiveAuthorized": false,
+  "tradingAuthorized": false,
+  "terminalBoundary": "accept only exact commit 7e44a44b34fc4b5695af6f00d7366b989a42e716 as the four-rule offline V2 geometry correction, then stop before Prompt Package V2 approval or activation, payload preparation, installed-CLI proof, real CLI or provider calls, persistence, deployment, real data, replay, training, Paper, Live, or trading",
+  "acceptanceRecordHash": "sha256:d5358718426069376660ee7d381ca7062f7141926105edd0237d4b5197054d76"
+}

@@ -1,6 +1,6 @@
 # Phase 5B2A Controlled CLI Provider Adapter Implementation Plan V1
 
-Status: PHASE 5B2B OFFLINE STEPS 0-9 IMPLEMENTED UNDER A SEPARATE IMMUTABLE AUTHORIZATION, AND EXACT COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY OFFLINE FOUNDATION. PROMPT PACKAGE V2 REMAINS AN UNAPPROVED PROPOSAL. INSTALLED-CLI CAPABILITY/PRIVACY PROOF, PERSISTENCE, API/CLI EXPOSURE, DEPLOYMENT, CREDENTIALS, REAL CLI INVOCATION, PROVIDER CALLS, AND RUNTIME RECORD CREATION REMAIN UNAUTHORIZED.
+Status: PHASE 5B2B OFFLINE STEPS 0-9 AND THE FOUR-RULE V2 GEOMETRY CORRECTION ARE IMPLEMENTED AND ACCEPTED UNDER SEPARATE IMMUTABLE RECORDS. EXACT COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY OFFLINE FOUNDATION, AND EXACT COMMIT `7e44a44b34fc4b5695af6f00d7366b989a42e716` ONLY AS THE OFFLINE GEOMETRY CORRECTION. PROMPT PACKAGE V2 REMAINS AN UNAPPROVED PROPOSAL. INSTALLED-CLI CAPABILITY/PRIVACY PROOF, PERSISTENCE, API/CLI EXPOSURE, DEPLOYMENT, CREDENTIALS, REAL CLI INVOCATION, PROVIDER CALLS, AND RUNTIME RECORD CREATION REMAIN UNAUTHORIZED.
 
 Depends on:
 
@@ -9,7 +9,9 @@ Depends on:
 - `docs/decisions/PHASE5B2A_DESIGN_AUTHORIZATION_V1.json`;
 - `docs/research/PHASE5B2A_CONTROLLED_CLI_PROVIDER_ADAPTER_REUSE_SCAN_V1.md`;
 - `docs/decisions/PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`;
-- `docs/decisions/PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`.
+- `docs/decisions/PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`;
+- `docs/decisions/PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_AUTHORIZATION_V1.json`, hash `sha256:3ae8d0ace9dc610a78db6fcabb300ffecbfd24b7f62f8c54ff743a3b3de28aef`;
+- `docs/decisions/PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_ACCEPTANCE_V1.json`, hash `sha256:d5358718426069376660ee7d381ca7062f7141926105edd0237d4b5197054d76`.
 
 ## Objective
 
@@ -32,7 +34,7 @@ Before any model subprocess or external request, separate later approvals must e
 
 1. exact Prompt Package V2 bytes and package hash;
 2. package activation and prepared payload creation;
-3. provider-adapter implementation acceptance, now satisfied only for exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` within the fake-only offline boundary;
+3. provider-adapter implementation acceptance, satisfied only by exact foundation commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` and exact four-rule correction commit `7e44a44b34fc4b5695af6f00d7366b989a42e716` within their fake-only offline boundaries;
 4. Antigravity privacy/retention proof;
 5. exact bounded conformance-call count, candidates, synthetic payload, and terminal boundary.
 
@@ -43,7 +45,7 @@ The third gate is recorded separately and grants no authority to infer any other
 The separately authorized and now accepted Phase 5B2B implementation includes:
 
 - exact immutable candidate profiles for `agy`/`gemini-3.6-flash-high` and Codex/`gpt-5.6`, both at `high`, with no fallback and no CLI packaging pin;
-- exact identity-free response V2 stop/limit geometry contracts and strict invented-response validation;
+- exact identity-free response V2 stop/limit geometry contracts and strict invented-response validation, including the accepted strict stop-entry/protection-side relations and exact visible-anchor equality for limit entries and objectives;
 - unapproved Prompt Package V2 proposal hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`, with V1 bytes unchanged;
 - content-hashed request envelope, fixed five-file anonymous staging manifest, terminal evidence, bounded rejection vocabulary, and minimal retention contracts;
 - isolated `0700` workspaces with `0600` files, hash-before-write, symlink/extra-file rejection, and cleanup;
@@ -51,7 +53,7 @@ The separately authorized and now accepted Phase 5B2B implementation includes:
 - strict decoding of exactly one closed `provider-cli-terminal-envelope.v1`, preserving the unchanged terminal JSON and rejecting prose, ANSI, partial/multiple JSON, invalid UTF-8, unknown events, and tool/subagent use;
 - a reviewable but non-executable Codex invocation profile generated only from bounded injected help/model/config evidence, an exact-model token check, explicit hidden-retry disposition, and a self-hashed capability proof; web search is explicitly disabled, while Antigravity remains fail-closed until exact non-interactive PNG transport is implemented and proved.
 
-No migration, persistence seam, API/CLI route, Console change, deployment change, credential, real provider executable, external request, ModelRun/ProviderAttempt/Audit, or production BrooksDecision was added. Independent implementation acceptance is recorded separately in `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`; it accepts only the exact fake-only commit and preserves every later package, capability, privacy, production-seam, and external-call gate.
+No migration, persistence seam, API/CLI route, Console change, deployment change, credential, real provider executable, external request, ModelRun/ProviderAttempt/Audit, or production BrooksDecision was added. Independent acceptance is recorded separately in `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json` for the fake-only foundation and `PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_ACCEPTANCE_V1.json` for the four-rule geometry correction; both preserve every later package, capability, privacy, production-seam, and external-call gate.
 
 ## Reuse and dependency rule
 
@@ -183,7 +185,7 @@ The initial accepted implementation covered branch closure, finite values, direc
 
 Reuse and specialize the existing BrooksDecision semantic gate. Do not add execution, tick, tolerance, buffer, or fill logic. Do not change Prompt Package V2 prompt, schema, manifest, validator-version literal, or proposal hash.
 
-Exit: exact provider-proposed normalized geometry can pass or reject deterministically, then a separate exact corrected-commit acceptance is required.
+Exit: exact provider-proposed normalized geometry can pass or reject deterministically. The separate exact corrected-commit acceptance is recorded in `PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_ACCEPTANCE_V1.json`.
 
 ### Step 4: Request-envelope contract
 
