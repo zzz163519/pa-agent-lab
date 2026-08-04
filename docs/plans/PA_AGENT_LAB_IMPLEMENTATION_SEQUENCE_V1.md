@@ -173,13 +173,13 @@ Phase 5B2A design is complete. At its accepted design commit it added no code, d
 
 ### Phase 5B2B: accepted fake-only offline controlled-adapter foundation and geometry correction
 
-`PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorized only contracts, offline workspace/process code, repository fake executables/tests, an exact Prompt Package V2 proposal, exports, and governance synchronization. `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`, accepts exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` and tree `d99df5d3a794d3056617383411f1caa78729666e` only within that fake-only offline boundary. The separately authorized geometry correction is accepted by `PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_ACCEPTANCE_V1.json`, hash `sha256:d5358718426069376660ee7d381ca7062f7141926105edd0237d4b5197054d76`, which binds exact commit `7e44a44b34fc4b5695af6f00d7366b989a42e716` and tree `b1c9a15b822ef76344d3e7a66d73961621a40bed` only to the four offline V2 relation checks.
+`PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorized only contracts, offline workspace/process code, repository fake executables/tests, an exact Prompt Package V2 proposal, exports, and governance synchronization. `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`, accepts exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` and tree `d99df5d3a794d3056617383411f1caa78729666e` only within that fake-only offline boundary. The separately authorized geometry correction is accepted by `PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_ACCEPTANCE_V1.json`, hash `sha256:d5358718426069376660ee7d381ca7062f7141926105edd0237d4b5197054d76`, which binds exact commit `7e44a44b34fc4b5695af6f00d7366b989a42e716` and tree `b1c9a15b822ef76344d3e7a66d73961621a40bed` only to the four offline V2 relation checks. `BROOKS_PROMPT_PACKAGE_V2.approval.json`, hash `sha256:429c5d53086a77c9bf826a20c23e11d08d53ef4d36bdda591ceefe18931affce`, separately approves only exact package content hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`.
 
 The implemented offline boundary:
 
 - fixes candidate/request/terminal evidence contracts, exact model identities, one attempt, 300-second timeout, stdout `262144`, stderr `65536`, terminal JSON `131072`, global concurrency one, no retry, and no batching;
 - adds identity-free response V2 with explicit normalized stop/limit entry, protection, and objective values, while rejecting `market_next_event`, preserving the existing BrooksDecision semantic gate, and enforcing accepted strict stop-entry/protection-side relations plus exact visible-anchor equality for limit entries and objectives;
-- drafts unapproved Prompt Package V2, package hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`, without changing V1 bytes;
+- retains immutable Prompt Package V2 manifest bytes with `proposalStatus: "unapproved"` and package hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`, while the separate outside-preimage approval artifact approves only that exact content identity and V1 bytes remain unchanged;
 - stages only five generic hash-verified anonymous files in restrictive isolated temporary workspaces;
 - supervises only one repository-owned content-hashed fake executable with `shell: false`, an exact child environment, bounded output, complete process-group termination including resistant descendants, and no retry;
 - accepts only one closed versioned terminal envelope containing one unchanged terminal JSON result and rejects prose, ANSI, partial/multiple JSON, invalid UTF-8, unknown events, or tool/subagent use;
@@ -189,13 +189,13 @@ The accepted boundary adds no migration, persistence, API/CLI route, Research Co
 
 Still requires separate immutable decisions for:
 
-- exact Prompt Package V2 content approval, activation, and preparation;
+- exact Prompt Package V2 activation and preparation;
 - Antigravity privacy/retention and exact PNG-transport proof;
 - no-hidden-retry, machine-output, user-config/rule exclusion, ordinary-home isolation, and output-protocol proof for the installed CLI surfaces;
 - any production cleanup/supervisor and persistence seam plus a separately authorized first bounded synthetic external call;
 - any later evaluation expansion under frozen Phase 6 gates.
 
-Current exit: the exact fake-only offline process, parser, resource, and authority foundation plus the four-rule V2 geometry correction are accepted. Work remains stopped before package approval and before every installed-CLI, external-provider, runtime-record, production-data, replay, training, or trading operation.
+Current exit: the exact fake-only offline process, parser, resource, and authority foundation plus the four-rule V2 geometry correction are accepted, and exact Prompt Package V2 content is approved separately. Work remains stopped before package activation/preparation and before every installed-CLI, external-provider, runtime-record, production-data, replay, training, or trading operation.
 
 ## Phase 6: Semantic evaluation
 

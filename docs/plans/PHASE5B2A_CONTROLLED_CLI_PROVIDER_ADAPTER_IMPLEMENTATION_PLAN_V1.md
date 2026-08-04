@@ -1,6 +1,6 @@
 # Phase 5B2A Controlled CLI Provider Adapter Implementation Plan V1
 
-Status: PHASE 5B2B OFFLINE STEPS 0-9 AND THE FOUR-RULE V2 GEOMETRY CORRECTION ARE IMPLEMENTED AND ACCEPTED UNDER SEPARATE IMMUTABLE RECORDS. EXACT COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY OFFLINE FOUNDATION, AND EXACT COMMIT `7e44a44b34fc4b5695af6f00d7366b989a42e716` ONLY AS THE OFFLINE GEOMETRY CORRECTION. PROMPT PACKAGE V2 REMAINS AN UNAPPROVED PROPOSAL. INSTALLED-CLI CAPABILITY/PRIVACY PROOF, PERSISTENCE, API/CLI EXPOSURE, DEPLOYMENT, CREDENTIALS, REAL CLI INVOCATION, PROVIDER CALLS, AND RUNTIME RECORD CREATION REMAIN UNAUTHORIZED.
+Status: PHASE 5B2B OFFLINE STEPS 0-9 AND THE FOUR-RULE V2 GEOMETRY CORRECTION ARE IMPLEMENTED AND ACCEPTED UNDER SEPARATE IMMUTABLE RECORDS. EXACT COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY OFFLINE FOUNDATION, EXACT COMMIT `7e44a44b34fc4b5695af6f00d7366b989a42e716` ONLY AS THE OFFLINE GEOMETRY CORRECTION, AND EXACT PROMPT PACKAGE V2 CONTENT HASH `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598` IS SEPARATELY APPROVED. PACKAGE ACTIVATION/PREPARATION, INSTALLED-CLI CAPABILITY/PRIVACY PROOF, PERSISTENCE, API/CLI EXPOSURE, DEPLOYMENT, CREDENTIALS, REAL CLI INVOCATION, PROVIDER CALLS, AND RUNTIME RECORD CREATION REMAIN UNAUTHORIZED.
 
 Depends on:
 
@@ -11,7 +11,8 @@ Depends on:
 - `docs/decisions/PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`;
 - `docs/decisions/PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`;
 - `docs/decisions/PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_AUTHORIZATION_V1.json`, hash `sha256:3ae8d0ace9dc610a78db6fcabb300ffecbfd24b7f62f8c54ff743a3b3de28aef`;
-- `docs/decisions/PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_ACCEPTANCE_V1.json`, hash `sha256:d5358718426069376660ee7d381ca7062f7141926105edd0237d4b5197054d76`.
+- `docs/decisions/PHASE5B2B_GEOMETRY_VALIDATION_CORRECTION_ACCEPTANCE_V1.json`, hash `sha256:d5358718426069376660ee7d381ca7062f7141926105edd0237d4b5197054d76`;
+- `docs/prompts/BROOKS_PROMPT_PACKAGE_V2.approval.json`, hash `sha256:429c5d53086a77c9bf826a20c23e11d08d53ef4d36bdda591ceefe18931affce`.
 
 ## Objective
 
@@ -32,7 +33,7 @@ The implementation authorization required before code is the immutable `PHASE5B2
 
 Before any model subprocess or external request, separate later approvals must exist for:
 
-1. exact Prompt Package V2 bytes and package hash;
+1. exact Prompt Package V2 bytes and package hash, now satisfied only by `BROOKS_PROMPT_PACKAGE_V2.approval.json` for package hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`;
 2. package activation and prepared payload creation;
 3. provider-adapter implementation acceptance, satisfied only by exact foundation commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` and exact four-rule correction commit `7e44a44b34fc4b5695af6f00d7366b989a42e716` within their fake-only offline boundaries;
 4. Antigravity privacy/retention proof;
@@ -46,7 +47,7 @@ The separately authorized and now accepted Phase 5B2B implementation includes:
 
 - exact immutable candidate profiles for `agy`/`gemini-3.6-flash-high` and Codex/`gpt-5.6`, both at `high`, with no fallback and no CLI packaging pin;
 - exact identity-free response V2 stop/limit geometry contracts and strict invented-response validation, including the accepted strict stop-entry/protection-side relations and exact visible-anchor equality for limit entries and objectives;
-- unapproved Prompt Package V2 proposal hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`, with V1 bytes unchanged;
+- exact Prompt Package V2 hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`, whose immutable manifest bytes retain `proposalStatus: "unapproved"` while separate approval artifact `BROOKS_PROMPT_PACKAGE_V2.approval.json` approves only that exact content identity; V1 bytes remain unchanged;
 - content-hashed request envelope, fixed five-file anonymous staging manifest, terminal evidence, bounded rejection vocabulary, and minimal retention contracts;
 - isolated `0700` workspaces with `0600` files, hash-before-write, symlink/extra-file rejection, and cleanup;
 - repository fake executable supervision only, using `shell: false`, an exact environment, complete process-group `SIGTERM`/`SIGKILL` termination including resistant descendants, one attempt, global concurrency one, and fixed output bounds;
@@ -341,7 +342,7 @@ The operator must audit counts before and after and record immutable execution e
 
 ## Verification criteria
 
-Exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` met the bounded offline criteria and is accepted under record `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`. The acceptance excludes installed-CLI capability/privacy proof, production signal/crash cleanup, production supervision and cross-process concurrency, and final terminal-source authority. Those limitations must fail closed until separately implemented, reviewed, and authorized.
+Exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` met the bounded offline criteria and is accepted under record `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`. Exact correction commit `7e44a44b34fc4b5695af6f00d7366b989a42e716` separately met the four-rule geometry criteria and is accepted under record `sha256:d5358718426069376660ee7d381ca7062f7141926105edd0237d4b5197054d76`. The acceptances exclude installed-CLI capability/privacy proof, production signal/crash cleanup, production supervision and cross-process concurrency, and final terminal-source authority. Those limitations must fail closed until separately implemented, reviewed, and authorized.
 
 The accepted offline implementation was reviewed against these criteria:
 
@@ -357,4 +358,4 @@ The accepted offline implementation was reviewed against these criteria:
 
 ## Explicit non-authority
 
-This plan, the separate offline implementation authorization, and the exact-commit acceptance grant no Prompt Package V2 approval/activation, installed-CLI capability/privacy proof, credentials, account changes, production cleanup/supervision, real CLI invocation, provider calls, model records, real data, protected windows, outcomes, replay, training, Paper/Live, execution, exchange, wallet, order, or trading action. They grant no implementation beyond the exact boundary in `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`.
+This plan, the separate offline implementation authorization, and the two exact-commit acceptances grant no Prompt Package V2 activation, installed-CLI capability/privacy proof, credentials, account changes, production cleanup/supervision, real CLI invocation, provider calls, model records, real data, protected windows, outcomes, replay, training, Paper/Live, execution, exchange, wallet, order, or trading action. The separate `BROOKS_PROMPT_PACKAGE_V2.approval.json` grants only exact package content approval and no activation or preparation authority. None grants implementation beyond the exact boundary in `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`.
