@@ -1,12 +1,22 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, PHASE 5A, AND PHASE 5B1 CONTRACT/IMPLEMENTATION AUTHORITY ARE ACCEPTED; THE FIRST EXACT PHASE 5B1 STANDARD PACKAGE ACTIVATION AND PREPARED PAYLOAD WERE SEPARATELY AUTHORIZED AND PERFORMED. PHASE 5B2A DESIGN IS ACCEPTED, AND EXACT PHASE 5B2B IMPLEMENTATION COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY OFFLINE FOUNDATION. PROMPT V2 APPROVAL/ACTIVATION, INSTALLED-CLI CAPABILITY/PRIVACY PROOF, REAL CLI INVOCATION, ALL PROVIDER CALLS, AND PHASE 4B, SELECTOR V2, OR LATER AUTHORITY REMAIN SEPARATE.
+Status: ACCEPTED SEQUENCING BASELINE UNDER ADR-0023. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, THE INITIAL PHASE 4A PLATFORM/PILOT ACTIVATION, PHASE 5A, PHASE 5B1, PHASE 5B2A DESIGN, THE EXACT FAKE-ONLY PHASE 5B2B FOUNDATION, AND THE FOUR-RULE V2 GEOMETRY CORRECTION ARE ACCEPTED WITHIN THEIR RECORDED BOUNDARIES. EXACT PROMPT PACKAGE V2 CONTENT IS SEPARATELY APPROVED. THE CURRENT CORPUS REMAINS A NINE-UNIT PUBLIC PILOT, SO PHASE 3C COVERAGE COMPLETION AND A SEPARATELY ACCEPTED PHASE 4A2 EXPANDED ACTIVATION PRECEDE V2 ACTIVATION/PREPARATION, INSTALLED-CLI INFERENCE, PROVIDER CALLS, AND FORMAL PHASE 6 EVALUATION.
 
 ## Delivery model
 
 Use contract/API-first vertical slices. Do not build the full frontend first, and do not defer all user-interface work until the backend is complete.
 
 The first user interface exists to produce high-quality outcome-blind source reviews and adjudication evidence. It is not a dashboard, trading terminal, policy-authoring shortcut, or marketing site.
+
+## Progress interpretation
+
+Project progress is tracked on three independent axes:
+
+1. **engineering infrastructure** has reached the accepted fake-only Phase 5B2B foundation and exact Prompt Package V2 content approval;
+2. **Brooks semantic content** has reached only the nine-unit Phase 3B/4A public pilot;
+3. **external execution and formal evaluation** have not started: no real provider call, real Case, runtime model record, or Phase 6 evaluation exists.
+
+A later engineering phase never implies that the earlier semantic-content axis is coverage-complete. The existing V1 activation/prepared payload and V2 offline artifacts are valid plumbing evidence, not complete Brooks competence evidence.
 
 ## Phase 0: Governance bootstrap
 
@@ -96,11 +106,29 @@ Implemented by ADR-0017 as a local public-source lifecycle:
 
 Exit condition met: an exact public-source proposal can be explicitly approved or retired, and draft/retired units cannot enter the approved projection.
 
+## Phase 3C: V1 Brooks semantic coverage baseline
+
+Accepted sequencing direction under ADR-0023; the design, Source access, extraction, proposal batches, and implementation remain separately unauthorized.
+
+Phase 3C must freeze a finite, auditable coverage baseline for the accepted BrooksDecision V1 policy surface before additional Doctrine extraction or approval. It is not a claim to exhaust all Brooks teaching or all Price Action knowledge.
+
+The future contract must define:
+
+- coverage across the accepted context, current-leg, Always-In, location/magnet, pressure, breakout/reversal, setup/signal/trigger, trade-permission, protection/invalidation, holding/objective, no-trade, and uncertainty surfaces;
+- source-grounded positive rules, counterexamples, conflicts, ambiguity, and residual-gap treatment;
+- exact eligible public Source snapshots, locators, content hashes, derived-wording review, and item selection from discovery inventory;
+- completion, rejection, retirement, and coverage-acceptance criteria;
+- outcome blindness and exclusion of protected windows, private material, unauthorized V6 content, model-generated authority, Calvin review, outcomes, and PnL.
+
+The 182 inventory `doctrine_candidate` URLs remain discovery metadata, not a bulk-ingestion target. Exact Source reads, extraction, proposal insertion, and approval batches require separate authorization.
+
+Exit condition not yet designed or met: an exact source-grounded V1 coverage matrix, approved Doctrine set, counterexample/conflict review, and explicit residual-gap record are complete under a separately accepted contract.
+
 ## Phase 4: Doctrine ingestion and retrieval
 
-ADR-0019 splits the original broad Phase 4 direction into an implemented lexical slice and a separately authorized future vector slice.
+ADR-0019 splits the original broad Phase 4 direction into an implemented initial lexical platform, an ADR-0023-required expanded coverage activation, and a separately authorized optional vector slice.
 
-### Phase 4A: approved corpus and lexical retrieval
+### Phase 4A: initial approved-corpus platform and pilot activation
 
 - project the complete approved, unretired Doctrine set from the Phase 3B authority chain into immutable snapshots;
 - preserve exact Source, proposal, approval, and simplified RAG-record hashes without fetching or storing source bodies;
@@ -110,11 +138,22 @@ ADR-0019 splits the original broad Phase 4 direction into an implemented lexical
 - commit immutable query/evidence records for matched, no-match, retirement-invalidated, and terminal retrieval paths;
 - exclude draft, retired, Calvin-review, research-memory, model-generated, Case, outcome, replay, and trading authority.
 
-Exit condition met: the exact initial approved corpus can be ingested and explicitly activated; bounded deterministic lexical queries return approved simplified semantics or an audited terminal state, while PostgreSQL constraints and restricted roles fail closed.
+Platform/pilot exit condition met: the exact initial six-Source, nine-Doctrine pilot corpus was ingested and explicitly activated; bounded deterministic lexical queries return approved simplified semantics or an audited terminal state, while PostgreSQL constraints and restricted roles fail closed. This proves the platform and pilot activation, not V1 Brooks semantic coverage completion.
+
+### Phase 4A2: expanded coverage-baseline activation
+
+Required next by ADR-0023 after Phase 3C content approval. Its contract and implementation remain separately unauthorized.
+
+- expand the exact Source allowlist only to the separately approved Phase 3C Source snapshots;
+- replace the fixed nine-unit quality-suite assumption with exact complete-snapshot coverage fixtures;
+- preserve deterministic ingestion, passed quality evidence, explicit activation, retirement fail-closed behavior, and append-only history;
+- bind one immutable coverage acceptance to the exact activated snapshot and explicit residual gaps.
+
+Exit condition not yet designed or met: the Phase 3C approved/unretired coverage set has a passed complete-snapshot quality report and explicit current activation without widening provider, real-data, replay, or trading authority.
 
 ### Phase 4B: vector and hybrid retrieval
 
-Still requires a separate ADR, contract, and implementation approval before adding embeddings, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider calls, model-run retrieval integration, or Case-aware query construction.
+Still requires a separate ADR, contract, and implementation approval before adding embeddings, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider calls, model-run retrieval integration, or Case-aware query construction. Phase 4B is optional and is not a default prerequisite for Phase 4A2.
 
 ## Phase 5: Brooks Policy Agent vertical slice
 
@@ -135,7 +174,9 @@ Implemented and freshly verified under ADR-0020 and the accepted Phase 5A contra
 - keep operator authentication, reviewer isolation, append-only PostgreSQL, and bounded expected-failure evidence;
 - add no Case-derived query, outbound payload, ModelRun, provider, scheduler, Console UI, real data, replay, or trading path.
 
-Exit condition met: a still-eligible historical corpus can become current only through a new explicit rollback identity, and one existing deployment-authorized synthetic Case can produce an immutable full-current-corpus policy input with complete provenance and no model call.
+Exit condition met for the nine-unit pilot: a still-eligible historical corpus can become current only through a new explicit rollback identity, and one existing deployment-authorized synthetic Case can produce an immutable full-current-corpus policy input with complete provenance and no model call.
+
+Post-Phase 4A2 gate: the current assembly accepts at most 32 Doctrine records and cannot truncate. If the exact expanded snapshot remains within all full-corpus bounds, a separately authorized new assembly may retain the complete-corpus path. Otherwise Selector V2 or a separately justified assembly-contract revision must be accepted and implemented before any new prepared payload.
 
 ### Phase 5B1: Brooks Prompt Package and offline validation
 
@@ -195,11 +236,20 @@ Still requires separate immutable decisions for:
 - any production cleanup/supervisor and persistence seam plus a separately authorized first bounded synthetic external call;
 - any later evaluation expansion under frozen Phase 6 gates.
 
-Current exit: the exact fake-only offline process, parser, resource, and authority foundation plus the four-rule V2 geometry correction are accepted, and exact Prompt Package V2 content is approved separately. Work remains stopped before package activation/preparation and before every installed-CLI, external-provider, runtime-record, production-data, replay, training, or trading operation.
+Current exit: the exact fake-only offline process, parser, resource, and authority foundation plus the four-rule V2 geometry correction are accepted, and exact Prompt Package V2 content is approved separately. ADR-0023 now stops progression before V2 activation/preparation and before every installed-CLI, external-provider, runtime-record, production-data, replay, training, or trading operation until the Phase 3C, Phase 4A2, post-corpus assembly, installed-CLI, and Phase 6 prerequisites are separately accepted and met.
 
 ## Phase 6: Semantic evaluation
 
-Evaluate before PnL or full replay:
+Formal evaluation remains unstarted. Before any provider output is inspected, a separately accepted Phase 6 contract must freeze:
+
+- the real-Case read-only ingestion and authorization-before-open boundary;
+- protected-window rejection, dataset partitions, contact state, and an outcome-blind case list;
+- identical candidate inputs, package/schema/model identities, reasoning budgets, repeat counts, and retrieval evidence;
+- source-grounded semantic adjudication for determinate decision fields without converting CalvinReview into runtime or field-patch authority;
+- doctrine/citation, abstention, consistency, prefix-invariance, mirror, privacy, retrieval-isolation, and falsification thresholds;
+- permanent exclusion of any separately authorized synthetic transport-smoke case from formal evaluation.
+
+Only after those identities are frozen may a separate authorization permit provider output. Evaluation then covers:
 
 - agreement with determinate source-grounded Brooks decision fields;
 - doctrine consistency and citation correctness;
@@ -250,13 +300,20 @@ Exit condition: a candidate can be accepted, rejected, or retired without changi
 
 ```text
 Domain contracts
-  -> Case API and audit store
+  -> Synthetic Case API and audit store
   -> Synthetic blind-review Research Console
-  -> Separately approved Doctrine review
-  -> Doctrine RAG API
-  -> Brooks Policy inference API
-  -> Evaluation surfaces
-  -> Training and replay integrations
+  -> Minimal Doctrine proposal/approval lifecycle
+  -> Initial lexical corpus platform and nine-unit pilot activation
+  -> Synthetic Policy Assembly and offline Prompt Package plumbing
+  -> V1 Brooks semantic coverage baseline
+  -> Expanded approved corpus activation
+  -> Full-corpus assembly or separately accepted Selector V2
+  -> Frozen real-Case/evaluation contract and provider capability proof
+  -> Separately authorized synthetic transport smoke
+  -> Symmetric semantic evaluation
+  -> Optional training
+  -> Deterministic replay integration
+  -> Independent Research Agent
 ```
 
-This order makes the API contract authoritative while introducing the UI early enough to test whether the review workflow captures Calvin's source interpretation and disagreements without turning them into runtime policy.
+This order keeps the API and immutable authority chain primary while preventing late-stage engineering plumbing from being mistaken for Brooks semantic coverage, provider eligibility, or evaluated policy competence.

@@ -6,11 +6,15 @@ This file contains only unresolved decisions. Accepted decisions are recorded in
 
 ## Doctrine corpus
 
-Accepted source classes are Brooks public materials, direct material from the official Al Brooks YouTube channel, and reviewed third-party Brooks course transcripts such as approved Bilibili sources. ADR-0010 accepts a deliberately simple local Source plus `draft | approved | retired` DoctrineUnit workflow; RAG receives only approved core trading semantics.
+Accepted source classes are Brooks public materials, direct material from the official Al Brooks YouTube channel, and reviewed third-party Brooks course transcripts such as approved Bilibili sources. ADR-0010 accepts a deliberately simple local Source plus `draft | approved | retired` DoctrineUnit workflow; RAG receives only approved core trading semantics. ADR-0023 records that the current nine approved public pilot units prove the lifecycle/retrieval platform but do not form a coverage-complete V1 Brooks semantic baseline.
 
 Still open:
 
-- map selected V6 definition candidates to Brooks semantics before approval.
+- accept the exact Phase 3C V1 Brooks semantic coverage matrix, completion criteria, counterexample/conflict requirements, and residual-gap format;
+- authorize the exact selected public Source snapshots and bounded read-only access/extraction workflow; the 182 inventory candidates are discovery metadata, not a bulk-ingestion target;
+- authorize exact Doctrine proposal batches and explicit item-level approvals or retirements;
+- accept the Phase 4A2 expanded Source allowlist, complete-snapshot quality suite, activation, and coverage-acceptance record;
+- map selected V6 definition candidates to Brooks semantics before approval without using V6 outcomes or artifacts as doctrine authority.
 
 ## Brooks decision and Calvin review
 
@@ -38,7 +42,7 @@ ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 vers
 
 Still open:
 
-- separately authorize exact Prompt Package V2 activation and synthetic prepared-payload creation;
+- separately authorize exact Prompt Package V2 activation and synthetic prepared-payload creation only after the ADR-0023 Phase 3C/4A2 and post-corpus assembly gates are met;
 - prove Antigravity interaction-data opt-out, acceptable external retention, isolated exact PNG attachment, and complete plugin/MCP/rule/history exclusion;
 - prove no hidden retry and the required machine-output/isolation capabilities for both installed CLIs;
 - freeze any future persistence/migration shape needed to reconcile the pure request/terminal contracts with actual runtime records;
@@ -47,16 +51,18 @@ Still open:
 
 ## RAG and memory
 
-Accepted: ADR-0019 and the Phase 4A contract fix the initial exact six-source public set, complete approved/unretired corpus snapshots, operator-only deterministic PostgreSQL lexical retrieval, outcome-free quality checks, explicit activation, and immutable query evidence. ADR-0020 and the accepted Phase 5A contract implement operator-only explicit rollback plus synthetic-only full-current-corpus Policy Assembly with no Case-derived query or model call. PostgreSQL remains the system of record; doctrine, Brooks cases, Calvin review, working memory, research outcome memory, audit, and model registry remain isolated.
+Accepted: ADR-0019 and the Phase 4A contract implement the initial exact six-Source platform, complete approved/unretired snapshot projection, operator-only deterministic PostgreSQL lexical retrieval, outcome-free quality checks, explicit activation, and immutable query evidence. The current activation contains the exact nine public pilot DoctrineUnits; “complete” describes projection of that eligible pilot set, not Brooks semantic coverage. ADR-0020 and the accepted Phase 5A contract implement operator-only explicit rollback plus synthetic-only full-current-corpus Policy Assembly with no Case-derived query or model call. PostgreSQL remains the system of record; doctrine, Brooks cases, Calvin review, working memory, research outcome memory, audit, and model registry remain isolated.
 
 Still open:
 
-- approve Phase 4B embedding runtime, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider/privacy boundaries, and associated quality contract;
+- implement Phase 4A2 only after its expanded allowlist, complete-snapshot quality suite, activation, and coverage acceptance are separately approved;
+- after the Phase 4A2 snapshot count is known, retain full-corpus assembly only if it remains within the exact 32-record/byte bounds; otherwise define and approve Selector V2 or a separately justified assembly revision;
+- approve Phase 4B embedding runtime, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider/privacy boundaries, and associated quality contract only if separately justified; Phase 4B is not a default Phase 4A2 prerequisite;
 - define and approve any future Selector V2, including deterministic Case-to-query construction, multi-query union/deduplication, RRF, immutable selector evidence, and policy-worker retrieval authority;
-- authorize any future Prompt Package activation or rollback only through a new separate Calvin decision; the first exact standard activation has been performed and is current;
-- authorize any Prompt Package V2 approval, activation, or rollback only through a new separate Calvin decision; the V2 files currently form an unapproved proposal only;
-- authorize any real CLI invocation or external call only through a new separate Calvin decision after exact V2 package governance and installed-CLI privacy/isolation/capability proof; exact offline implementation acceptance is complete, but it grants no call authority and the existing Phase 5B2B authorization covers fake-executable offline work only;
-- expand the exact public source allowlist only through a separately approved versioned decision.
+- authorize any future Prompt Package activation or rollback only through a new separate Calvin decision; the first exact V1 standard activation has been performed and is current;
+- authorize any Prompt Package V2 activation or rollback only through a new separate Calvin decision; exact V2 package content is approved, but activation/preparation are paused by ADR-0023;
+- authorize any real CLI invocation or external call only through a new separate Calvin decision after the ADR-0023 semantic/evaluation prerequisites and installed-CLI privacy/isolation/capability proof; exact offline implementation acceptance is complete but grants no call authority;
+- expand the exact public Source allowlist only through a separately approved versioned decision.
 
 ## API and user interface
 
@@ -72,10 +78,13 @@ Local-only, single-user deployment remains accepted for the first version.
 
 ## Evaluation
 
-Detailed partition and contact-state machinery is deferred until Phase 6. When evaluation begins, freeze a simple outcome-blind case list and identical candidate inputs.
+Detailed partition and contact-state machinery is deferred until Phase 6. ADR-0023 requires the real-Case boundary, outcome-blind sample, candidate symmetry, adjudication rubric, thresholds, and falsification criteria to be frozen before provider outputs are inspected.
 
 Still open:
 
+- define and authorize the separate read-only real-Case ingestion boundary, authorization-before-open checks, protected-window rejection, dataset partitions, and contact state;
+- freeze the exact outcome-blind case list and permanently exclude any synthetic transport-smoke case from formal evaluation;
+- define source-grounded semantic adjudication for determinate BrooksDecision fields without converting CalvinReview into runtime or field-patch authority;
 - define doctrine, abstention, consistency, prefix-invariance, mirror, privacy, and retrieval-isolation thresholds;
 - define evidence that falsifies the model approach or requires a deterministic baseline;
 - define actual valid-decision cost and latency measurement for the model bakeoff.
@@ -113,6 +122,15 @@ Still open:
 - define evidence the Research Agent may inspect;
 - define promotion, rejection, supersession, and retirement gates for `researchCandidate` versions;
 - decide whether any future outcome optimization is permitted and under what separately approved contract.
+
+## Repository synchronization
+
+All feature-branch commits present at the ADR-0023 sequencing baseline are ancestors of `main`, but no Git remote or upstream is configured. The repository history is committed locally only and has no verified off-machine synchronization or backup.
+
+Still open:
+
+- select an approved private remote destination and access method;
+- review the repository boundary before the first push, then configure upstream and verify exact local/remote commit parity.
 
 ## Deployment authority
 
