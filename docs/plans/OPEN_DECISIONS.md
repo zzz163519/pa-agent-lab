@@ -123,15 +123,6 @@ Still open:
 - define promotion, rejection, supersession, and retirement gates for `researchCandidate` versions;
 - decide whether any future outcome optimization is permitted and under what separately approved contract.
 
-## Repository synchronization
-
-All feature-branch commits present at the ADR-0023 sequencing baseline are ancestors of `main`, but no Git remote or upstream is configured. The repository history is committed locally only and has no verified off-machine synchronization or backup.
-
-Still open:
-
-- select an approved private remote destination and access method;
-- review the repository boundary before the first push, then configure upstream and verify exact local/remote commit parity.
-
 ## Deployment authority
 
 Paper, Live, exchange submission, order placement, wallet access, and real-money use remain forbidden and are not implied by any architecture decision above.
