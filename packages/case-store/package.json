@@ -12,6 +12,10 @@
     "./policy-assembly-store-v1": "./src/policy-assembly-store-v1.ts",
     "./prepared-policy-payload-store-v1": "./src/prepared-policy-payload-store-v1.ts",
     "./prompt-package-store-v1": "./src/prompt-package-store-v1.ts",
+    "./provider-invocation-profile-v1": "./src/provider-invocation-profile-v1.ts",
+    "./provider-isolated-workspace-v1": "./src/provider-isolated-workspace-v1.ts",
+    "./provider-process-supervisor-v1": "./src/provider-process-supervisor-v1.ts",
+    "./provider-terminal-envelope-v1": "./src/provider-terminal-envelope-v1.ts",
     "./postgres-connection-v1": "./src/postgres-connection-v1.ts"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 # ADR-0022: Controlled CLI Provider Adapter Design Boundary
 
-Status: ACCEPTED FOR PHASE 5B2A DESIGN ONLY. IMPLEMENTATION, CREDENTIALS, PROVIDER CALLS, MODEL-RUN RECORDS, AND PROMPT PACKAGE V2 APPROVAL REMAIN UNAUTHORIZED.
+Status: ACCEPTED FOR PHASE 5B2A DESIGN. THE OFFLINE PHASE 5B2B CONTRACT/FAKE-EXECUTABLE/PROMPT-V2-PROPOSAL SUBSET WAS LATER AUTHORIZED SEPARATELY; CREDENTIALS, REAL CLI INVOCATION, PROVIDER CALLS, MODEL-RUN RECORDS, AND PROMPT PACKAGE V2 APPROVAL/ACTIVATION REMAIN UNAUTHORIZED.
 
 ## Context
 
@@ -24,7 +24,7 @@ Phase 5B2 is split again:
 - **Phase 5B2A**: accepted provider-adapter design, reuse evidence, privacy and isolation requirements, Prompt Package V2 direction, and a future implementation plan;
 - **Phase 5B2B**: any adapter implementation, credential/configuration change, provider subprocess invocation, external request, ModelCall/ModelRun/ProviderAttempt/Audit persistence, or production BrooksDecision creation.
 
-This ADR accepts only Phase 5B2A design. Phase 5B2B requires a separate implementation authorization. A first external call requires another explicit bounded authorization after implementation, offline conformance, privacy verification, and exact Prompt Package V2 approval and activation.
+This ADR accepts only Phase 5B2A design. The later immutable `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorizes only the offline contracts, fake-executable adapter foundation, unapproved V2 proposal, exports, and governance synchronization. A first external call still requires another explicit bounded authorization after independent implementation acceptance, privacy verification, and exact Prompt Package V2 approval and activation.
 
 ### Exact peer candidates
 
@@ -157,11 +157,15 @@ The evidence is in `docs/research/PHASE5B2A_CONTROLLED_CLI_PROVIDER_ADAPTER_REUS
 - Hidden retries, persistent agent sessions, broad tool access, and unverifiable Antigravity collection settings are hard blockers.
 - Cost claims remain limited to observable evidence.
 
+## Later offline implementation note
+
+Under the separate authorization, the repository now contains pure candidate/request/terminal contracts, strict V2 stop/limit geometry validation, fixed resource limits, an isolated five-file workspace, one content-hashed fake executable, bounded process-group supervision including resistant-descendant termination, strict closed-envelope decoding, and non-executing candidate profile builders with bounded self-hashed Codex preflight evidence. The exact Prompt Package V2 files remain an `unapproved` proposal. Antigravity remains unavailable because exact non-interactive PNG transport is not implemented or proved. No real `agy`/Codex invocation, provider request, runtime record, migration, API/CLI route, deployment, credential, or production BrooksDecision was added.
+
 ## Not authorized
 
-This ADR and its design authorization do not authorize:
+This ADR does not authorize, and the later offline authorization does not add authority for:
 
-- code, migrations, runtime adapters, API/CLI routes, services, or deployment changes;
+- implementation beyond the exact offline boundary, migrations, runtime provider adapters, API/CLI routes, services, or deployment changes;
 - installation or configuration of SDKs, skills, plugins, MCP servers, credentials, or provider accounts;
 - `agy -p`, `codex exec`, or any other inference/model subprocess invocation;
 - Prompt Package V2 exact content, approval, activation, or payload preparation;

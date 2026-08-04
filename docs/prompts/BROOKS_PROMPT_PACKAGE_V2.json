@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "brooks-prompt-package-manifest.v2",
+  "packageVersion": "brooks-prompt-package.v2",
+  "proposalStatus": "unapproved",
+  "prompt": {
+    "mediaType": "text/plain; charset=utf-8",
+    "byteLength": 5794,
+    "contentHash": "sha256:8aa59f4efe4d543754147f2acf053f3f7b472845f44bcd9ff70c48ab1ef753b5"
+  },
+  "responseSchema": {
+    "schemaId": "https://pa-agent-lab.local/schemas/brooks-identity-free-response-v2",
+    "schemaVersion": "brooks-identity-free-response.schema.v2",
+    "mediaType": "application/schema+json",
+    "byteLength": 25650,
+    "contentHash": "sha256:b6a120a1872ac82bcf27b3ad27fd84fb589f34aaaaa221eb897342a891a3717f"
+  },
+  "brooksDecisionContractVersion": "brooks-decision.v1",
+  "validatorVersion": "brooks-identity-free-response-validator.v2",
+  "supportedEntryTypes": [
+    "stop",
+    "limit"
+  ],
+  "marketNextEventAccepted": false,
+  "providerCallsAuthorized": false,
+  "packageHash": "sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598"
+}

@@ -7,4 +7,8 @@ export * from "./migration-runner-v1.ts";
 export * from "./policy-assembly-store-v1.ts";
 export * from "./prepared-policy-payload-store-v1.ts";
 export * from "./prompt-package-store-v1.ts";
+export * from "./provider-invocation-profile-v1.ts";
+export * from "./provider-isolated-workspace-v1.ts";
+export * from "./provider-process-supervisor-v1.ts";
+export * from "./provider-terminal-envelope-v1.ts";
 export * from "./postgres-connection-v1.ts";

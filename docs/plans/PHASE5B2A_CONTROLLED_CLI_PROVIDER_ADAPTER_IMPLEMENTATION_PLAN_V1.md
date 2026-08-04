@@ -1,17 +1,18 @@
 # Phase 5B2A Controlled CLI Provider Adapter Implementation Plan V1
 
-Status: DESIGN PLAN ONLY. NOT AUTHORIZED FOR IMPLEMENTATION, PROMPT PACKAGE V2 APPROVAL, CREDENTIAL CONFIGURATION, PROVIDER CALLS, OR RUNTIME RECORD CREATION.
+Status: PHASE 5B2B OFFLINE STEPS 0-9 IMPLEMENTED UNDER A SEPARATE IMMUTABLE AUTHORIZATION. PROMPT PACKAGE V2 REMAINS AN UNAPPROVED PROPOSAL. PERSISTENCE, API/CLI EXPOSURE, DEPLOYMENT, CREDENTIALS, REAL CLI INVOCATION, PROVIDER CALLS, AND RUNTIME RECORD CREATION REMAIN UNAUTHORIZED.
 
 Depends on:
 
 - `docs/decisions/ADR-0022-CONTROLLED-CLI-PROVIDER-ADAPTER-DESIGN.md`;
 - `docs/contracts/PHASE5B2A_CONTROLLED_CLI_PROVIDER_ADAPTER_DESIGN_V1.md`;
 - `docs/decisions/PHASE5B2A_DESIGN_AUTHORIZATION_V1.json`;
-- `docs/research/PHASE5B2A_CONTROLLED_CLI_PROVIDER_ADAPTER_REUSE_SCAN_V1.md`.
+- `docs/research/PHASE5B2A_CONTROLLED_CLI_PROVIDER_ADAPTER_REUSE_SCAN_V1.md`;
+- `docs/decisions/PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`.
 
 ## Objective
 
-Describe a future contract-TDD path for a narrow, synthetic-only, fail-closed subprocess adapter around:
+Describe the contract-TDD path for a narrow, synthetic-only, fail-closed subprocess adapter around:
 
 ```text
 agy / gemini-3.6-flash-high / high
@@ -24,15 +25,7 @@ This plan does not authorize itself.
 
 ## Required approvals before code
 
-Before any implementation work begins, Calvin must separately approve an immutable implementation-authorization record that binds at least:
-
-- accepted ADR-0022 and contract identities;
-- exact allowed file/module boundary;
-- whether Prompt Package V2 proposal drafting is included;
-- whether migrations, local persistence, operator CLI, or deployment changes are included;
-- explicit `providerCallsAuthorized = false`;
-- explicit `credentialsAuthorized = false`;
-- Direct Pi as coordinator/final writer unless another exact scope is approved.
+The implementation authorization required before code is the immutable `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`. It binds baseline commit `63c2a47`, Direct Pi as final writer, the exact offline file/module boundary, fixed resource limits, and `providerCallsAuthorized = false` plus all credential, persistence, deployment, real-data, replay, training, and trading authorities as false.
 
 Before any model subprocess or external request, separate later approvals must exist for:
 
@@ -43,6 +36,21 @@ Before any model subprocess or external request, separate later approvals must e
 5. exact bounded conformance-call count, candidates, synthetic payload, and terminal boundary.
 
 No approval may be inferred from an earlier step.
+
+## Implemented offline boundary
+
+The separately authorized Phase 5B2B candidate now includes:
+
+- exact immutable candidate profiles for `agy`/`gemini-3.6-flash-high` and Codex/`gpt-5.6`, both at `high`, with no fallback and no CLI packaging pin;
+- exact identity-free response V2 stop/limit geometry contracts and strict invented-response validation;
+- unapproved Prompt Package V2 proposal hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`, with V1 bytes unchanged;
+- content-hashed request envelope, fixed five-file anonymous staging manifest, terminal evidence, bounded rejection vocabulary, and minimal retention contracts;
+- isolated `0700` workspaces with `0600` files, hash-before-write, symlink/extra-file rejection, and cleanup;
+- repository fake executable supervision only, using `shell: false`, an exact environment, complete process-group `SIGTERM`/`SIGKILL` termination including resistant descendants, one attempt, global concurrency one, and fixed output bounds;
+- strict decoding of exactly one closed `provider-cli-terminal-envelope.v1`, preserving the unchanged terminal JSON and rejecting prose, ANSI, partial/multiple JSON, invalid UTF-8, unknown events, and tool/subagent use;
+- a reviewable but non-executable Codex invocation profile generated only from bounded injected help/model/config evidence, an exact-model token check, explicit hidden-retry disposition, and a self-hashed capability proof; web search is explicitly disabled, while Antigravity remains fail-closed until exact non-interactive PNG transport is implemented and proved.
+
+No migration, persistence seam, API/CLI route, Console change, deployment change, credential, real provider executable, external request, ModelRun/ProviderAttempt/Audit, or production BrooksDecision was added. Independent implementation acceptance remains separate from implementation authorization.
 
 ## Reuse and dependency rule
 
@@ -77,14 +85,16 @@ These names are planning placeholders, not approved public seams.
 
 ### Offline subprocess preparation
 
-Possible module boundary:
+Implemented module boundary:
 
 ```text
-packages/case-store/src/provider-process-profile-v1.ts
+packages/case-store/src/provider-invocation-profile-v1.ts
+packages/case-store/src/provider-isolated-workspace-v1.ts
 packages/case-store/src/provider-process-supervisor-v1.ts
+packages/case-store/src/provider-terminal-envelope-v1.ts
 ```
 
-The supervisor must accept an injected executable seam so tests run only fake local fixture programs. Production `agy`/Codex invocation remains absent or hard-disabled until a later external-call authorization.
+The supervisor accepts only the content-hashed repository fake executable. Production `agy`/Codex invocation is absent and hard-rejected until a later external-call authorization and a separately implemented production supervisor seam.
 
 ### Static V2 artifacts
 
@@ -324,7 +334,7 @@ The operator must audit counts before and after and record immutable execution e
 
 ## Verification criteria
 
-A future implementation is acceptable only when:
+The offline implementation candidate is acceptable only when:
 
 - no SDK/framework/dependency is added without separate approval;
 - no hidden retry, model fallback, tool use, context leak, or output repair exists;
@@ -338,4 +348,4 @@ A future implementation is acceptable only when:
 
 ## Explicit non-authority
 
-This plan authorizes no code, Prompt Package V2 bytes, package approval/activation, credentials, account changes, provider calls, model records, real data, protected windows, outcomes, replay, training, Paper/Live, execution, exchange, wallet, order, or trading action.
+This plan and the separate offline implementation authorization grant no Prompt Package V2 approval/activation, credentials, account changes, real CLI invocation, provider calls, model records, real data, protected windows, outcomes, replay, training, Paper/Live, execution, exchange, wallet, order, or trading action. They grant no implementation beyond the exact boundary in `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`.

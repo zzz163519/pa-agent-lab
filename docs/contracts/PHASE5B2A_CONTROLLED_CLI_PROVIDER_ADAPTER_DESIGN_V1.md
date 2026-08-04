@@ -1,6 +1,6 @@
 # Phase 5B2A Controlled CLI Provider Adapter Design Contract V1
 
-Status: ACCEPTED DESIGN CONTRACT. IMPLEMENTATION AND ALL PROVIDER/MODEL CALLS REMAIN UNAUTHORIZED.
+Status: ACCEPTED DESIGN CONTRACT. THE OFFLINE CONTRACT/FAKE-EXECUTABLE SUBSET WAS LATER IMPLEMENTED UNDER `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`; PROMPT V2 APPROVAL/ACTIVATION, REAL CLI INVOCATION, CREDENTIALS, PERSISTENCE, DEPLOYMENT, AND ALL PROVIDER/MODEL CALLS REMAIN UNAUTHORIZED.
 
 Authority: ADR-0005, ADR-0010 through ADR-0022, and `docs/decisions/PHASE5B2A_DESIGN_AUTHORIZATION_V1.json`.
 
@@ -8,7 +8,7 @@ Authority: ADR-0005, ADR-0010 through ADR-0022, and `docs/decisions/PHASE5B2A_DE
 
 Define the fail-closed contract a future synthetic-only CLI provider adapter must satisfy before any implementation or external-call authorization can be considered.
 
-This document does not authorize code, credentials, configuration changes, subprocess inference, external requests, or runtime records.
+This document does not itself authorize code, credentials, configuration changes, subprocess inference, external requests, or runtime records. The later immutable implementation authorization permits only its exact offline boundary and preserves every external/provider authority as false.
 
 ## Fixed candidate profile
 
@@ -183,7 +183,9 @@ A transition may skip directly to a terminal rejection when a prerequisite fails
 - global invocation concurrency: `1`;
 - batching: forbidden;
 - paired candidates: independent sequential invocations over the same frozen input;
-- stdout/stderr/raw response byte bounds: must be fixed before implementation authorization;
+- stdout limit: `262144` bytes;
+- stderr limit: `65536` bytes;
+- unchanged terminal JSON limit: `131072` bytes;
 - rate-limit response: one terminal transport error, not retry authority.
 
 The process supervisor must terminate the complete process tree on timeout and distinguish timeout from transport error and invalid response.
@@ -234,9 +236,9 @@ The future schema must reconcile this evidence with existing `ModelRunRecordV1`,
 
 Record only observable token counts, cache counts, latency, terminal status, and valid-response rate. Missing provider billing is `unavailable`, never zero. No USD estimate or model cost ranking is allowed until an exact auditable price/billing contract is separately approved.
 
-## Hard rejection vocabulary direction
+## Hard rejection vocabulary
 
-The future implementation must freeze bounded codes covering at least:
+The separately authorized offline implementation freezes bounded codes covering:
 
 - `MODEL_ID_UNAVAILABLE`;
 - `CAPABILITY_PREFLIGHT_FAILED`;
@@ -257,7 +259,7 @@ The future implementation must freeze bounded codes covering at least:
 - `GEOMETRY_REJECTED`;
 - `SEMANTIC_REJECTED`.
 
-Exact codes and record schemas require implementation authorization and contract TDD; this list grants no runtime authority.
+The pure code vocabulary and record schemas grant no runtime, persistence, or provider-call authority.
 
 ## Quality boundary
 
@@ -265,7 +267,7 @@ Hard structural, causal, privacy, authority, and semantic gates precede any qual
 
 ## Design verification
 
-Phase 5B2A design is complete when:
+Phase 5B2A design was complete at its accepted design commit when:
 
 - candidate surfaces, exact model IDs, and high effort are explicit;
 - only model IDs are pinned and fallback is forbidden;
@@ -278,4 +280,4 @@ Phase 5B2A design is complete when:
 
 ## Explicit exclusions
 
-This contract does not authorize implementation, exact Prompt Package V2 content, package approval/activation, external-call conformance, provider calls, credentials, ModelRuns, production decisions, real data, protected windows, replay, training, Paper, Live, exchange, wallet, orders, or trading.
+This contract itself does not authorize implementation. The later offline implementation authorization does not authorize Prompt Package V2 content approval/activation, external-call conformance, provider calls, credentials, persistence, API/CLI exposure, deployment, ModelRuns, production decisions, real data, protected windows, replay, training, Paper, Live, exchange, wallet, orders, or trading.

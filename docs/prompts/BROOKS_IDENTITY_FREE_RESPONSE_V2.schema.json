@@ -1,0 +1,1194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pa-agent-lab.local/schemas/brooks-identity-free-response-v2",
+  "title": "Brooks Identity-Free Semantic Response V2",
+  "description": "Closed provider-facing projection of the 18 BrooksDecision V1 semantic fields plus provider-proposed anonymous normalized planned geometry. Local identity, cutoff, duration, schema, and record-hash fields are excluded.",
+  "type": "object",
+  "properties": {
+    "verdict": {
+      "$ref": "#/$defs/BrooksVerdictV1"
+    },
+    "evidenceBalance": {
+      "$ref": "#/$defs/EvidenceBalanceV1"
+    },
+    "broadContext": {
+      "$ref": "#/$defs/BroadContextV1"
+    },
+    "currentLeg": {
+      "$ref": "#/$defs/CurrentLegV1"
+    },
+    "alwaysIn": {
+      "$ref": "#/$defs/AlwaysInV1"
+    },
+    "pressure": {
+      "$ref": "#/$defs/PressureAssessmentV1"
+    },
+    "breakoutLifecycle": {
+      "$ref": "#/$defs/BreakoutLifecycleV1"
+    },
+    "reversalLifecycle": {
+      "$ref": "#/$defs/ReversalLifecycleV1"
+    },
+    "structures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/MarketStructureV1"
+      },
+      "maxItems": 5
+    },
+    "magnets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/MagnetV1"
+      },
+      "maxItems": 3
+    },
+    "marketEvidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/MarketEvidenceV1"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DecisionClaimV1"
+      }
+    },
+    "longCase": {
+      "$ref": "#/$defs/DirectionalCaseV1"
+    },
+    "shortCase": {
+      "$ref": "#/$defs/DirectionalCaseV1"
+    },
+    "tradePlan": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/TradePlanV2"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "plannedGeometry": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PlannedTradeGeometryV2"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "noTrade": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/NoTradeDecisionV1"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "uncertainty": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/UncertainDecisionV1"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "humanSummary": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 600
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "alwaysIn",
+    "breakoutLifecycle",
+    "broadContext",
+    "claims",
+    "currentLeg",
+    "evidenceBalance",
+    "humanSummary",
+    "longCase",
+    "magnets",
+    "marketEvidence",
+    "noTrade",
+    "plannedGeometry",
+    "pressure",
+    "reversalLifecycle",
+    "shortCase",
+    "structures",
+    "tradePlan",
+    "uncertainty",
+    "verdict"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "verdict": {
+            "enum": [
+              "long",
+              "short"
+            ]
+          }
+        },
+        "required": [
+          "verdict"
+        ]
+      },
+      "then": {
+        "properties": {
+          "plannedGeometry": {
+            "$ref": "#/$defs/PlannedTradeGeometryV2"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "verdict": {
+            "enum": [
+              "no_trade",
+              "uncertain"
+            ]
+          }
+        },
+        "required": [
+          "verdict"
+        ]
+      },
+      "then": {
+        "properties": {
+          "plannedGeometry": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "AlwaysInV1": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "long",
+            "short",
+            "not_established",
+            "uncertain"
+          ]
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "state",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "BreakoutLifecycleV1": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "none",
+            "attempt",
+            "provisional",
+            "confirmed",
+            "failed",
+            "testing",
+            "uncertain"
+          ]
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "up",
+            "down",
+            "both",
+            "none",
+            "uncertain"
+          ]
+        },
+        "structureId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "state",
+        "direction",
+        "structureId",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "BroadContextV1": {
+      "type": "object",
+      "properties": {
+        "marketState": {
+          "type": "string",
+          "enum": [
+            "trend",
+            "trading_range",
+            "breakout_mode",
+            "transition",
+            "uncertain"
+          ]
+        },
+        "trendDirection": {
+          "type": "string",
+          "enum": [
+            "bull",
+            "bear",
+            "none",
+            "uncertain"
+          ]
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "marketState",
+        "trendDirection",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "BrooksVerdictV1": {
+      "type": "string",
+      "enum": [
+        "long",
+        "short",
+        "no_trade",
+        "uncertain"
+      ]
+    },
+    "CurrentLegV1": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "type": "string",
+          "enum": [
+            "up",
+            "down",
+            "sideways",
+            "uncertain"
+          ]
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "direction",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "DecisionClaimV1": {
+      "type": "object",
+      "properties": {
+        "claimId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statementCode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "marketEvidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true
+        },
+        "doctrineIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "claimId",
+        "statementCode",
+        "marketEvidenceIds",
+        "doctrineIds"
+      ],
+      "additionalProperties": false
+    },
+    "DirectionalCaseV1": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "type": "string",
+          "enum": [
+            "long",
+            "short"
+          ]
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "absent",
+            "forming",
+            "actionable",
+            "invalidated",
+            "uncertain"
+          ]
+        },
+        "evidenceBalance": {
+          "$ref": "#/$defs/EvidenceBalanceV1"
+        },
+        "setupCandidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SetupCandidateV1"
+          },
+          "maxItems": 3
+        },
+        "signalBasis": {
+          "$ref": "#/$defs/SignalBasisV1"
+        },
+        "triggerState": {
+          "type": "string",
+          "enum": [
+            "not_applicable",
+            "pending",
+            "triggered",
+            "cancelled",
+            "expired",
+            "ambiguous"
+          ]
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "direction",
+        "state",
+        "evidenceBalance",
+        "setupCandidates",
+        "signalBasis",
+        "triggerState",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "ProviderEntryPlanV2": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/StopEntryV1"
+        },
+        {
+          "$ref": "#/$defs/LimitEntryV1"
+        }
+      ]
+    },
+    "EvidenceBalanceV1": {
+      "type": "string",
+      "enum": [
+        "favors_long",
+        "favors_short",
+        "balanced",
+        "insufficient",
+        "conflicting"
+      ]
+    },
+    "LimitEntryV1": {
+      "type": "object",
+      "properties": {
+        "validAfterBarId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "validForClosedBars": {
+          "type": "number",
+          "const": 1
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "entryType": {
+          "type": "string",
+          "const": "limit"
+        },
+        "relation": {
+          "type": "string",
+          "const": "pullback_to"
+        },
+        "structureId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "claimIds",
+        "entryType",
+        "relation",
+        "structureId",
+        "validAfterBarId",
+        "validForClosedBars"
+      ],
+      "additionalProperties": false
+    },
+    "MagnetV1": {
+      "type": "object",
+      "properties": {
+        "magnetId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "structureId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "side": {
+          "type": "string",
+          "enum": [
+            "above",
+            "below"
+          ]
+        },
+        "relevance": {
+          "type": "string",
+          "enum": [
+            "primary",
+            "secondary"
+          ]
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "magnetId",
+        "structureId",
+        "side",
+        "relevance",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "MarketEvidenceV1": {
+      "type": "object",
+      "properties": {
+        "evidenceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "barIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 120,
+          "uniqueItems": true
+        },
+        "observedFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "open",
+              "high",
+              "low",
+              "close",
+              "relationship"
+            ]
+          },
+          "minItems": 1
+        },
+        "observationCode": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "evidenceId",
+        "barIds",
+        "observedFields",
+        "observationCode"
+      ],
+      "additionalProperties": false
+    },
+    "MarketStructureV1": {
+      "type": "object",
+      "properties": {
+        "structureId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "prior_high",
+            "prior_low",
+            "trading_range_high",
+            "trading_range_low",
+            "trading_range_midpoint",
+            "breakout_point",
+            "gap_boundary",
+            "trend_channel_boundary",
+            "measured_move_structure"
+          ]
+        },
+        "anchors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PriceAnchorV1"
+          }
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "structureId",
+        "kind",
+        "anchors",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "NoTradeDecisionV1": {
+      "type": "object",
+      "properties": {
+        "reasonCodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NoTradeReasonCodeV1"
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "nextObservableCondition": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "reasonCodes",
+        "claimIds",
+        "nextObservableCondition"
+      ],
+      "additionalProperties": false
+    },
+    "NoTradeReasonCodeV1": {
+      "type": "string",
+      "enum": [
+        "no_setup",
+        "setup_forming",
+        "signal_absent",
+        "signal_rejected",
+        "poor_location",
+        "opposing_pressure",
+        "balanced_evidence",
+        "breakout_unconfirmed",
+        "reversal_unconfirmed",
+        "entry_condition_not_permitted",
+        "trade_plan_incomplete",
+        "doctrine_prohibits_entry",
+        "swing_reward_insufficient"
+      ]
+    },
+    "PressureAssessmentV1": {
+      "type": "object",
+      "properties": {
+        "buying": {
+          "$ref": "#/$defs/PressureSideV1"
+        },
+        "selling": {
+          "$ref": "#/$defs/PressureSideV1"
+        },
+        "balance": {
+          "$ref": "#/$defs/EvidenceBalanceV1"
+        }
+      },
+      "required": [
+        "buying",
+        "selling",
+        "balance"
+      ],
+      "additionalProperties": false
+    },
+    "PressureSideV1": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "absent",
+            "present",
+            "dominant",
+            "uncertain"
+          ]
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "state",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "PlannedTradeGeometryV2": {
+      "type": "object",
+      "properties": {
+        "entryNormalizedPrice": {
+          "type": "number"
+        },
+        "protectionNormalizedPrice": {
+          "type": "number"
+        },
+        "objectiveNormalizedPrice": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "entryNormalizedPrice",
+        "protectionNormalizedPrice",
+        "objectiveNormalizedPrice"
+      ],
+      "additionalProperties": false
+    },
+    "PriceAnchorV1": {
+      "type": "object",
+      "properties": {
+        "barId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "field": {
+          "$ref": "#/$defs/PriceFieldV1"
+        },
+        "normalizedReferencePrice": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "barId",
+        "field",
+        "normalizedReferencePrice"
+      ],
+      "additionalProperties": false
+    },
+    "PriceFieldV1": {
+      "type": "string",
+      "enum": [
+        "open",
+        "high",
+        "low",
+        "close"
+      ]
+    },
+    "ProtectionV1": {
+      "type": "object",
+      "properties": {
+        "relation": {
+          "type": "string",
+          "enum": [
+            "below",
+            "above"
+          ]
+        },
+        "anchor": {
+          "$ref": "#/$defs/PriceAnchorV1"
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "relation",
+        "anchor",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "ReversalLifecycleV1": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "none",
+            "potential",
+            "transitioning",
+            "confirmed",
+            "failed",
+            "uncertain"
+          ]
+        },
+        "fromDirection": {
+          "type": "string",
+          "enum": [
+            "bull",
+            "bear",
+            "none",
+            "uncertain"
+          ]
+        },
+        "toDirection": {
+          "type": "string",
+          "enum": [
+            "bull",
+            "bear",
+            "none",
+            "uncertain"
+          ]
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "state",
+        "fromDirection",
+        "toDirection",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "SetupCandidateV1": {
+      "type": "object",
+      "properties": {
+        "setupId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "doctrineId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "forming",
+            "confirmed",
+            "invalidated",
+            "expired",
+            "uncertain"
+          ]
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "primary",
+            "confluence"
+          ]
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "setupId",
+        "doctrineId",
+        "state",
+        "role",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "SignalBasisV1": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "discrete_bar",
+            "multi_bar_structure",
+            "no_separate_signal"
+          ]
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "absent",
+            "forming",
+            "confirmed",
+            "rejected",
+            "expired",
+            "uncertain"
+          ]
+        },
+        "signalBarIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "doctrineIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "kind",
+        "state",
+        "signalBarIds",
+        "doctrineIds",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "StopEntryV1": {
+      "type": "object",
+      "properties": {
+        "validAfterBarId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "validForClosedBars": {
+          "type": "number",
+          "const": 1
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "entryType": {
+          "type": "string",
+          "const": "stop"
+        },
+        "relation": {
+          "type": "string",
+          "enum": [
+            "break_above",
+            "break_below"
+          ]
+        },
+        "anchor": {
+          "$ref": "#/$defs/PriceAnchorV1"
+        }
+      },
+      "required": [
+        "anchor",
+        "claimIds",
+        "entryType",
+        "relation",
+        "validAfterBarId",
+        "validForClosedBars"
+      ],
+      "additionalProperties": false
+    },
+    "StructuralConditionV1": {
+      "type": "object",
+      "properties": {
+        "conditionCode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "anchor": {
+          "$ref": "#/$defs/PriceAnchorV1"
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "conditionCode",
+        "anchor",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "TradeObjectiveV1": {
+      "type": "object",
+      "properties": {
+        "magnetId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "magnetId",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "TradePlanV2": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "type": "string",
+          "enum": [
+            "long",
+            "short"
+          ]
+        },
+        "setupId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entry": {
+          "$ref": "#/$defs/ProviderEntryPlanV2"
+        },
+        "entryCancellation": {
+          "$ref": "#/$defs/StructuralConditionV1"
+        },
+        "premiseInvalidation": {
+          "$ref": "#/$defs/StructuralConditionV1"
+        },
+        "protection": {
+          "$ref": "#/$defs/ProtectionV1"
+        },
+        "holdingIntent": {
+          "type": "string",
+          "enum": [
+            "scalp",
+            "swing"
+          ]
+        },
+        "objective": {
+          "$ref": "#/$defs/TradeObjectiveV1"
+        },
+        "claimIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "direction",
+        "setupId",
+        "entry",
+        "entryCancellation",
+        "premiseInvalidation",
+        "protection",
+        "holdingIntent",
+        "objective",
+        "claimIds"
+      ],
+      "additionalProperties": false
+    },
+    "UncertainDecisionV1": {
+      "type": "object",
+      "properties": {
+        "reasonCodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/UncertaintyReasonCodeV1"
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "conflictingClaimIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "missingEvidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "resolutionCondition": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "reasonCodes",
+        "conflictingClaimIds",
+        "missingEvidence",
+        "resolutionCondition"
+      ],
+      "additionalProperties": false
+    },
+    "UncertaintyReasonCodeV1": {
+      "type": "string",
+      "enum": [
+        "insufficient_causal_evidence",
+        "missing_data",
+        "continuity_unknown",
+        "left_censored_context",
+        "same_bar_order_unknown",
+        "market_structure_conflict",
+        "doctrine_evidence_conflict",
+        "source_provenance_uncertain"
+      ]
+    }
+  }
+}

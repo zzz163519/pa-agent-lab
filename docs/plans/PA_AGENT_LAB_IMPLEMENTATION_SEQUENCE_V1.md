@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, PHASE 5A, AND PHASE 5B1 CONTRACT/IMPLEMENTATION AUTHORITY ARE ACCEPTED; THE FIRST EXACT PHASE 5B1 STANDARD PACKAGE ACTIVATION AND PREPARED PAYLOAD WERE SEPARATELY AUTHORIZED AND PERFORMED. PHASE 5B2A DESIGN IS ACCEPTED, BUT ITS IMPLEMENTATION AND ALL PROVIDER CALLS REMAIN UNAUTHORIZED. PHASE 4B, SELECTOR V2, AND LATER AUTHORITY REMAIN SEPARATE.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, PHASE 5A, AND PHASE 5B1 CONTRACT/IMPLEMENTATION AUTHORITY ARE ACCEPTED; THE FIRST EXACT PHASE 5B1 STANDARD PACKAGE ACTIVATION AND PREPARED PAYLOAD WERE SEPARATELY AUTHORIZED AND PERFORMED. PHASE 5B2A DESIGN IS ACCEPTED, AND THE PHASE 5B2B OFFLINE ADAPTER/FAKE-EXECUTABLE/PROMPT-V2-PROPOSAL BOUNDARY WAS SEPARATELY AUTHORIZED AND IMPLEMENTED. PROMPT V2 APPROVAL/ACTIVATION, REAL CLI INVOCATION, ALL PROVIDER CALLS, AND PHASE 4B, SELECTOR V2, OR LATER AUTHORITY REMAIN SEPARATE.
 
 ## Delivery model
 
@@ -154,7 +154,7 @@ The implemented boundary:
 
 The immutable exact-content approval remains separate from the accepted ADR/contract, offline implementation authorization, bounded activation authorization, and execution evidence. The performed sequence-1 activation authorizes no additional activation, rollback, or Phase 5B2 capability.
 
-Phase 5B1 implementation and bounded local operational exit gates are met. The exact package and exact nine-unit corpus are current, and prepared payload `sha256:98128380faee158597deb8d6f097165b45b7a501711dd6a1b0bcac1644bbf961` is immutable local preparation evidence only. Phase 5B2 implementation and provider calls remain separately unauthorized; the design-only decision below does not change that boundary.
+Phase 5B1 implementation and bounded local operational exit gates are met. The exact package and exact nine-unit corpus are current, and prepared payload `sha256:98128380faee158597deb8d6f097165b45b7a501711dd6a1b0bcac1644bbf961` is immutable local preparation evidence only. The later Phase 5B2B offline implementation does not make this V1 payload provider-eligible and does not authorize any provider call.
 
 ### Phase 5B2A: controlled CLI provider-adapter design
 
@@ -169,22 +169,34 @@ Accepted design-only ADR-0022, its contract, reuse scan, implementation plan, an
 - one visible attempt, no hidden retry, 300-second timeout, serial execution, no batching, minimal local retention, and no invented monetary cost;
 - outcome-independent hard rejection gates while Phase 6 thresholds remain deferred.
 
-Phase 5B2A design is complete. It adds no code, dependency, configuration, credential, V2 package bytes, subprocess invocation, provider request, ModelRun, response, or BrooksDecision.
+Phase 5B2A design is complete. At its accepted design commit it added no code, dependency, configuration, credential, V2 package bytes, subprocess invocation, provider request, ModelRun, response, or BrooksDecision. The later offline code below exists only under the separate Phase 5B2B implementation authorization.
 
-### Phase 5B2B: controlled provider-bound implementation and inference
+### Phase 5B2B: offline controlled-adapter implementation candidate
+
+`PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorized only contracts, offline workspace/process code, repository fake executables/tests, an exact Prompt Package V2 proposal, exports, and governance synchronization.
+
+The implemented offline boundary:
+
+- fixes candidate/request/terminal evidence contracts, exact model identities, one attempt, 300-second timeout, stdout `262144`, stderr `65536`, terminal JSON `131072`, global concurrency one, no retry, and no batching;
+- adds identity-free response V2 with explicit normalized stop/limit entry, protection, and objective values, while rejecting `market_next_event` and preserving the existing BrooksDecision semantic gate;
+- drafts unapproved Prompt Package V2, package hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`, without changing V1 bytes;
+- stages only five generic hash-verified anonymous files in restrictive isolated temporary workspaces;
+- supervises only one repository-owned content-hashed fake executable with `shell: false`, an exact child environment, bounded output, complete process-group termination including resistant descendants, and no retry;
+- accepts only one closed versioned terminal envelope containing one unchanged terminal JSON result and rejects prose, ANSI, partial/multiple JSON, invalid UTF-8, unknown events, or tool/subagent use;
+- produces a non-authorized Codex argv only from bounded injected capability evidence and a self-hashed proof, explicitly disables web search, and keeps Antigravity unavailable because exact non-interactive PNG transport remains unimplemented and unproved.
+
+This boundary adds no migration, persistence, API/CLI route, Research Console path, deployment change, credentials, real `agy`/Codex execution, external request, ModelCall/ModelRun/ProviderAttempt/Audit, response, or production BrooksDecision.
 
 Still requires separate immutable decisions for:
 
-- exact implementation file/module/persistence/deployment scope;
-- exact Prompt Package V2 proposal, content approval, activation, and preparation;
-- offline adapter conformance using only fake executables;
+- independent acceptance of the exact offline implementation candidate;
+- exact Prompt Package V2 content approval, activation, and preparation;
 - Antigravity privacy/retention and exact PNG-transport proof;
-- no-hidden-retry proof for both CLI surfaces;
-- final request/terminal evidence schemas and output resource bounds;
-- a separately authorized first bounded synthetic external call;
+- no-hidden-retry proof and live capability evidence for both CLI surfaces;
+- any production invocation/persistence seam and a separately authorized first bounded synthetic external call;
 - any later evaluation expansion under frozen Phase 6 gates.
 
-Future Phase 5B2B exit direction: one synthetic Brooks decision is repeatable under an exact model/package identity and fails closed under adversarial causal, privacy, geometry, and transport tests. No present implementation or provider authority exists.
+Current exit: offline process, parser, geometry, resource, and authority behavior is locally testable with invented inputs and a fake executable. The work stops before package approval and before every external/provider operation.
 
 ## Phase 6: Semantic evaluation
 
