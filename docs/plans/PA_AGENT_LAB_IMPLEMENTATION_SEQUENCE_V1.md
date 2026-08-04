@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, PHASE 5A, AND PHASE 5B1 CONTRACT/IMPLEMENTATION AUTHORITY ARE ACCEPTED; THE FIRST EXACT PHASE 5B1 STANDARD PACKAGE ACTIVATION WAS SEPARATELY AUTHORIZED AND PERFORMED. PHASE 4B, PHASE 5B2, SELECTOR V2, AND LATER AUTHORITY REMAIN SEPARATE.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, PHASE 5A, AND PHASE 5B1 CONTRACT/IMPLEMENTATION AUTHORITY ARE ACCEPTED; THE FIRST EXACT PHASE 5B1 STANDARD PACKAGE ACTIVATION AND PREPARED PAYLOAD WERE SEPARATELY AUTHORIZED AND PERFORMED. PHASE 5B2A DESIGN IS ACCEPTED, BUT ITS IMPLEMENTATION AND ALL PROVIDER CALLS REMAIN UNAUTHORIZED. PHASE 4B, SELECTOR V2, AND LATER AUTHORITY REMAIN SEPARATE.
 
 ## Delivery model
 
@@ -118,7 +118,7 @@ Still requires a separate ADR, contract, and implementation approval before addi
 
 ## Phase 5: Brooks Policy Agent vertical slice
 
-ADR-0020 splits Phase 5 into an implemented synthetic assembly slice and a separately decided inference track. Accepted ADR-0021 further divides that inference track into the authorized offline Prompt Package boundary and a later provider-call boundary.
+ADR-0020 splits Phase 5 into an implemented synthetic assembly slice and a separately decided inference track. Accepted ADR-0021 divides that track into the completed offline Prompt Package boundary and a provider-bound boundary. Accepted design-only ADR-0022 further separates provider-adapter design from implementation and external-call authority.
 
 ### Phase 5A: explicit corpus rollback and synthetic Policy Assembly
 
@@ -154,19 +154,37 @@ The implemented boundary:
 
 The immutable exact-content approval remains separate from the accepted ADR/contract, offline implementation authorization, bounded activation authorization, and execution evidence. The performed sequence-1 activation authorizes no additional activation, rollback, or Phase 5B2 capability.
 
-Phase 5B1 implementation and bounded local operational exit gates are met. The exact package and exact nine-unit corpus are current, and prepared payload `sha256:98128380faee158597deb8d6f097165b45b7a501711dd6a1b0bcac1644bbf961` is immutable local preparation evidence only. Phase 5B2 remains separately unauthorized.
+Phase 5B1 implementation and bounded local operational exit gates are met. The exact package and exact nine-unit corpus are current, and prepared payload `sha256:98128380faee158597deb8d6f097165b45b7a501711dd6a1b0bcac1644bbf961` is immutable local preparation evidence only. Phase 5B2 implementation and provider calls remain separately unauthorized; the design-only decision below does not change that boundary.
 
-### Phase 5B2: controlled provider-bound Brooks inference
+### Phase 5B2A: controlled CLI provider-adapter design
 
-Still requires separate ADRs, contracts, privacy review, provider/model selection, geometry-source decision, and explicit external-call approval before any work on:
+Accepted design-only ADR-0022, its contract, reuse scan, implementation plan, and `PHASE5B2A_DESIGN_AUTHORIZATION_V1.json` fix:
 
-- exact provider/model identities and retirement behavior;
-- provider-specific PNG transport and structured-output adaptation;
-- real `ModelCallRecordV1`, `ModelRunRecordV1`, retries, attempts, raw responses, validation audits, and BrooksDecision creation;
-- timeout, rate limit, batching, retention, usage, cost, and quality gates;
-- any Case-aware selector, retrieval query construction, or asynchronous model job.
+- `agy` with exact model ID `gemini-3.6-flash-high` and high effort;
+- Codex CLI with exact model ID `gpt-5.6` and high effort;
+- only model IDs as pins, with no automatic fallback and no CLI version/binary-hash pin;
+- identical repository-controlled Prompt Package, schema, OHLC, Doctrine, and PNG bytes while recording provider-owned hidden instructions as a provider difference;
+- verified Antigravity collection opt-out, external retention, isolated workspace, and no plugin/MCP/rule/history/tool access as hard prerequisites;
+- a future Prompt Package V2 direction with explicit anonymous normalized stop/limit geometry and fail-closed `market_next_event`;
+- one visible attempt, no hidden retry, 300-second timeout, serial execution, no batching, minimal local retention, and no invented monetary cost;
+- outcome-independent hard rejection gates while Phase 6 thresholds remain deferred.
 
-Future Phase 5B2 exit direction: one Brooks decision is repeatable under an exact model/package identity and fails closed under adversarial causal tests. This direction grants no present implementation or provider authority.
+Phase 5B2A design is complete. It adds no code, dependency, configuration, credential, V2 package bytes, subprocess invocation, provider request, ModelRun, response, or BrooksDecision.
+
+### Phase 5B2B: controlled provider-bound implementation and inference
+
+Still requires separate immutable decisions for:
+
+- exact implementation file/module/persistence/deployment scope;
+- exact Prompt Package V2 proposal, content approval, activation, and preparation;
+- offline adapter conformance using only fake executables;
+- Antigravity privacy/retention and exact PNG-transport proof;
+- no-hidden-retry proof for both CLI surfaces;
+- final request/terminal evidence schemas and output resource bounds;
+- a separately authorized first bounded synthetic external call;
+- any later evaluation expansion under frozen Phase 6 gates.
+
+Future Phase 5B2B exit direction: one synthetic Brooks decision is repeatable under an exact model/package identity and fails closed under adversarial causal, privacy, geometry, and transport tests. No present implementation or provider authority exists.
 
 ## Phase 6: Semantic evaluation
 

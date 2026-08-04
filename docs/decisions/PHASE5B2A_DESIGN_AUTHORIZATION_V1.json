@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "phase5b2a-design-authorization.v1",
+  "authorizationId": "phase5b2a-controlled-cli-provider-adapter-design-v1",
+  "decisionStatus": "approved",
+  "authorizationScope": "research-and-governance-documentation-only",
+  "authorizedBy": "Calvin",
+  "recordedBy": "Direct Pi",
+  "authorizedAt": "2026-08-04T23:06:21+08:00",
+  "approvalMethod": "direct-conversation-one-decision-at-a-time",
+  "providerCandidates": [
+    {
+      "providerSurface": "antigravity-cli",
+      "command": "agy",
+      "modelId": "gemini-3.6-flash-high",
+      "reasoningEffort": "high"
+    },
+    {
+      "providerSurface": "codex-cli",
+      "command": "codex --model gpt-5.6",
+      "modelId": "gpt-5.6",
+      "reasoningEffort": "high"
+    }
+  ],
+  "modelIdPinned": true,
+  "cliVersionPinned": false,
+  "cliBinaryHashPinned": false,
+  "automaticModelFallbackAuthorized": false,
+  "interactionDataCollectionMustBeDisabled": true,
+  "isolatedWorkspaceRequired": true,
+  "pluginsMcpRulesAndHistoryMustBeDisabled": true,
+  "providerOwnedSystemInstructionsTreatedAsProviderDifference": true,
+  "repositoryControlledInputMustBeIdentical": true,
+  "supportedInitialTradeEntryTypes": [
+    "stop",
+    "limit"
+  ],
+  "marketNextEventAccepted": false,
+  "explicitAnonymousNormalizedGeometryRequired": true,
+  "attemptLimitPerLogicalRun": 1,
+  "hiddenRetriesAuthorized": false,
+  "hardTimeoutSeconds": 300,
+  "automaticRetryAfterTimeoutAuthorized": false,
+  "batchingAuthorized": false,
+  "concurrencyLimit": 1,
+  "localRetention": {
+    "retainFinalRawJson": true,
+    "retainRequestHash": true,
+    "retainResponseHash": true,
+    "retainModelId": true,
+    "retainUsage": true,
+    "retainLatency": true,
+    "retainValidationResult": true,
+    "retainChainOfThought": false,
+    "retainToolTrajectory": false,
+    "retainCliConversationHistory": false
+  },
+  "costPolicy": {
+    "recordInputOutputAndCacheTokens": true,
+    "recordLatencyAndValidResponseRate": true,
+    "inventDollarCostWhenUnavailable": false,
+    "monetaryRankingAuthorized": false
+  },
+  "qualityPolicy": {
+    "hardRejectGatesAuthorizedForDesign": true,
+    "outcomeLedThresholdSelectionAuthorized": false,
+    "phase6ThresholdsDeferred": true
+  },
+  "implementationAuthorized": false,
+  "credentialsAuthorized": false,
+  "providerCallsAuthorized": false,
+  "modelRunsAuthorized": false,
+  "providerAttemptsAuthorized": false,
+  "productionBrooksDecisionsAuthorized": false,
+  "promptPackageV2ApprovalGranted": false,
+  "realDataAuthorized": false,
+  "protectedWindowAccessAuthorized": false,
+  "replayAuthorized": false,
+  "trainingAuthorized": false,
+  "paperOrLiveAuthorized": false,
+  "tradingAuthorized": false,
+  "terminalBoundary": "complete Phase 5B2A research and governance documents, then stop before code, configuration, credentials, subprocess model invocation, external request, or runtime record creation",
+  "authorizationRecordHash": "sha256:56567488f68af91b283540e6f4064195973403472cbee2cf4d6ffcd3ac64b610"
+}

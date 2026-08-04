@@ -34,17 +34,16 @@ Still open:
 
 ## Model and privacy
 
-ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 versus Gemini 3.6 Flash peer bakeoff. ADR-0011 freezes the provider-neutral anonymous payload and run audit. ADR-0012 freezes deterministic local PNG bytes, manifests, and content-addressed chart artifacts without authorizing provider transport or calls.
+ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 versus Gemini 3.6 Flash peer bakeoff. ADR-0011 freezes the provider-neutral anonymous payload and run audit. ADR-0012 freezes deterministic local PNG bytes and manifests. Accepted design-only ADR-0022 fixes the future CLI surfaces and model IDs as `agy`/`gemini-3.6-flash-high` and Codex CLI/`gpt-5.6`, both at high effort. It also fixes one visible attempt, a 300-second timeout, serial execution, minimal local retention, observable token/latency evidence, no model fallback, and a future Prompt Package V2 stop/limit normalized-geometry direction. It authorizes no implementation or provider call.
 
 Still open:
 
-- define the deterministic source of `PlannedTradeGeometryV1` for provider responses before any production Long/Short acceptance;
-- pin exact provider/model versions and retirement behavior for Phase 5B2;
-- verify provider endpoints accept the approved image and structured-output contract;
-- freeze retry counts, timeout policy, rate limits, batching, usage audit, and valid-decision cost without changing logical decision-point symmetry;
-- freeze provider-specific invalid-response codes and external retention configuration;
-- define provider-specific image transport from validated local PNG bytes;
-- define the quality gate and cost calculation before model evaluation.
+- draft, review, and separately approve exact Prompt Package V2 prompt/schema/package bytes, then separately authorize activation and preparation;
+- prove Antigravity interaction-data opt-out, acceptable external retention, isolated exact PNG attachment, and complete plugin/MCP/rule/history exclusion;
+- prove no hidden retry and the required machine-output/isolation capabilities for both installed CLIs;
+- freeze exact output/error byte bounds and final versioned request/terminal evidence schemas;
+- separately authorize Phase 5B2B implementation, then independently review and approve any first bounded synthetic external call;
+- freeze Phase 6 outcome-blind sample, pass thresholds, symmetry, falsification, and any later auditable monetary-cost comparison.
 
 ## RAG and memory
 
@@ -55,7 +54,7 @@ Still open:
 - approve Phase 4B embedding runtime, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider/privacy boundaries, and associated quality contract;
 - define and approve any future Selector V2, including deterministic Case-to-query construction, multi-query union/deduplication, RRF, immutable selector evidence, and policy-worker retrieval authority;
 - authorize any future Prompt Package activation or rollback only through a new separate Calvin decision; the first exact standard activation has been performed and is current;
-- define and approve Phase 5B2 provider/model/transport/call/retention/retry/cost authority before any ModelRun or external request;
+- authorize any Phase 5B2B implementation or external call only through new separate Calvin decisions after exact V2 package governance and privacy/isolation proof;
 - expand the exact public source allowlist only through a separately approved versioned decision.
 
 ## API and user interface
