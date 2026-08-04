@@ -84,9 +84,10 @@ limit
 The local validator must recompute and verify:
 
 - directionally valid price ordering;
-- entry relation and referenced visible structure/anchor;
-- protection relation and visible anchor;
-- objective magnet/structure side;
+- a long stop entry is strictly above its referenced visible anchor and a short stop entry is strictly below, with no inferred tick or minimum distance;
+- a limit entry exactly equals at least one visible anchor price in its referenced structure;
+- long protection is strictly below its referenced visible anchor and short protection is strictly above, with no inferred tick or buffer;
+- an objective exactly equals at least one visible anchor price in the structure referenced by its selected magnet;
 - exact reward and risk from normalized values;
 - Swing reward/risk of at least `2.0R`;
 - Scalp semantics without inventing a minimum ratio;

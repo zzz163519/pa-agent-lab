@@ -164,10 +164,14 @@ Exit: one exact reviewable V2 proposal exists with no runtime authority.
 
 ### Step 3: Geometry semantic validation
 
-Write failing tests for invented responses:
+The initial accepted implementation covered branch closure, finite values, directional ordering, references, objective side, and reward/risk, but did not bind the three normalized prices to the referenced anchors. Under the separate correction authorization, use the existing identity-free V2 validation function as the public test boundary and add failing invented-response tests for:
 
 - valid long and short stop geometry;
-- valid long and short limit geometry;
+- long stop entry at or below its referenced anchor and short stop entry at or above its referenced anchor;
+- valid long and short limit geometry whose entry equals one anchor in the referenced structure;
+- limit entry detached from every anchor in the referenced structure;
+- long protection at or above its referenced anchor and short protection at or below its referenced anchor;
+- objective price detached from every anchor in the selected magnet's referenced structure;
 - wrong directional ordering;
 - unknown or mismatched entry structure/anchor;
 - wrong-side protection or objective;
@@ -177,9 +181,9 @@ Write failing tests for invented responses:
 - response missing one geometry value;
 - local repair or Swing-to-Scalp relabel forbidden.
 
-Reuse and specialize the existing BrooksDecision semantic gate. Do not add execution, tick, or fill logic.
+Reuse and specialize the existing BrooksDecision semantic gate. Do not add execution, tick, tolerance, buffer, or fill logic. Do not change Prompt Package V2 prompt, schema, manifest, validator-version literal, or proposal hash.
 
-Exit: exact provider-proposed normalized geometry can pass or reject deterministically.
+Exit: exact provider-proposed normalized geometry can pass or reject deterministically, then a separate exact corrected-commit acceptance is required.
 
 ### Step 4: Request-envelope contract
 
