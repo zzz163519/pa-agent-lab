@@ -1,6 +1,6 @@
 # Phase 5B1 Brooks Prompt Package Implementation Plan V1
 
-Status: IMPLEMENTED AND VERIFIED WITH CONTRACT TDD. EXACT PACKAGE HASH IS APPROVED; OFFLINE IMPLEMENTATION IS COMPLETE. THE FIRST EXACT LOCAL SYNTHETIC STANDARD ACTIVATION WAS SEPARATELY AUTHORIZED AND PERFORMED; PREPARATION IS PENDING A SUCCESSFUL POLICY ASSEMBLY. PROVIDER AUTHORITY REMAINS UNAUTHORIZED.
+Status: IMPLEMENTED AND VERIFIED WITH CONTRACT TDD. EXACT PACKAGE HASH IS APPROVED; OFFLINE IMPLEMENTATION IS COMPLETE. THE FIRST EXACT LOCAL SYNTHETIC STANDARD ACTIVATION, EXACT NINE-UNIT DOCTRINE PREREQUISITES, AND ONE PREPARED PAYLOAD WERE SEPARATELY AUTHORIZED AND PERFORMED. PROVIDER AUTHORITY REMAINS UNAUTHORIZED.
 
 Depends on accepted contracts, the separate implementation authorization, and one approved exact package identity:
 
@@ -375,4 +375,4 @@ If implementation discovers that the existing `OutboundModelPayloadV1`, BrooksDe
 
 ## Explicit non-authority
 
-This plan does not authorize itself. `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json` separately authorized only the bounded offline code, migrations, API/CLI, and deployment work in this plan. Calvin later authorized one exact local synthetic standard activation and one prepared payload in `docs/decisions/PHASE5B1_PACKAGE_ACTIVATION_AUTHORIZATION_V1.json`; the activation was performed and recorded separately, while preparation stopped because no successful PolicyAssembly exists. These records authorize no additional activation or rollback, provider selection/call, response persistence, production BrooksDecision, geometry/cost assumption, real data, protected window, outcome, replay, training, Paper, Live, exchange, wallet, order, or real-money action.
+This plan does not authorize itself. `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json` separately authorized only the bounded offline code, migrations, API/CLI, and deployment work in this plan. Calvin later authorized one exact local synthetic standard activation, the exact nine public-pilot Doctrine prerequisites, and one prepared payload in separate immutable records; those operations were performed and recorded without a provider/model call. These records authorize no additional activation, rollback, Doctrine expansion, provider selection/call, response persistence, production BrooksDecision, geometry/cost assumption, real data, protected window, outcome, replay, training, Paper, Live, exchange, wallet, order, or real-money action.

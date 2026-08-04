@@ -139,7 +139,7 @@ Exit condition met: a still-eligible historical corpus can become current only t
 
 ### Phase 5B1: Brooks Prompt Package and offline validation
 
-Accepted ADR-0021, its contract, implementation plan, exact Prompt Package approval, and `PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json` authorize only the offline implementation boundary. `PHASE5B1_PACKAGE_ACTIVATION_AUTHORIZATION_V1.json` later authorized one exact local synthetic standard activation and one prepared payload. Activation sequence 1 was performed and recorded by `PHASE5B1_FIRST_PACKAGE_ACTIVATION_EXECUTION_V1.json`; preparation remains pending because the persistent deployment has no successful PolicyAssembly.
+Accepted ADR-0021, its contract, implementation plan, exact Prompt Package approval, and `PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json` authorize only the offline implementation boundary. Separate bounded records later authorized one exact local synthetic standard activation, the exact nine public-pilot Doctrine prerequisites, and one prepared payload. Package activation sequence 1, Doctrine corpus activation sequence 1, one synthetic PolicyAssembly, and one prepared payload were performed and recorded by the immutable execution evidence without any provider/model call.
 
 The implemented boundary:
 
@@ -154,7 +154,7 @@ The implemented boundary:
 
 The immutable exact-content approval remains separate from the accepted ADR/contract, offline implementation authorization, bounded activation authorization, and execution evidence. The performed sequence-1 activation authorizes no additional activation, rollback, or Phase 5B2 capability.
 
-Phase 5B1 implementation exit gate is met by the verified code and adversarial tests. Operationally, the exact package is current; the one authorized local prepared wrapper remains pending until Calvin separately decides whether the empty Doctrine/corpus/PolicyAssembly prerequisites may be created.
+Phase 5B1 implementation and bounded local operational exit gates are met. The exact package and exact nine-unit corpus are current, and prepared payload `sha256:98128380faee158597deb8d6f097165b45b7a501711dd6a1b0bcac1644bbf961` is immutable local preparation evidence only. Phase 5B2 remains separately unauthorized.
 
 ### Phase 5B2: controlled provider-bound Brooks inference
 

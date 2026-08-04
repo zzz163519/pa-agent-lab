@@ -52,7 +52,6 @@ Accepted: ADR-0019 and the Phase 4A contract fix the initial exact six-source pu
 
 Still open:
 
-- decide whether to authorize the minimum local prerequisite chain for the one already-authorized prepared payload: the persistent deployment has one synthetic Case but no Doctrine proposal, approval, ingestion run, quality report, corpus activation, or successful PolicyAssembly; no prerequisite may be synthesized implicitly;
 - approve Phase 4B embedding runtime, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider/privacy boundaries, and associated quality contract;
 - define and approve any future Selector V2, including deterministic Case-to-query construction, multi-query union/deduplication, RRF, immutable selector evidence, and policy-worker retrieval authority;
 - authorize any future Prompt Package activation or rollback only through a new separate Calvin decision; the first exact standard activation has been performed and is current;

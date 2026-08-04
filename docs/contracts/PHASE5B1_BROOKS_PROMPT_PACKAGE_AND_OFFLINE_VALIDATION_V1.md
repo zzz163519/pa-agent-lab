@@ -1,14 +1,14 @@
 # Phase 5B1 Brooks Prompt Package and Offline Validation V1
 
-Status: ACCEPTED CONTRACT. EXACT PACKAGE HASH APPROVED BY CALVIN. OFFLINE IMPLEMENTATION AUTHORIZED; FIRST EXACT LOCAL SYNTHETIC STANDARD ACTIVATION SEPARATELY AUTHORIZED AND PERFORMED; PROVIDER AUTHORITY REMAINS UNAUTHORIZED.
+Status: ACCEPTED CONTRACT. EXACT PACKAGE HASH APPROVED BY CALVIN. OFFLINE IMPLEMENTATION AUTHORIZED; FIRST EXACT LOCAL SYNTHETIC STANDARD ACTIVATION, EXACT NINE-UNIT DOCTRINE PREREQUISITES, AND ONE PREPARED PAYLOAD SEPARATELY AUTHORIZED AND PERFORMED; PROVIDER AUTHORITY REMAINS UNAUTHORIZED.
 
-Authority: ADR-0003, ADR-0008 through ADR-0013, ADR-0015, ADR-0018, ADR-0020, accepted ADR-0021, `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`, `docs/decisions/PHASE5B1_PACKAGE_ACTIVATION_AUTHORIZATION_V1.json`, and `docs/decisions/PHASE5B1_FIRST_PACKAGE_ACTIVATION_EXECUTION_V1.json`.
+Authority: ADR-0003, ADR-0008 through ADR-0013, ADR-0015, ADR-0018, ADR-0020, accepted ADR-0021, `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`, `docs/decisions/PHASE5B1_PACKAGE_ACTIVATION_AUTHORIZATION_V1.json`, `docs/decisions/PHASE5B1_FIRST_PACKAGE_ACTIVATION_EXECUTION_V1.json`, `docs/decisions/PHASE5B1_SYNTHETIC_PREPARATION_PREREQUISITE_AUTHORIZATION_V1.json`, and `docs/decisions/PHASE5B1_FIRST_SYNTHETIC_PREPARED_PAYLOAD_EXECUTION_V1.json`.
 
 ## Purpose
 
 Freeze one provider-neutral Brooks V1 instruction package and define how a future offline implementation may prepare a synthetic outbound payload without calling a model or creating records that imply a call occurred.
 
-This contract is implemented only within the separately authorized offline Phase 5B1 boundary. The contract itself grants no package activation or provider/model-call authority. Calvin separately authorized one exact local synthetic standard activation and one prepared payload; the activation was performed, while preparation remains pending because the deployment has no successful PolicyAssembly.
+This contract is implemented only within the separately authorized offline Phase 5B1 boundary. The contract itself grants no package activation or provider/model-call authority. Calvin separately authorized one exact local synthetic standard activation, the exact nine public-pilot Doctrine prerequisites, and one prepared payload; all bounded operations were performed and read back without a provider/model call.
 
 ## Static package artifacts
 
@@ -205,7 +205,7 @@ A proposal consists of exact static artifacts and the recomputed package hash. D
 
 ### Approval
 
-Only Calvin may approve one exact package hash. Approval binds that hash and does not approve future byte changes. Calvin approved the V1 hash recorded above for exact-package-content-only scope. The immutable repository-governed approval artifact records `phase5b1ImplementationAuthorized = false`, `packageActivationPerformed = false`, and `providerCallsAuthorized = false`; the implementation validates that artifact and its canonical hash. The immutable approval artifact remains unchanged because its scope is exact content, while separate ADR/contract acceptance and offline implementation authorization are recorded in `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`. The later operational authorization and execution evidence are separate immutable records in `docs/decisions/PHASE5B1_PACKAGE_ACTIVATION_AUTHORIZATION_V1.json` and `docs/decisions/PHASE5B1_FIRST_PACKAGE_ACTIVATION_EXECUTION_V1.json`; they do not rewrite the content approval. No generic runtime prompt-approval route is exposed to operator, reviewer, model, provider, or research-agent roles.
+Only Calvin may approve one exact package hash. Approval binds that hash and does not approve future byte changes. Calvin approved the V1 hash recorded above for exact-package-content-only scope. The immutable repository-governed approval artifact records `phase5b1ImplementationAuthorized = false`, `packageActivationPerformed = false`, and `providerCallsAuthorized = false`; the implementation validates that artifact and its canonical hash. The immutable approval artifact remains unchanged because its scope is exact content, while separate ADR/contract acceptance and offline implementation authorization are recorded in `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`. Later operational authorizations and execution evidence are separate immutable records in `docs/decisions/PHASE5B1_PACKAGE_ACTIVATION_AUTHORIZATION_V1.json`, `docs/decisions/PHASE5B1_FIRST_PACKAGE_ACTIVATION_EXECUTION_V1.json`, `docs/decisions/PHASE5B1_SYNTHETIC_PREPARATION_PREREQUISITE_AUTHORIZATION_V1.json`, and `docs/decisions/PHASE5B1_FIRST_SYNTHETIC_PREPARED_PAYLOAD_EXECUTION_V1.json`; they do not rewrite the content approval. No generic runtime prompt-approval route is exposed to operator, reviewer, model, provider, or research-agent roles.
 
 ### Activation
 
@@ -288,7 +288,7 @@ Phase 5B1 implementation tests, if separately approved, must use only invented s
 
 Tests prove contract behavior, not Brooks source completeness, model quality, probability, profitability, or cost viability.
 
-Operational state: the exact package is current under the separately authorized sequence-1 standard activation. The one authorized prepared payload was not created because the persistent deployment has no successful PolicyAssembly; no missing Doctrine/corpus/assembly authority was synthesized.
+Operational state: the exact package is current under the separately authorized sequence-1 standard activation. The exact nine public-pilot Doctrine proposals were explicitly approved, passed the fixed Phase 4A quality gate, and became current corpus activation sequence 1. Synthetic assembly `sha256:e8f4126db8473017838bffc721457f46bf3022b79a2e16208f8674e28a6ebc41` deterministically produced the one authorized prepared payload `sha256:98128380faee158597deb8d6f097165b45b7a501711dd6a1b0bcac1644bbf961`. No provider/model call or formal model-run record was created.
 
 ## Exit gate for Phase 5B1 implementation
 
@@ -304,4 +304,4 @@ Phase 5B1 is complete only when:
 
 ## Explicit exclusions
 
-The implementation authorization does not authorize provider/model calls, provider-specific response schema adaptation, credentials, cost, retries, real response storage, production BrooksDecision creation, geometry/cost assumptions, Phase 4B, Selector V2, real data, protected windows, outcomes, replay, training, Paper, Live, execution, exchange, wallet, or real-money action. The separate activation authorization covered only one exact local synthetic standard activation and one prepared payload; it authorizes no additional activation or rollback and no Phase 5B2 capability. The exact-package approval artifact remains content-only and unchanged.
+The implementation authorization does not authorize provider/model calls, provider-specific response schema adaptation, credentials, cost, retries, real response storage, production BrooksDecision creation, geometry/cost assumptions, Phase 4B, Selector V2, real data, protected windows, outcomes, replay, training, Paper, Live, execution, exchange, wallet, or real-money action. The bounded operational authorizations covered only one exact local synthetic standard activation, the exact nine Doctrine prerequisites, and one prepared payload; those operations are complete and authorize no additional activation, rollback, Doctrine expansion, or Phase 5B2 capability. The exact-package approval artifact remains content-only and unchanged.
