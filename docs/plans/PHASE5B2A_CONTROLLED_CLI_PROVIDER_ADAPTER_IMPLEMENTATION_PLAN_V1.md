@@ -1,6 +1,6 @@
 # Phase 5B2A Controlled CLI Provider Adapter Implementation Plan V1
 
-Status: PHASE 5B2B OFFLINE STEPS 0-9 IMPLEMENTED UNDER A SEPARATE IMMUTABLE AUTHORIZATION. PROMPT PACKAGE V2 REMAINS AN UNAPPROVED PROPOSAL. PERSISTENCE, API/CLI EXPOSURE, DEPLOYMENT, CREDENTIALS, REAL CLI INVOCATION, PROVIDER CALLS, AND RUNTIME RECORD CREATION REMAIN UNAUTHORIZED.
+Status: PHASE 5B2B OFFLINE STEPS 0-9 IMPLEMENTED UNDER A SEPARATE IMMUTABLE AUTHORIZATION, AND EXACT COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY OFFLINE FOUNDATION. PROMPT PACKAGE V2 REMAINS AN UNAPPROVED PROPOSAL. INSTALLED-CLI CAPABILITY/PRIVACY PROOF, PERSISTENCE, API/CLI EXPOSURE, DEPLOYMENT, CREDENTIALS, REAL CLI INVOCATION, PROVIDER CALLS, AND RUNTIME RECORD CREATION REMAIN UNAUTHORIZED.
 
 Depends on:
 
@@ -8,7 +8,8 @@ Depends on:
 - `docs/contracts/PHASE5B2A_CONTROLLED_CLI_PROVIDER_ADAPTER_DESIGN_V1.md`;
 - `docs/decisions/PHASE5B2A_DESIGN_AUTHORIZATION_V1.json`;
 - `docs/research/PHASE5B2A_CONTROLLED_CLI_PROVIDER_ADAPTER_REUSE_SCAN_V1.md`;
-- `docs/decisions/PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`.
+- `docs/decisions/PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`;
+- `docs/decisions/PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`.
 
 ## Objective
 
@@ -31,15 +32,15 @@ Before any model subprocess or external request, separate later approvals must e
 
 1. exact Prompt Package V2 bytes and package hash;
 2. package activation and prepared payload creation;
-3. provider-adapter implementation acceptance;
+3. provider-adapter implementation acceptance, now satisfied only for exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` within the fake-only offline boundary;
 4. Antigravity privacy/retention proof;
 5. exact bounded conformance-call count, candidates, synthetic payload, and terminal boundary.
 
-No approval may be inferred from an earlier step.
+The third gate is recorded separately and grants no authority to infer any other gate. No approval may be inferred from an earlier step.
 
 ## Implemented offline boundary
 
-The separately authorized Phase 5B2B candidate now includes:
+The separately authorized and now accepted Phase 5B2B implementation includes:
 
 - exact immutable candidate profiles for `agy`/`gemini-3.6-flash-high` and Codex/`gpt-5.6`, both at `high`, with no fallback and no CLI packaging pin;
 - exact identity-free response V2 stop/limit geometry contracts and strict invented-response validation;
@@ -50,7 +51,7 @@ The separately authorized Phase 5B2B candidate now includes:
 - strict decoding of exactly one closed `provider-cli-terminal-envelope.v1`, preserving the unchanged terminal JSON and rejecting prose, ANSI, partial/multiple JSON, invalid UTF-8, unknown events, and tool/subagent use;
 - a reviewable but non-executable Codex invocation profile generated only from bounded injected help/model/config evidence, an exact-model token check, explicit hidden-retry disposition, and a self-hashed capability proof; web search is explicitly disabled, while Antigravity remains fail-closed until exact non-interactive PNG transport is implemented and proved.
 
-No migration, persistence seam, API/CLI route, Console change, deployment change, credential, real provider executable, external request, ModelRun/ProviderAttempt/Audit, or production BrooksDecision was added. Independent implementation acceptance remains separate from implementation authorization.
+No migration, persistence seam, API/CLI route, Console change, deployment change, credential, real provider executable, external request, ModelRun/ProviderAttempt/Audit, or production BrooksDecision was added. Independent implementation acceptance is recorded separately in `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`; it accepts only the exact fake-only commit and preserves every later package, capability, privacy, production-seam, and external-call gate.
 
 ## Reuse and dependency rule
 
@@ -334,7 +335,9 @@ The operator must audit counts before and after and record immutable execution e
 
 ## Verification criteria
 
-The offline implementation candidate is acceptable only when:
+Exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` met the bounded offline criteria and is accepted under record `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`. The acceptance excludes installed-CLI capability/privacy proof, production signal/crash cleanup, production supervision and cross-process concurrency, and final terminal-source authority. Those limitations must fail closed until separately implemented, reviewed, and authorized.
+
+The accepted offline implementation was reviewed against these criteria:
 
 - no SDK/framework/dependency is added without separate approval;
 - no hidden retry, model fallback, tool use, context leak, or output repair exists;
@@ -348,4 +351,4 @@ The offline implementation candidate is acceptable only when:
 
 ## Explicit non-authority
 
-This plan and the separate offline implementation authorization grant no Prompt Package V2 approval/activation, credentials, account changes, real CLI invocation, provider calls, model records, real data, protected windows, outcomes, replay, training, Paper/Live, execution, exchange, wallet, order, or trading action. They grant no implementation beyond the exact boundary in `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`.
+This plan, the separate offline implementation authorization, and the exact-commit acceptance grant no Prompt Package V2 approval/activation, installed-CLI capability/privacy proof, credentials, account changes, production cleanup/supervision, real CLI invocation, provider calls, model records, real data, protected windows, outcomes, replay, training, Paper/Live, execution, exchange, wallet, order, or trading action. They grant no implementation beyond the exact boundary in `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`.

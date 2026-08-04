@@ -1,6 +1,6 @@
 # ADR-0022: Controlled CLI Provider Adapter Design Boundary
 
-Status: ACCEPTED FOR PHASE 5B2A DESIGN. THE OFFLINE PHASE 5B2B CONTRACT/FAKE-EXECUTABLE/PROMPT-V2-PROPOSAL SUBSET WAS LATER AUTHORIZED SEPARATELY; CREDENTIALS, REAL CLI INVOCATION, PROVIDER CALLS, MODEL-RUN RECORDS, AND PROMPT PACKAGE V2 APPROVAL/ACTIVATION REMAIN UNAUTHORIZED.
+Status: ACCEPTED FOR PHASE 5B2A DESIGN. EXACT PHASE 5B2B IMPLEMENTATION COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY OFFLINE FOUNDATION; CREDENTIALS, INSTALLED-CLI CAPABILITY/PRIVACY PROOF, REAL CLI INVOCATION, PROVIDER CALLS, MODEL-RUN RECORDS, AND PROMPT PACKAGE V2 APPROVAL/ACTIVATION REMAIN UNAUTHORIZED.
 
 ## Context
 
@@ -24,7 +24,7 @@ Phase 5B2 is split again:
 - **Phase 5B2A**: accepted provider-adapter design, reuse evidence, privacy and isolation requirements, Prompt Package V2 direction, and a future implementation plan;
 - **Phase 5B2B**: any adapter implementation, credential/configuration change, provider subprocess invocation, external request, ModelCall/ModelRun/ProviderAttempt/Audit persistence, or production BrooksDecision creation.
 
-This ADR accepts only Phase 5B2A design. The later immutable `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorizes only the offline contracts, fake-executable adapter foundation, unapproved V2 proposal, exports, and governance synchronization. A first external call still requires another explicit bounded authorization after independent implementation acceptance, privacy verification, and exact Prompt Package V2 approval and activation.
+This ADR accepts only Phase 5B2A design. The later immutable `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorized only the offline contracts, fake-executable adapter foundation, unapproved V2 proposal, exports, and governance synchronization. `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, record hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`, now accepts exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` only within that fake-only offline boundary. A first external call still requires another explicit bounded authorization after exact Prompt Package V2 approval, activation, and preparation plus separate installed-CLI privacy, isolation, output-protocol, and hidden-retry proof.
 
 ### Exact peer candidates
 
@@ -161,9 +161,11 @@ The evidence is in `docs/research/PHASE5B2A_CONTROLLED_CLI_PROVIDER_ADAPTER_REUS
 
 Under the separate authorization, the repository now contains pure candidate/request/terminal contracts, strict V2 stop/limit geometry validation, fixed resource limits, an isolated five-file workspace, one content-hashed fake executable, bounded process-group supervision including resistant-descendant termination, strict closed-envelope decoding, and non-executing candidate profile builders with bounded self-hashed Codex preflight evidence. The exact Prompt Package V2 files remain an `unapproved` proposal. Antigravity remains unavailable because exact non-interactive PNG transport is not implemented or proved. No real `agy`/Codex invocation, provider request, runtime record, migration, API/CLI route, deployment, credential, or production BrooksDecision was added.
 
+The immutable implementation acceptance binds exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` and tree `d99df5d3a794d3056617383411f1caa78729666e` only as the reviewed fake-only offline foundation. It explicitly does not treat the injected `--cd` capability mapping as proof of installed Codex user-config/rule exclusion or ordinary-home isolation, does not accept a production signal/crash cleanup lifecycle, and does not decide future stdout-envelope versus terminal-file authority or cross-process concurrency. Those remain fail-closed prerequisites for a separately implemented and authorized production seam.
+
 ## Not authorized
 
-This ADR does not authorize, and the later offline authorization does not add authority for:
+This ADR, the offline implementation authorization, and the exact-commit implementation acceptance do not authorize:
 
 - implementation beyond the exact offline boundary, migrations, runtime provider adapters, API/CLI routes, services, or deployment changes;
 - installation or configuration of SDKs, skills, plugins, MCP servers, credentials, or provider accounts;

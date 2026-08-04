@@ -1,6 +1,6 @@
 # Phase 5B2A Controlled CLI Provider Adapter Design Contract V1
 
-Status: ACCEPTED DESIGN CONTRACT. THE OFFLINE CONTRACT/FAKE-EXECUTABLE SUBSET WAS LATER IMPLEMENTED UNDER `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`; PROMPT V2 APPROVAL/ACTIVATION, REAL CLI INVOCATION, CREDENTIALS, PERSISTENCE, DEPLOYMENT, AND ALL PROVIDER/MODEL CALLS REMAIN UNAUTHORIZED.
+Status: ACCEPTED DESIGN CONTRACT. EXACT OFFLINE IMPLEMENTATION COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY FOUNDATION UNDER `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`; PROMPT V2 APPROVAL/ACTIVATION, INSTALLED-CLI CAPABILITY/PRIVACY PROOF, REAL CLI INVOCATION, CREDENTIALS, PERSISTENCE, DEPLOYMENT, AND ALL PROVIDER/MODEL CALLS REMAIN UNAUTHORIZED.
 
 Authority: ADR-0005, ADR-0010 through ADR-0022, and `docs/decisions/PHASE5B2A_DESIGN_AUTHORIZATION_V1.json`.
 
@@ -8,7 +8,7 @@ Authority: ADR-0005, ADR-0010 through ADR-0022, and `docs/decisions/PHASE5B2A_DE
 
 Define the fail-closed contract a future synthetic-only CLI provider adapter must satisfy before any implementation or external-call authorization can be considered.
 
-This document does not itself authorize code, credentials, configuration changes, subprocess inference, external requests, or runtime records. The later immutable implementation authorization permits only its exact offline boundary and preserves every external/provider authority as false.
+This document does not itself authorize code, credentials, configuration changes, subprocess inference, external requests, or runtime records. The later immutable implementation authorization permitted only its exact offline boundary, and the separate exact-commit acceptance record verifies that bounded fake-only foundation without changing any external/provider authority from false.
 
 ## Fixed candidate profile
 
@@ -280,4 +280,4 @@ Phase 5B2A design was complete at its accepted design commit when:
 
 ## Explicit exclusions
 
-This contract itself does not authorize implementation. The later offline implementation authorization does not authorize Prompt Package V2 content approval/activation, external-call conformance, provider calls, credentials, persistence, API/CLI exposure, deployment, ModelRuns, production decisions, real data, protected windows, replay, training, Paper, Live, exchange, wallet, orders, or trading.
+This contract itself does not authorize implementation. The later offline implementation authorization and exact-commit acceptance do not authorize Prompt Package V2 content approval/activation, installed-CLI capability or privacy proof, external-call conformance, provider calls, credentials, production cleanup/supervision, persistence, API/CLI exposure, deployment, ModelRuns, production decisions, real data, protected windows, replay, training, Paper, Live, exchange, wallet, orders, or trading.

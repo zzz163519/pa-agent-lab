@@ -34,14 +34,13 @@ Still open:
 
 ## Model and privacy
 
-ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 versus Gemini 3.6 Flash peer bakeoff. ADR-0011 freezes the provider-neutral anonymous payload and run audit. ADR-0012 freezes deterministic local PNG bytes and manifests. Accepted design-only ADR-0022 fixes the future CLI surfaces and model IDs as `agy`/`gemini-3.6-flash-high` and Codex CLI/`gpt-5.6`, both at high effort. It also fixes one visible attempt, a 300-second timeout, serial execution, minimal local retention, observable token/latency evidence, no model fallback, and a Prompt Package V2 stop/limit normalized-geometry direction. `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json` separately authorized the offline contracts, fake-executable adapter foundation, fixed resource bounds, and exact unapproved Prompt Package V2 proposal only. It authorizes no real CLI invocation or provider call.
+ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 versus Gemini 3.6 Flash peer bakeoff. ADR-0011 freezes the provider-neutral anonymous payload and run audit. ADR-0012 freezes deterministic local PNG bytes and manifests. Accepted design-only ADR-0022 fixes the future CLI surfaces and model IDs as `agy`/`gemini-3.6-flash-high` and Codex CLI/`gpt-5.6`, both at high effort. It also fixes one visible attempt, a 300-second timeout, serial execution, minimal local retention, observable token/latency evidence, no model fallback, and a Prompt Package V2 stop/limit normalized-geometry direction. `PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json` separately authorized the offline contracts, fake-executable adapter foundation, fixed resource bounds, and exact unapproved Prompt Package V2 proposal only. `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`, accepts exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` only as that fake-only offline foundation. It accepts no installed-CLI capability/privacy proof, production supervisor, real CLI invocation, or provider call.
 
 Still open:
 
 - review and separately approve or reject exact Prompt Package V2 proposal hash `sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598`, then separately authorize activation and preparation;
 - prove Antigravity interaction-data opt-out, acceptable external retention, isolated exact PNG attachment, and complete plugin/MCP/rule/history exclusion;
 - prove no hidden retry and the required machine-output/isolation capabilities for both installed CLIs;
-- independently review and accept or reject the offline implementation candidate;
 - freeze any future persistence/migration shape needed to reconcile the pure request/terminal contracts with actual runtime records;
 - independently authorize any first bounded synthetic external call only after package and implementation acceptance;
 - freeze Phase 6 outcome-blind sample, pass thresholds, symmetry, falsification, and any later auditable monetary-cost comparison.
@@ -56,7 +55,7 @@ Still open:
 - define and approve any future Selector V2, including deterministic Case-to-query construction, multi-query union/deduplication, RRF, immutable selector evidence, and policy-worker retrieval authority;
 - authorize any future Prompt Package activation or rollback only through a new separate Calvin decision; the first exact standard activation has been performed and is current;
 - authorize any Prompt Package V2 approval, activation, or rollback only through a new separate Calvin decision; the V2 files currently form an unapproved proposal only;
-- authorize any real CLI invocation or external call only through a new separate Calvin decision after exact V2 package governance, offline implementation acceptance, and privacy/isolation proof; the existing Phase 5B2B authorization covers fake-executable offline work only;
+- authorize any real CLI invocation or external call only through a new separate Calvin decision after exact V2 package governance and installed-CLI privacy/isolation/capability proof; exact offline implementation acceptance is complete, but it grants no call authority and the existing Phase 5B2B authorization covers fake-executable offline work only;
 - expand the exact public source allowlist only through a separately approved versioned decision.
 
 ## API and user interface

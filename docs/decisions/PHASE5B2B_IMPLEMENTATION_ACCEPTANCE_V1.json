@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "phase5b2b-implementation-acceptance.v1",
+  "acceptanceId": "phase5b2b-offline-provider-adapter-implementation-e9c1981-v1",
+  "decisionStatus": "accepted",
+  "acceptanceScope": "exact-commit-offline-fake-only-foundation",
+  "acceptedBy": "Calvin",
+  "recordedBy": "Direct Pi",
+  "acceptedAt": "2026-08-05T01:17:32+08:00",
+  "approvalMethod": "direct-conversation-continuation-of-the-recommended-strictly-bounded-acceptance",
+  "acceptedAdr": "ADR-0022",
+  "acceptedContract": "phase5b2a-controlled-cli-provider-adapter-design.v1",
+  "implementationAuthorizationHash": "sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae",
+  "acceptedImplementationCommit": "e9c1981d37a6742011a8b8fdd854f9279c6d7fbd",
+  "acceptedImplementationTree": "d99df5d3a794d3056617383411f1caa78729666e",
+  "acceptedImplementationParent": "9ea546301679e046e91e03ad14e54578bde7ab3c",
+  "implementationAccepted": true,
+  "acceptedImplementationBoundary": [
+    "pure provider candidate, request-envelope, terminal-evidence, and identity-free response V2 contracts under packages/contracts",
+    "offline five-file isolated-workspace builder under packages/case-store",
+    "repository-owned content-hashed fake executable and fake-only process supervisor under packages/case-store",
+    "strict closed terminal-envelope decoder and invented-response validation",
+    "non-executing candidate invocation-profile builders with realInvocationAuthorized fixed false",
+    "exact Prompt Package V2 proposal files retained as unapproved",
+    "required package exports and governance synchronization present in the accepted implementation commit"
+  ],
+  "boundUnapprovedArtifacts": {
+    "promptPackageV2ProposalHash": "sha256:d1af1c9ba80163642ae2dde29f34f06d3c3c7b43acc505d4c32db51c08f02598",
+    "v1PromptSha256": "sha256:99db77812497107f4e0daacbca8969d308523b40eee77825aca18b53be72a267",
+    "v1ResponseSchemaSha256": "sha256:1017e462dd312177f7d4b50dbc4ee37e6041029e40ae10471f6a3118a73db53a",
+    "fakeExecutableSha256": "sha256:9c3d8c282590b671bfb135f3d6cadac34341c72e90eb7bfbec1d322922e21d1b"
+  },
+  "verificationEvidence": {
+    "focusedPhase5B2BTests": {
+      "tests": 24,
+      "passed": 24,
+      "failed": 0
+    },
+    "repositoryNodeTests": {
+      "tests": 240,
+      "passed": 239,
+      "failed": 0,
+      "skipped": 1
+    },
+    "researchConsoleTests": {
+      "tests": 7,
+      "passed": 7,
+      "failed": 0
+    },
+    "typecheckPassed": true,
+    "gitDiffCheckPassed": true,
+    "authorizationSelfHashesVerified": true,
+    "worktreeCleanBeforeAcceptanceRecord": true,
+    "providerOrModelCallPerformed": false
+  },
+  "independentReviewEvidence": {
+    "independentReadOnlyReviewCount": 2,
+    "freshContextReviewCompleted": true,
+    "acceptanceBlockersReported": 0,
+    "directPiRetainedFinalScopeAdjudication": true
+  },
+  "residualHardGates": [
+    "Prompt Package V2 proposal content remains unapproved and requires separate exact-content approval, activation, and prepared-payload authorization",
+    "the accepted non-executing Codex fixture profile does not prove installed-CLI user-configuration or repository/user-rule exclusion, ordinary-home isolation, output-protocol conformance, or hidden-retry behavior; in particular, the offline --cd evidence mapping is not accepted as live capability proof",
+    "Antigravity interaction-data opt-out, external retention, exact non-interactive PNG transport, plugin/MCP/rule/history exclusion, sandboxing, and hidden-retry behavior remain unproved",
+    "workspace cleanup is caller-owned in the accepted helper; no production signal, crash, or orphan-cleanup lifecycle is accepted",
+    "authority between a future provider stdout event envelope and terminal output file remains unadjudicated and must fail closed until separately contracted",
+    "the fake supervisor concurrency guard is process-local; no production or cross-process invocation supervisor is accepted",
+    "persistence and migration relationships to ModelRun, ProviderAttempt, and ModelRunAudit remain unimplemented and unauthorized",
+    "any first synthetic external call requires a separate immutable authorization binding the exact approved and active V2 package, prepared payload, candidate, call count, privacy and capability proofs, and terminal stop boundary"
+  ],
+  "promptPackageV2ContentApprovalGranted": false,
+  "promptPackageV2ActivationAuthorized": false,
+  "preparedPayloadV2CreationAuthorized": false,
+  "installedCliCapabilityProofAccepted": false,
+  "codexPrivacyAndIsolationProofAccepted": false,
+  "antigravityPrivacyAndIsolationProofAccepted": false,
+  "productionSignalCleanupAccepted": false,
+  "productionSupervisorAccepted": false,
+  "runtimeDependencyAdditionAuthorized": false,
+  "migrationAuthorized": false,
+  "persistenceAuthorized": false,
+  "operatorApiAuthorized": false,
+  "operatorCliAuthorized": false,
+  "researchConsoleChangeAuthorized": false,
+  "deploymentChangeAuthorized": false,
+  "credentialConfigurationAuthorized": false,
+  "realAgyInvocationAuthorized": false,
+  "realCodexInvocationAuthorized": false,
+  "providerCallsAuthorized": false,
+  "externalRequestsAuthorized": false,
+  "modelRunsAuthorized": false,
+  "providerAttemptsAuthorized": false,
+  "modelRunAuditsAuthorized": false,
+  "productionBrooksDecisionsAuthorized": false,
+  "realDataAuthorized": false,
+  "protectedWindowAccessAuthorized": false,
+  "replayAuthorized": false,
+  "trainingAuthorized": false,
+  "paperOrLiveAuthorized": false,
+  "tradingAuthorized": false,
+  "terminalBoundary": "accept only exact commit e9c1981d37a6742011a8b8fdd854f9279c6d7fbd as an offline fake-only implementation foundation, then stop before Prompt Package V2 approval or activation, payload preparation, installed-CLI privacy or capability proof, production cleanup or supervision, persistence, credential or deployment changes, real agy or codex invocation, provider request, runtime record creation, production decision, real data, replay, training, Paper, Live, or trading",
+  "acceptanceRecordHash": "sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7"
+}

@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, PHASE 5A, AND PHASE 5B1 CONTRACT/IMPLEMENTATION AUTHORITY ARE ACCEPTED; THE FIRST EXACT PHASE 5B1 STANDARD PACKAGE ACTIVATION AND PREPARED PAYLOAD WERE SEPARATELY AUTHORIZED AND PERFORMED. PHASE 5B2A DESIGN IS ACCEPTED, AND THE PHASE 5B2B OFFLINE ADAPTER/FAKE-EXECUTABLE/PROMPT-V2-PROPOSAL BOUNDARY WAS SEPARATELY AUTHORIZED AND IMPLEMENTED. PROMPT V2 APPROVAL/ACTIVATION, REAL CLI INVOCATION, ALL PROVIDER CALLS, AND PHASE 4B, SELECTOR V2, OR LATER AUTHORITY REMAIN SEPARATE.
+Status: DRAFT SEQUENCE. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, PHASE 4A, PHASE 5A, AND PHASE 5B1 CONTRACT/IMPLEMENTATION AUTHORITY ARE ACCEPTED; THE FIRST EXACT PHASE 5B1 STANDARD PACKAGE ACTIVATION AND PREPARED PAYLOAD WERE SEPARATELY AUTHORIZED AND PERFORMED. PHASE 5B2A DESIGN IS ACCEPTED, AND EXACT PHASE 5B2B IMPLEMENTATION COMMIT `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` IS ACCEPTED ONLY AS A FAKE-ONLY OFFLINE FOUNDATION. PROMPT V2 APPROVAL/ACTIVATION, INSTALLED-CLI CAPABILITY/PRIVACY PROOF, REAL CLI INVOCATION, ALL PROVIDER CALLS, AND PHASE 4B, SELECTOR V2, OR LATER AUTHORITY REMAIN SEPARATE.
 
 ## Delivery model
 
@@ -171,9 +171,9 @@ Accepted design-only ADR-0022, its contract, reuse scan, implementation plan, an
 
 Phase 5B2A design is complete. At its accepted design commit it added no code, dependency, configuration, credential, V2 package bytes, subprocess invocation, provider request, ModelRun, response, or BrooksDecision. The later offline code below exists only under the separate Phase 5B2B implementation authorization.
 
-### Phase 5B2B: offline controlled-adapter implementation candidate
+### Phase 5B2B: accepted fake-only offline controlled-adapter foundation
 
-`PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorized only contracts, offline workspace/process code, repository fake executables/tests, an exact Prompt Package V2 proposal, exports, and governance synchronization.
+`PHASE5B2B_IMPLEMENTATION_AUTHORIZATION_V1.json`, hash `sha256:b13c748a744d2c772006af596411e8ece145a99feed02a043e31cb5cb3f349ae`, separately authorized only contracts, offline workspace/process code, repository fake executables/tests, an exact Prompt Package V2 proposal, exports, and governance synchronization. `PHASE5B2B_IMPLEMENTATION_ACCEPTANCE_V1.json`, hash `sha256:609994e62021317f6a0c1de1886061a1b091d443b2f4422bcc2f942030a7ccf7`, accepts exact commit `e9c1981d37a6742011a8b8fdd854f9279c6d7fbd` and tree `d99df5d3a794d3056617383411f1caa78729666e` only within that fake-only offline boundary.
 
 The implemented offline boundary:
 
@@ -185,18 +185,17 @@ The implemented offline boundary:
 - accepts only one closed versioned terminal envelope containing one unchanged terminal JSON result and rejects prose, ANSI, partial/multiple JSON, invalid UTF-8, unknown events, or tool/subagent use;
 - produces a non-authorized Codex argv only from bounded injected capability evidence and a self-hashed proof, explicitly disables web search, and keeps Antigravity unavailable because exact non-interactive PNG transport remains unimplemented and unproved.
 
-This boundary adds no migration, persistence, API/CLI route, Research Console path, deployment change, credentials, real `agy`/Codex execution, external request, ModelCall/ModelRun/ProviderAttempt/Audit, response, or production BrooksDecision.
+The accepted boundary adds no migration, persistence, API/CLI route, Research Console path, deployment change, credentials, real `agy`/Codex execution, external request, ModelCall/ModelRun/ProviderAttempt/Audit, response, or production BrooksDecision. It does not accept the injected Codex `--cd` mapping as installed-CLI privacy/isolation proof, caller-owned cleanup as a production signal/crash lifecycle, the process-local fake concurrency guard as production supervision, or either stdout events or `terminal.json` as the future authoritative response source.
 
 Still requires separate immutable decisions for:
 
-- independent acceptance of the exact offline implementation candidate;
 - exact Prompt Package V2 content approval, activation, and preparation;
 - Antigravity privacy/retention and exact PNG-transport proof;
-- no-hidden-retry proof and live capability evidence for both CLI surfaces;
-- any production invocation/persistence seam and a separately authorized first bounded synthetic external call;
+- no-hidden-retry, machine-output, user-config/rule exclusion, ordinary-home isolation, and output-protocol proof for the installed CLI surfaces;
+- any production cleanup/supervisor and persistence seam plus a separately authorized first bounded synthetic external call;
 - any later evaluation expansion under frozen Phase 6 gates.
 
-Current exit: offline process, parser, geometry, resource, and authority behavior is locally testable with invented inputs and a fake executable. The work stops before package approval and before every external/provider operation.
+Current exit: the exact fake-only offline process, parser, geometry, resource, and authority foundation is accepted. Work remains stopped before package approval and before every installed-CLI, external-provider, runtime-record, production-data, replay, training, or trading operation.
 
 ## Phase 6: Semantic evaluation
 
