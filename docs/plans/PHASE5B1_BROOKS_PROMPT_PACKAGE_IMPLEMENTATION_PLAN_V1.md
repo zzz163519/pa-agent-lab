@@ -1,8 +1,8 @@
 # Phase 5B1 Brooks Prompt Package Implementation Plan V1
 
-Status: PROPOSED CONTRACT-TDD PLAN. EXACT PACKAGE HASH IS APPROVED; IMPLEMENTATION START IS PENDING.
+Status: IMPLEMENTED AND VERIFIED WITH CONTRACT TDD. EXACT PACKAGE HASH IS APPROVED; OFFLINE IMPLEMENTATION IS COMPLETE. ACTIVATION AND PROVIDER AUTHORITY REMAIN UNAUTHORIZED.
 
-Depends on proposed contracts and one approved exact package identity:
+Depends on accepted contracts, the separate implementation authorization, and one approved exact package identity:
 
 - `docs/decisions/ADR-0021-IMMUTABLE-BROOKS-PROMPT-PACKAGE-AND-OFFLINE-VALIDATION.md`;
 - `docs/contracts/PHASE5B1_BROOKS_PROMPT_PACKAGE_AND_OFFLINE_VALIDATION_V1.md`;
@@ -10,7 +10,7 @@ Depends on proposed contracts and one approved exact package identity:
 
 ## Objective
 
-Implement, only after separate approval, the smallest offline Phase 5B1 slice:
+Implement the smallest authorized offline Phase 5B1 slice:
 
 1. verify and govern one exact Brooks Prompt Package;
 2. permit explicit activation of a Calvin-approved package;
@@ -20,7 +20,7 @@ Implement, only after separate approval, the smallest offline Phase 5B1 slice:
 
 ## Approval gates
 
-Before implementation begins, all of the following must be separately true:
+Before implementation began, all of the following were separately satisfied:
 
 - satisfied for package content: Calvin explicitly approved package hash `sha256:b67896d15d5e2542c7bebaeca2b60c67cbb5510ef359efaca7f44e42fa17b0d9`, recorded in `docs/prompts/BROOKS_PROMPT_PACKAGE_V1.approval.json`;
 - ADR-0021 and the Phase 5B1 contract have accepted status;
@@ -54,9 +54,9 @@ Reject/defer Vercel AI SDK, TypeChat, Instructor.js, Langfuse, LangWatch, generi
 - Do not create simulated ModelRun/attempt/audit rows.
 - Tests prove contract behavior, not source completeness, model quality, probability, profitability, or cost viability.
 
-## Proposed file map
+## Implemented file map
 
-The future implementation should remain within this bounded map unless a newly discovered need is separately reviewed.
+The implementation remains within this bounded map:
 
 ### Domain contracts
 
@@ -375,4 +375,4 @@ If implementation discovers that the existing `OutboundModelPayloadV1`, BrooksDe
 
 ## Explicit non-authority
 
-This plan does not authorize itself. It authorizes no code edits, package activation, provider selection/call, response persistence, production BrooksDecision, geometry/cost assumption, real data, protected window, outcome, replay, training, Paper, Live, exchange, wallet, order, or real-money action.
+This plan does not authorize itself. `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json` separately authorizes only the bounded offline code, migrations, API/CLI, and deployment work in this plan. Neither record authorizes performing package activation, provider selection/call, response persistence, production BrooksDecision, geometry/cost assumption, real data, protected window, outcome, replay, training, Paper, Live, exchange, wallet, order, or real-money action.

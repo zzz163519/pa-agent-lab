@@ -8,6 +8,7 @@ RUN corepack enable
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 COPY packages ./packages
+COPY docs/prompts ./docs/prompts
 COPY infra/phase2 ./infra/phase2
 
 RUN --mount=type=cache,id=pa-agent-lab-pnpm-store,target=/pnpm/store \

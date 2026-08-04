@@ -72,6 +72,16 @@ import {
 } from "@pa-agent-lab/persistence-contracts";
 
 import {
+  createPreparedPolicyPayloadStoreV1,
+  type PreparedPolicyPayloadStoreV1,
+} from "./prepared-policy-payload-store-v1.ts";
+import {
+  createPromptPackageStoreV1,
+  createRepositoryPromptPackageArtifactLoaderV1,
+  type PromptPackageArtifactLoaderV1,
+  type PromptPackageStoreV1,
+} from "./prompt-package-store-v1.ts";
+import {
   createPolicyAssemblyStoreV1,
   createLocalPngArtifactValidatorV1,
   type PolicyAssemblyArtifactValidatorV1,
@@ -106,7 +116,9 @@ export interface CaseStoreMutationResultV1 {
 
 export interface CaseStoreV1
   extends DoctrineRetrievalStoreV1,
-    PolicyAssemblyStoreV1 {
+    PolicyAssemblyStoreV1,
+    PromptPackageStoreV1,
+    PreparedPolicyPayloadStoreV1 {
   appendSyntheticCaseBundle(
     bundle: SyntheticCaseBundleV1,
   ): Promise<Readonly<CaseStoreMutationResultV1>>;
@@ -170,6 +182,7 @@ export function createPostgresCaseStoreV1(options: {
   readonly doctrineRetrievalRuntime: typeof DOCTRINE_RETRIEVAL_RUNTIME;
   readonly authorizedSyntheticBundleHashes?: readonly ContractSha256[];
   readonly artifactRoot?: string;
+  readonly promptPackageRoot?: string;
 }): PostgresCaseStoreHandleV1 {
   const pool = new pg.Pool({
     connectionString: options.connectionString,
@@ -184,6 +197,12 @@ export function createPostgresCaseStoreV1(options: {
         options.artifactRoot === undefined
           ? null
           : createLocalPngArtifactValidatorV1(options.artifactRoot),
+      loadPromptPackageArtifacts:
+        options.promptPackageRoot === undefined
+          ? null
+          : createRepositoryPromptPackageArtifactLoaderV1(
+              options.promptPackageRoot,
+            ),
     }),
     close: () => pool.end(),
   };
@@ -195,6 +214,7 @@ export function createCaseStore(
     readonly doctrineRetrievalRuntime?: typeof DOCTRINE_RETRIEVAL_RUNTIME;
     readonly authorizedSyntheticBundleHashes?: readonly ContractSha256[];
     readonly validateChartArtifact?: PolicyAssemblyArtifactValidatorV1 | null;
+    readonly loadPromptPackageArtifacts?: PromptPackageArtifactLoaderV1 | null;
   } = {},
 ): CaseStoreV1 {
   const doctrineRetrieval = createDoctrineRetrievalStoreV1(database, {
@@ -208,9 +228,20 @@ export function createCaseStore(
       options.authorizedSyntheticBundleHashes ?? [],
     validateChartArtifact: options.validateChartArtifact ?? null,
   });
+  const promptPackage = createPromptPackageStoreV1(
+    database,
+    options.loadPromptPackageArtifacts ?? null,
+  );
+  const preparedPolicyPayload = createPreparedPolicyPayloadStoreV1(database, {
+    authorizedSyntheticBundleHashes:
+      options.authorizedSyntheticBundleHashes ?? [],
+    loadPromptPackageArtifacts: options.loadPromptPackageArtifacts ?? null,
+  });
   return {
     ...doctrineRetrieval,
     ...policyAssembly,
+    ...promptPackage,
+    ...preparedPolicyPayload,
     appendSyntheticCaseBundle: (bundle) => appendBundle(database, bundle),
     appendBrooksDecision: (decision) => appendDecision(database, decision),
     appendCalvinReview: (review) => appendReview(database, review),
@@ -286,10 +317,13 @@ function isRetryableTransactionError(error: unknown): boolean {
   if (error.code === "40001" || error.code === "40P01") {
     return true;
   }
+  if (error.code !== "23505" || !("constraint" in error)) {
+    return false;
+  }
   return (
-    error.code === "23505" &&
-    "constraint" in error &&
-    error.constraint === "pa_policy_assembly_natural_identity_uq"
+    error.constraint === "pa_policy_assembly_natural_identity_uq" ||
+    error.constraint === "pa_prepared_policy_payloads_pkey" ||
+    error.constraint === "pa_prepared_policy_payload_natural_identity_uq"
   );
 }
 

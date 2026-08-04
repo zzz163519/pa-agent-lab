@@ -1,0 +1,1294 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "PA Agent Lab Phase 5B1 Prompt Package V1",
+    "version": "1.0.0"
+  },
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "paths": {
+    "/v1/prompt-package-activations": {
+      "post": {
+        "operationId": "activateBrooksPromptPackage",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateBrooksPromptPackageCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact Phase 5B1 resource already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrooksPromptPackageActivationAuthorityV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Phase 5B1 offline resource inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrooksPromptPackageActivationAuthorityV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/prompt-package-rollback-activations": {
+      "post": {
+        "operationId": "rollbackBrooksPromptPackage",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RollbackBrooksPromptPackageCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact Phase 5B1 resource already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrooksPromptPackageActivationAuthorityV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Phase 5B1 offline resource inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrooksPromptPackageActivationAuthorityV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/prompt-package-activations/current": {
+      "get": {
+        "operationId": "getCurrentBrooksPromptPackageActivation",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phase 5B1 offline resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrooksPromptPackageActivationAuthorityV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/prepared-policy-payloads": {
+      "post": {
+        "operationId": "preparePolicyPayload",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreparePolicyPayloadCommandV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact Phase 5B1 resource already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreparedPolicyPayloadV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Phase 5B1 offline resource inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreparedPolicyPayloadV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/prepared-policy-payloads/{preparationId}": {
+      "get": {
+        "operationId": "getPreparedPolicyPayload",
+        "security": [
+          {
+            "operatorToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "preparationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ContractSha256"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phase 5B1 offline resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreparedPolicyPayloadV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Rejected by the Phase 5B1 offline contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseApiErrorV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BrooksPromptPackageManifestV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-prompt-package-manifest.v1"
+          },
+          "packageVersion": {
+            "type": "string",
+            "const": "brooks-prompt-package.v1"
+          },
+          "prompt": {
+            "type": "object",
+            "properties": {
+              "mediaType": {
+                "type": "string",
+                "const": "text/plain; charset=utf-8"
+              },
+              "byteLength": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "contentHash": {
+                "$ref": "#/components/schemas/ContractSha256"
+              }
+            },
+            "required": [
+              "mediaType",
+              "byteLength",
+              "contentHash"
+            ],
+            "additionalProperties": false
+          },
+          "responseSchema": {
+            "type": "object",
+            "properties": {
+              "schemaId": {
+                "type": "string"
+              },
+              "schemaVersion": {
+                "type": "string",
+                "const": "brooks-identity-free-response.schema.v1"
+              },
+              "mediaType": {
+                "type": "string",
+                "const": "application/schema+json"
+              },
+              "byteLength": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "contentHash": {
+                "$ref": "#/components/schemas/ContractSha256"
+              }
+            },
+            "required": [
+              "schemaId",
+              "schemaVersion",
+              "mediaType",
+              "byteLength",
+              "contentHash"
+            ],
+            "additionalProperties": false
+          },
+          "brooksDecisionContractVersion": {
+            "type": "string",
+            "const": "brooks-decision.v1"
+          },
+          "validatorVersion": {
+            "type": "string",
+            "const": "brooks-identity-free-response-validator.v1"
+          },
+          "packageHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "packageVersion",
+          "prompt",
+          "responseSchema",
+          "brooksDecisionContractVersion",
+          "validatorVersion",
+          "packageHash"
+        ],
+        "additionalProperties": false
+      },
+      "ContractSha256": {
+        "type": "string",
+        "pattern": "^sha256:[0-9a-f]{64}$"
+      },
+      "BrooksPromptPackageApprovalV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-prompt-package-approval.v1"
+          },
+          "approvalId": {
+            "type": "string"
+          },
+          "packageVersion": {
+            "type": "string",
+            "const": "brooks-prompt-package.v1"
+          },
+          "packageHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "approvedBy": {
+            "type": "string",
+            "const": "Calvin"
+          },
+          "approvedAt": {
+            "type": "string"
+          },
+          "approvalMethod": {
+            "type": "string",
+            "const": "direct-calvin-instruction"
+          },
+          "approvalScope": {
+            "type": "string",
+            "const": "exact-package-content-only"
+          },
+          "phase5b1ImplementationAuthorized": {
+            "type": "boolean",
+            "const": false
+          },
+          "packageActivationPerformed": {
+            "type": "boolean",
+            "const": false
+          },
+          "providerCallsAuthorized": {
+            "type": "boolean",
+            "const": false
+          },
+          "approvalRecordHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "approvalId",
+          "packageVersion",
+          "packageHash",
+          "approvedBy",
+          "approvedAt",
+          "approvalMethod",
+          "approvalScope",
+          "phase5b1ImplementationAuthorized",
+          "packageActivationPerformed",
+          "providerCallsAuthorized",
+          "approvalRecordHash"
+        ],
+        "additionalProperties": false
+      },
+      "BrooksPromptPackageActivationV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-prompt-package-activation.v1"
+          },
+          "activationKind": {
+            "type": "string",
+            "const": "standard"
+          },
+          "activationSequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "packageHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "approvalRecordHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "operatorPrincipal": {
+            "type": "string",
+            "const": "local:phase2-operator"
+          },
+          "activationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "activationKind",
+          "activationSequence",
+          "packageHash",
+          "approvalRecordHash",
+          "operatorPrincipal",
+          "activationId"
+        ],
+        "additionalProperties": false
+      },
+      "BrooksPromptPackageRollbackActivationV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-prompt-package-rollback-activation.v1"
+          },
+          "activationKind": {
+            "type": "string",
+            "const": "rollback"
+          },
+          "activationSequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "replacesActivationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "targetActivationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "packageHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "approvalRecordHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f-\\u009f]*$"
+          },
+          "reasonHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "operatorPrincipal": {
+            "type": "string",
+            "const": "local:phase2-operator"
+          },
+          "activationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "activationKind",
+          "activationSequence",
+          "replacesActivationId",
+          "targetActivationId",
+          "packageHash",
+          "approvalRecordHash",
+          "reason",
+          "reasonHash",
+          "operatorPrincipal",
+          "activationId"
+        ],
+        "additionalProperties": false
+      },
+      "BrooksPromptPackageActivationAuthorityV1": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/BrooksPromptPackageActivationV1"
+          },
+          {
+            "$ref": "#/components/schemas/BrooksPromptPackageRollbackActivationV1"
+          }
+        ]
+      },
+      "PreparedPolicyPayloadV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "prepared-policy-payload.v1"
+          },
+          "preparationRulesVersion": {
+            "type": "string",
+            "const": "prepared-policy-payload-rules.v1"
+          },
+          "sourceScope": {
+            "type": "string",
+            "const": "synthetic_fixture_only"
+          },
+          "preparationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "assemblyId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "packageActivationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "packageHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "promptHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "responseSchemaHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "outputSchemaVersion": {
+            "type": "string"
+          },
+          "validatorVersion": {
+            "type": "string",
+            "const": "brooks-identity-free-response-validator.v1"
+          },
+          "payload": {
+            "type": "object",
+            "properties": {
+              "schemaVersion": {
+                "type": "string",
+                "const": "outbound-model-payload.v1"
+              },
+              "payloadHash": {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              "policyInput": {
+                "$ref": "#/components/schemas/BrooksPolicyInputV1"
+              },
+              "promptHash": {
+                "$ref": "#/components/schemas/ContractSha256"
+              },
+              "outputSchemaVersion": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "schemaVersion",
+              "payloadHash",
+              "policyInput",
+              "promptHash",
+              "outputSchemaVersion"
+            ],
+            "additionalProperties": false
+          },
+          "payloadHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "operatorPrincipal": {
+            "type": "string",
+            "const": "local:phase2-operator"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "preparationRulesVersion",
+          "sourceScope",
+          "preparationId",
+          "assemblyId",
+          "packageActivationId",
+          "packageHash",
+          "promptHash",
+          "responseSchemaHash",
+          "outputSchemaVersion",
+          "validatorVersion",
+          "payload",
+          "payloadHash",
+          "operatorPrincipal"
+        ],
+        "additionalProperties": false
+      },
+      "BrooksPolicyInputV1": {
+        "type": "object",
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "brooks-policy-input.v1"
+          },
+          "inputHash": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "market": {
+            "type": "object",
+            "properties": {
+              "barDurationSeconds": {
+                "type": "integer",
+                "const": 300,
+                "minimum": 0
+              },
+              "lastVisibleBarId": {
+                "type": "string"
+              },
+              "visibleBarCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 120
+              },
+              "isLeftCensored": {
+                "type": "boolean"
+              },
+              "leftCensoredBarsMissing": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 80
+              },
+              "normalization": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "const": "first_visible_close_equals_100"
+                  },
+                  "base": {
+                    "type": "number",
+                    "const": 100
+                  },
+                  "anchorBarId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "method",
+                  "base",
+                  "anchorBarId"
+                ],
+                "additionalProperties": false
+              },
+              "bars": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "barId": {
+                      "type": "string"
+                    },
+                    "sequence": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "open": {
+                      "type": "number"
+                    },
+                    "high": {
+                      "type": "number"
+                    },
+                    "low": {
+                      "type": "number"
+                    },
+                    "close": {
+                      "type": "number"
+                    },
+                    "continuityFromPrevious": {
+                      "$ref": "#/components/schemas/BarContinuityStateV1"
+                    }
+                  },
+                  "required": [
+                    "barId",
+                    "sequence",
+                    "open",
+                    "high",
+                    "low",
+                    "close",
+                    "continuityFromPrevious"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 40,
+                "maxItems": 120
+              }
+            },
+            "required": [
+              "barDurationSeconds",
+              "lastVisibleBarId",
+              "visibleBarCount",
+              "isLeftCensored",
+              "leftCensoredBarsMissing",
+              "normalization",
+              "bars"
+            ],
+            "additionalProperties": false
+          },
+          "charts": {
+            "type": "object",
+            "properties": {
+              "context": {
+                "type": "object",
+                "properties": {
+                  "panel": {
+                    "type": "string",
+                    "enum": [
+                      "context",
+                      "detail"
+                    ]
+                  },
+                  "mediaType": {
+                    "type": "string",
+                    "const": "image/png"
+                  },
+                  "contentHash": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "barIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 40,
+                    "maxItems": 120
+                  },
+                  "lastVisibleBarId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "panel",
+                  "mediaType",
+                  "contentHash",
+                  "barIds",
+                  "lastVisibleBarId"
+                ],
+                "additionalProperties": false
+              },
+              "detail": {
+                "type": "object",
+                "properties": {
+                  "panel": {
+                    "type": "string",
+                    "enum": [
+                      "context",
+                      "detail"
+                    ]
+                  },
+                  "mediaType": {
+                    "type": "string",
+                    "const": "image/png"
+                  },
+                  "contentHash": {
+                    "$ref": "#/components/schemas/ContractSha256"
+                  },
+                  "barIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 40,
+                    "maxItems": 120
+                  },
+                  "lastVisibleBarId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "panel",
+                  "mediaType",
+                  "contentHash",
+                  "barIds",
+                  "lastVisibleBarId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "context",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "doctrine": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "doctrineId": {
+                  "type": "string"
+                },
+                "concept": {
+                  "type": "string"
+                },
+                "rule": {
+                  "type": "string"
+                },
+                "appliesWhen": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "avoidWhen": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "decisionEffect": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "doctrineId",
+                "concept",
+                "rule",
+                "appliesWhen",
+                "avoidWhen",
+                "decisionEffect"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "inputHash",
+          "market",
+          "charts",
+          "doctrine"
+        ],
+        "additionalProperties": false
+      },
+      "BarContinuityStateV1": {
+        "type": "string",
+        "enum": [
+          "contiguous",
+          "session_boundary",
+          "missing_data",
+          "unknown"
+        ]
+      },
+      "ActivateBrooksPromptPackageCommandV1": {
+        "type": "object",
+        "additionalProperties": {
+          "not": {}
+        }
+      },
+      "RollbackBrooksPromptPackageCommandV1": {
+        "type": "object",
+        "properties": {
+          "targetActivationId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f-\\u009f]*$"
+          }
+        },
+        "required": [
+          "targetActivationId",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "PreparePolicyPayloadCommandV1": {
+        "type": "object",
+        "properties": {
+          "assemblyId": {
+            "$ref": "#/components/schemas/ContractSha256"
+          }
+        },
+        "required": [
+          "assemblyId"
+        ],
+        "additionalProperties": false
+      },
+      "CaseApiErrorV1": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "code": {
+            "$ref": "#/components/schemas/CaseApiErrorCodeV1"
+          },
+          "message": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "case-api-error.v1"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "schemaVersion"
+        ],
+        "additionalProperties": false
+      },
+      "CaseApiErrorCodeV1": {
+        "type": "string",
+        "enum": [
+          "INVALID_JSON",
+          "INVALID_RECORD",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_FOUND",
+          "IDENTITY_CONFLICT",
+          "BODY_TOO_LARGE",
+          "DEPENDENCY_UNAVAILABLE",
+          "INTERNAL_ERROR"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "operatorToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "PA-Local-Operator-Token"
+      }
+    }
+  },
+  "x-pa-phase5b1-record-kinds": {
+    "prompt_package_manifest": "BrooksPromptPackageManifestV1",
+    "prompt_package_approval": "BrooksPromptPackageApprovalV1",
+    "prompt_package_activation": "BrooksPromptPackageActivationAuthorityV1",
+    "prepared_policy_payload": "PreparedPolicyPayloadV1"
+  },
+  "x-pa-route-manifest": [
+    {
+      "method": "POST",
+      "path": "/v1/prompt-package-activations",
+      "openapiPath": "/v1/prompt-package-activations",
+      "operationId": "activateBrooksPromptPackage",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/prompt-package-rollback-activations",
+      "openapiPath": "/v1/prompt-package-rollback-activations",
+      "operationId": "rollbackBrooksPromptPackage",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/prompt-package-activations/current",
+      "openapiPath": "/v1/prompt-package-activations/current",
+      "operationId": "getCurrentBrooksPromptPackageActivation",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/prepared-policy-payloads",
+      "openapiPath": "/v1/prepared-policy-payloads",
+      "operationId": "preparePolicyPayload",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/prepared-policy-payloads/:preparationId",
+      "openapiPath": "/v1/prepared-policy-payloads/{preparationId}",
+      "operationId": "getPreparedPolicyPayload",
+      "authentication": "operator_token",
+      "transport": "request_response"
+    }
+  ],
+  "x-pa-runtime-authority": "offline_synthetic_only_package_governance_and_payload_preparation_no_external_calls_or_decisions"
+}

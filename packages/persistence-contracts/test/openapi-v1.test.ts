@@ -9,6 +9,7 @@ import {
   buildDoctrineApprovalTransportDocumentsV1,
   buildDoctrineRetrievalTransportDocumentsV1,
   buildPhase5APolicyAssemblyTransportDocumentsV1,
+  buildPhase5B1PromptPackageTransportDocumentsV1,
   buildReplayBoundaryTransportDocumentsV1,
   buildReviewWorkflowTransportDocumentsV1,
   buildTransportSchemaDocumentsV1,
@@ -172,6 +173,45 @@ describe("generated Phase 1 transport schemas V1", () => {
     assert.doesNotMatch(
       JSON.stringify(document),
       /reviewerToken|embedding|provider|modelRun|console|CREATE EXTENSION|"vector"/i,
+    );
+    for (const reference of collectReferences(document)) {
+      assert.match(reference, /^#\/components\/schemas\/[A-Za-z0-9_]+$/);
+      const name = reference.slice("#/components/schemas/".length);
+      assert.ok(document.components.schemas[name], `unresolved schema: ${name}`);
+    }
+  });
+
+  it("publishes Phase 5B1 operator-only offline package and preparation schemas", async () => {
+    const generated = buildPhase5B1PromptPackageTransportDocumentsV1(packageRoot);
+    const [schemaBundle, openapi] = await Promise.all([
+      readJson(resolve(packageRoot, "schemas/phase5b1-prompt-package-v1.schema.json")),
+      readJson(resolve(packageRoot, "openapi/phase5b1-prompt-package-v1.openapi.json")),
+    ]);
+    assert.deepEqual(schemaBundle, generated.schemaBundle);
+    assert.deepEqual(openapi, generated.openapi);
+    const document = openapi as {
+      readonly paths: Record<string, unknown>;
+      readonly components: {
+        readonly schemas: Record<string, unknown>;
+        readonly securitySchemes: Record<string, unknown>;
+      };
+      readonly "x-pa-runtime-authority": string;
+    };
+    assert.deepEqual(Object.keys(document.paths), [
+      "/v1/prompt-package-activations",
+      "/v1/prompt-package-rollback-activations",
+      "/v1/prompt-package-activations/current",
+      "/v1/prepared-policy-payloads",
+      "/v1/prepared-policy-payloads/{preparationId}",
+    ]);
+    assert.deepEqual(Object.keys(document.components.securitySchemes), ["operatorToken"]);
+    assert.equal(
+      document.components.schemas.ActivateBrooksPromptPackageCommandV1 !== undefined,
+      true,
+    );
+    assert.doesNotMatch(
+      JSON.stringify(document),
+      /reviewerToken|providerId|modelId|modelRunId|attemptId|real data|replay|trading|CREATE EXTENSION|"vector"/i,
     );
     for (const reference of collectReferences(document)) {
       assert.match(reference, /^#\/components\/schemas\/[A-Za-z0-9_]+$/);

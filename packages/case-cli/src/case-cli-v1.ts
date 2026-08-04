@@ -9,6 +9,7 @@ import {
   persistAnonymousChartArtifacts,
 } from "@pa-agent-lab/chart-renderer";
 import {
+  normalizeBrooksPromptPackageRollbackReason,
   normalizeDoctrineRollbackReason,
 } from "@pa-agent-lab/contracts";
 import { assertCaseAuditViewIntegrity } from "@pa-agent-lab/persistence-contracts";
@@ -43,6 +44,7 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
         "repeat-index": { type: "string" },
         "case-hash": { type: "string" },
         "assembly-id": { type: "string" },
+        "preparation-id": { type: "string" },
         "failure-id": { type: "string" },
       },
     });
@@ -129,6 +131,75 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
       return 0;
     }
 
+    if (command === "prompt-package") {
+      const subcommand = parsed.positionals[1];
+      if (subcommand === "activate") {
+        assertExactCommandShape(
+          parsed.positionals,
+          parsed.values,
+          2,
+          [],
+          "prompt-package activate accepts no package selection or extra arguments",
+        );
+        options.stdout(
+          JSON.stringify(
+            await request("POST", "/v1/prompt-package-activations", {}),
+          ),
+        );
+        return 0;
+      }
+      if (subcommand === "current") {
+        assertExactCommandShape(
+          parsed.positionals,
+          parsed.values,
+          2,
+          [],
+          "prompt-package current accepts no identity or extra arguments",
+        );
+        options.stdout(
+          JSON.stringify(
+            await request("GET", "/v1/prompt-package-activations/current"),
+          ),
+        );
+        return 0;
+      }
+      if (subcommand === "rollback") {
+        assertExactCommandShape(
+          parsed.positionals,
+          parsed.values,
+          3,
+          ["reason"],
+          "prompt-package rollback accepts exactly one target identity and --reason",
+        );
+        const targetActivationId = requiredSha256(
+          "prompt-package rollback requires one target activation identity",
+          parsed.positionals[2],
+        );
+        const rawReason = parsed.values.reason;
+        if (rawReason === undefined) {
+          throw new Error("prompt-package rollback requires --reason");
+        }
+        let reason: string;
+        try {
+          reason = normalizeBrooksPromptPackageRollbackReason(rawReason);
+        } catch {
+          throw new Error(
+            "prompt-package rollback requires a normalized, control-free --reason with 1 through 500 Unicode characters",
+          );
+        }
+        options.stdout(
+          JSON.stringify(
+            await request("POST", "/v1/prompt-package-rollback-activations", {
+              targetActivationId,
+              reason,
+            }),
+          ),
+        );
+        return 0;
+      }
+      throw new Error("prompt-package requires activate, current, or rollback");
+    }
+
     if (command === "policy") {
       const subcommand = parsed.positionals[1];
       if (subcommand === "assemble") {
@@ -170,8 +241,51 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
         );
         return 0;
       }
+      if (subcommand === "prepare") {
+        assertExactCommandShape(
+          parsed.positionals,
+          parsed.values,
+          2,
+          ["assembly-id"],
+          "policy prepare accepts only --assembly-id",
+        );
+        const assemblyId = requiredSha256(
+          "policy prepare requires --assembly-id with one assembly identity",
+          parsed.values["assembly-id"],
+        );
+        options.stdout(
+          JSON.stringify(
+            await request("POST", "/v1/prepared-policy-payloads", {
+              assemblyId,
+            }),
+          ),
+        );
+        return 0;
+      }
+      if (subcommand === "prepared") {
+        assertExactCommandShape(
+          parsed.positionals,
+          parsed.values,
+          2,
+          ["preparation-id"],
+          "policy prepared accepts only --preparation-id",
+        );
+        const preparationId = requiredSha256(
+          "policy prepared requires --preparation-id with one preparation identity",
+          parsed.values["preparation-id"],
+        );
+        options.stdout(
+          JSON.stringify(
+            await request(
+              "GET",
+              `/v1/prepared-policy-payloads/${preparationId}`,
+            ),
+          ),
+        );
+        return 0;
+      }
       throw new Error(
-        "policy requires assemble, assembly, or assembly-failure",
+        "policy requires assemble, assembly, assembly-failure, prepare, or prepared",
       );
     }
 
@@ -442,7 +556,7 @@ export async function runCaseCliV1(options: CaseCliOptionsV1): Promise<number> {
     }
 
     throw new Error(
-      "command must be run-doctrine-ingestion, inspect-doctrine-snapshot, inspect-doctrine-ingestion, activate-doctrine-corpus, inspect-current-doctrine-activation, rollback-doctrine-corpus, inspect-doctrine-activation, policy, query-doctrine, inspect-doctrine-evidence, seed-doctrine-pilot, inspect-doctrine, approve-doctrine, retire-doctrine, seed-review-work-item, seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
+      "command must be run-doctrine-ingestion, inspect-doctrine-snapshot, inspect-doctrine-ingestion, activate-doctrine-corpus, inspect-current-doctrine-activation, rollback-doctrine-corpus, inspect-doctrine-activation, prompt-package, policy, query-doctrine, inspect-doctrine-evidence, seed-doctrine-pilot, inspect-doctrine, approve-doctrine, retire-doctrine, seed-review-work-item, seed-synthetic, inspect-case, get-chart, get-case, or get-audit",
     );
   } catch (error) {
     options.stderr(error instanceof Error ? error.message : String(error));
@@ -511,6 +625,22 @@ function requiredCaseHash(command: string, value: string | undefined): string {
     `${command} requires one Case SHA-256 identity`,
     value,
   );
+}
+
+function assertExactCommandShape(
+  positionals: readonly string[],
+  values: Readonly<Record<string, string | boolean | undefined>>,
+  positionalCount: number,
+  allowedOptions: readonly string[],
+  message: string,
+): void {
+  const allowed = new Set(["api-url", ...allowedOptions]);
+  if (
+    positionals.length !== positionalCount ||
+    Object.keys(values).some((key) => !allowed.has(key))
+  ) {
+    throw new Error(message);
+  }
 }
 
 function requiredSha256(message: string, value: string | undefined): string {

@@ -25,7 +25,7 @@ import { createPhase3bPilotDoctrineProposalsV1 } from "../../case-cli/src/doctri
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const adminUrl = process.env.PA_PHASE2_POSTGRES_ADMIN_URL;
 
-describe("real PostgreSQL Phase 5A integration", () => {
+describe("real PostgreSQL Phase 5A and Phase 5B1 integration", () => {
   it(
     "proves migrations, rollback serialization, ownership, and restricted application privileges",
     { skip: adminUrl === undefined },
@@ -55,8 +55,12 @@ describe("real PostgreSQL Phase 5A integration", () => {
         "applied",
         "applied",
         "applied",
+        "applied",
+        "applied",
       ]);
       assert.deepEqual(secondMigration.map(({ status }) => status), [
+        "existing",
+        "existing",
         "existing",
         "existing",
         "existing",
@@ -80,6 +84,7 @@ describe("real PostgreSQL Phase 5A integration", () => {
         doctrineRetrievalRuntime: DOCTRINE_RETRIEVAL_RUNTIME,
         authorizedSyntheticBundleHashes: [fixture.caseBundle.bundleHash],
         artifactRoot,
+        promptPackageRoot: resolve(root, "../docs/prompts"),
       });
       const applicationPool = new pg.Pool({
         connectionString: applicationUrl.toString(),
@@ -273,6 +278,82 @@ describe("real PostgreSQL Phase 5A integration", () => {
           doctrine_bindings: 9,
         }]);
 
+        const modelRecordCountsBefore = await applicationPool.query<{
+          readonly model_runs: number;
+          readonly provider_attempts: number;
+          readonly model_run_audits: number;
+          readonly brooks_decisions: number;
+        }>(`
+          SELECT
+            (SELECT count(*)::int FROM pa_model_runs) AS model_runs,
+            (SELECT count(*)::int FROM pa_provider_attempts) AS provider_attempts,
+            (SELECT count(*)::int FROM pa_model_run_audits) AS model_run_audits,
+            (SELECT count(*)::int FROM pa_brooks_decisions) AS brooks_decisions
+        `);
+        const packageActivations = await Promise.all([
+          handle.store.activateBrooksPromptPackage(),
+          handle.store.activateBrooksPromptPackage(),
+        ]);
+        assert.deepEqual(
+          packageActivations.map(({ status }) => status).sort(),
+          ["existing", "inserted"],
+        );
+        const packageActivation = packageActivations[0]!.activation;
+        assert.equal(packageActivation.activationKind, "standard");
+        assert.equal(
+          (await handle.store.getCurrentBrooksPromptPackageActivation())
+            ?.activationId,
+          packageActivation.activationId,
+        );
+        const preparations = await Promise.all([
+          handle.store.preparePolicyPayload({ assemblyId: assembly.assemblyId }),
+          handle.store.preparePolicyPayload({ assemblyId: assembly.assemblyId }),
+        ]);
+        assert.deepEqual(
+          preparations.map(({ status }) => status).sort(),
+          ["existing", "inserted"],
+        );
+        const preparation = preparations[0]!.preparedPayload;
+        assert.equal(preparation.assemblyId, assembly.assemblyId);
+        assert.equal(
+          preparation.packageActivationId,
+          packageActivation.activationId,
+        );
+        assert.equal(
+          (await handle.store.getPreparedPolicyPayload(
+            preparation.preparationId,
+          ))?.preparationId,
+          preparation.preparationId,
+        );
+        const phase5b1Rows = await applicationPool.query<{
+          readonly manifests: number;
+          readonly approvals: number;
+          readonly activations: number;
+          readonly preparations: number;
+        }>(`
+          SELECT
+            (SELECT count(*)::int FROM pa_prompt_package_manifests) AS manifests,
+            (SELECT count(*)::int FROM pa_prompt_package_approvals) AS approvals,
+            (SELECT count(*)::int FROM pa_prompt_package_activations) AS activations,
+            (SELECT count(*)::int FROM pa_prepared_policy_payloads) AS preparations
+        `);
+        assert.deepEqual(phase5b1Rows.rows, [{
+          manifests: 1,
+          approvals: 1,
+          activations: 1,
+          preparations: 1,
+        }]);
+        assert.deepEqual(
+          (await applicationPool.query(`
+            SELECT
+              (SELECT count(*)::int FROM pa_model_runs) AS model_runs,
+              (SELECT count(*)::int FROM pa_provider_attempts) AS provider_attempts,
+              (SELECT count(*)::int FROM pa_model_run_audits) AS model_run_audits,
+              (SELECT count(*)::int FROM pa_brooks_decisions) AS brooks_decisions
+          `)).rows,
+          modelRecordCountsBefore.rows,
+        );
+
         const retrieval = await handle.store.queryDoctrine({
           query: "breakout context follow through",
         });
@@ -369,6 +450,13 @@ describe("real PostgreSQL Phase 5A integration", () => {
           readonly assembly_authority_lock_execute: boolean;
           readonly assembly_read_insert: boolean;
           readonly assembly_update: boolean;
+          readonly prompt_authority_select: boolean;
+          readonly prompt_lock_execute: boolean;
+          readonly prompt_read_insert: boolean;
+          readonly prompt_update: boolean;
+          readonly prepared_read_insert: boolean;
+          readonly prepared_update: boolean;
+          readonly model_run_insert: boolean;
         }>(`
           SELECT
             pg_get_userbyid(relowner) AS owner,
@@ -406,7 +494,42 @@ describe("real PostgreSQL Phase 5A integration", () => {
               current_user,
               'pa_policy_assemblies',
               'UPDATE'
-            ) AS assembly_update
+            ) AS assembly_update,
+            has_table_privilege(
+              current_user,
+              'pa_prompt_package_activation_authority_v1',
+              'SELECT'
+            ) AS prompt_authority_select,
+            has_function_privilege(
+              current_user,
+              'pa_serialize_prompt_package_authority()',
+              'EXECUTE'
+            ) AS prompt_lock_execute,
+            has_table_privilege(
+              current_user,
+              'pa_prompt_package_activations',
+              'SELECT,INSERT'
+            ) AS prompt_read_insert,
+            has_table_privilege(
+              current_user,
+              'pa_prompt_package_activations',
+              'UPDATE'
+            ) AS prompt_update,
+            has_table_privilege(
+              current_user,
+              'pa_prepared_policy_payloads',
+              'SELECT,INSERT'
+            ) AS prepared_read_insert,
+            has_table_privilege(
+              current_user,
+              'pa_prepared_policy_payloads',
+              'UPDATE'
+            ) AS prepared_update,
+            has_table_privilege(
+              current_user,
+              'pa_model_runs',
+              'INSERT'
+            ) AS model_run_insert
           FROM pg_class WHERE relname = 'pa_policy_assemblies'
         `);
         assert.deepEqual(owner.rows, [
@@ -421,6 +544,13 @@ describe("real PostgreSQL Phase 5A integration", () => {
             assembly_authority_lock_execute: true,
             assembly_read_insert: true,
             assembly_update: false,
+            prompt_authority_select: true,
+            prompt_lock_execute: true,
+            prompt_read_insert: true,
+            prompt_update: false,
+            prepared_read_insert: true,
+            prepared_update: false,
+            model_run_insert: false,
           },
         ]);
         await assert.rejects(
@@ -441,6 +571,22 @@ describe("real PostgreSQL Phase 5A integration", () => {
         );
         await assert.rejects(
           () => applicationPool.query("TRUNCATE pa_policy_assembly_failures"),
+          { message: /permission denied/ },
+        );
+        await assert.rejects(
+          () => applicationPool.query("UPDATE pa_prompt_package_activations SET record = '{}'::jsonb"),
+          { message: /permission denied/ },
+        );
+        await assert.rejects(
+          () => applicationPool.query("DELETE FROM pa_prepared_policy_payloads"),
+          { message: /permission denied/ },
+        );
+        await assert.rejects(
+          () => applicationPool.query("TRUNCATE pa_prompt_package_manifests"),
+          { message: /permission denied/ },
+        );
+        await assert.rejects(
+          () => applicationPool.query("INSERT INTO pa_model_runs DEFAULT VALUES"),
           { message: /permission denied/ },
         );
         await assert.rejects(

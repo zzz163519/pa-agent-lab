@@ -5,6 +5,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./brooks-decision-v1": "./src/brooks-decision-v1.ts",
+    "./brooks-identity-free-response-v1": "./src/brooks-identity-free-response-v1.ts",
+    "./brooks-prompt-package-v1": "./src/brooks-prompt-package-v1.ts",
     "./calvin-review-v1": "./src/calvin-review-v1.ts",
     "./contract-utils-v1": "./src/contract-utils-v1.ts",
     "./decision-conflict-v1": "./src/decision-conflict-v1.ts",
@@ -15,6 +17,7 @@
     "./model-run-audit-v1": "./src/model-run-audit-v1.ts",
     "./policy-assembly-v1": "./src/policy-assembly-v1.ts",
     "./policy-input-v1": "./src/policy-input-v1.ts",
+    "./prepared-policy-payload-v1": "./src/prepared-policy-payload-v1.ts",
     "./replay-boundary-v1": "./src/replay-boundary-v1.ts"
   }
 }

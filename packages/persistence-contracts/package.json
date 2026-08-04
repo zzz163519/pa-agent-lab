@@ -4,12 +4,14 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./brooks-response-validation-v1": "./src/brooks-response-validation-v1.ts",
     "./case-store-transport-v1": "./src/case-store-transport-v1.ts",
     "./chart-artifact-metadata-v1": "./src/chart-artifact-metadata-v1.ts",
     "./doctrine-approval-transport-v1": "./src/doctrine-approval-transport-v1.ts",
     "./doctrine-retrieval-transport-v1": "./src/doctrine-retrieval-transport-v1.ts",
     "./persisted-json-v1": "./src/persisted-json-v1.ts",
     "./policy-assembly-transport-v1": "./src/policy-assembly-transport-v1.ts",
+    "./prompt-package-transport-v1": "./src/prompt-package-transport-v1.ts",
     "./review-workflow-transport-v1": "./src/review-workflow-transport-v1.ts"
   },
   "dependencies": {

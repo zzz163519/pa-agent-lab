@@ -38,7 +38,7 @@ ADR-0005 approves anonymous chart plus normalized causal OHLC and a GPT-5.6 vers
 
 Still open:
 
-- decide whether to accept ADR-0021 and the Phase 5B1 contract and authorize the offline implementation; the exact Prompt Package hash is already approved but not activated;
+- decide when Calvin will authorize an authenticated operator to perform the first package activation; the exact package content and offline activation capability are approved, but no activation has been performed or authorized;
 - define the deterministic source of `PlannedTradeGeometryV1` for provider responses before any production Long/Short acceptance;
 - pin exact provider/model versions and retirement behavior for Phase 5B2;
 - verify provider endpoints accept the approved image and structured-output contract;
@@ -55,7 +55,7 @@ Still open:
 
 - approve Phase 4B embedding runtime, `pgvector` extension/schema, vector or hybrid retrieval, reranking, provider/privacy boundaries, and associated quality contract;
 - define and approve any future Selector V2, including deterministic Case-to-query construction, multi-query union/deduplication, RRF, immutable selector evidence, and policy-worker retrieval authority;
-- decide whether to accept and implement the proposed Phase 5B1 offline package-governance/payload-preparation/fixture-validation contract; its exact package hash is approved, but no implementation or activation is authorized;
+- authorize the first explicit Phase 5B1 package activation only through a separate Calvin decision; the accepted implementation provides the capability but neither performs nor authorizes activation;
 - define and approve Phase 5B2 provider/model/transport/call/retention/retry/cost authority before any ModelRun or external request;
 - expand the exact public source allowlist only through a separately approved versioned decision.
 

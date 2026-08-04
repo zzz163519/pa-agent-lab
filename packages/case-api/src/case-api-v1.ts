@@ -30,12 +30,16 @@ import {
   DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1,
   DOCTRINE_RETRIEVAL_ROUTE_MANIFEST_V1,
   PHASE5A_POLICY_ASSEMBLY_ROUTE_MANIFEST_V1,
+  PHASE5B1_PROMPT_PACKAGE_ROUTE_MANIFEST_V1,
   REVIEW_WORKFLOW_ROUTE_MANIFEST_V1,
   PersistenceContractError,
   assertApproveDoctrineCommand,
   assertDoctrineActivationCommand,
   assertDoctrineCorpusRollbackCommand,
   assertCreatePolicyAssemblyCommand,
+  assertActivateBrooksPromptPackageCommand,
+  assertRollbackBrooksPromptPackageCommand,
+  assertPreparePolicyPayloadCommand,
   assertDoctrineIngestionCommand,
   assertDoctrineRetrievalQueryCommand,
   assertRetireDoctrineCommand,
@@ -50,6 +54,9 @@ import {
   type DoctrineActivationCommandV1,
   type DoctrineCorpusRollbackCommandV1,
   type CreatePolicyAssemblyCommandV1,
+  type ActivateBrooksPromptPackageCommandV1,
+  type RollbackBrooksPromptPackageCommandV1,
+  type PreparePolicyPayloadCommandV1,
   type DoctrineIngestionCommandV1,
   type DoctrineRetrievalQueryCommandV1,
   type DoctrineApprovalMutationResultV1,
@@ -73,6 +80,8 @@ const DOCTRINE_RETRIEVAL_SCHEMA_ID =
   "https://pa-agent-lab.local/schemas/phase4a-doctrine-retrieval-v1";
 const PHASE5A_POLICY_ASSEMBLY_SCHEMA_ID =
   "https://pa-agent-lab.local/schemas/phase5a-synthetic-policy-assembly-v1";
+const PHASE5B1_PROMPT_PACKAGE_SCHEMA_ID =
+  "https://pa-agent-lab.local/schemas/phase5b1-prompt-package-v1";
 const SHA256_PATTERN = "^sha256:[0-9a-f]{64}$";
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 const schemaBundle = JSON.parse(
@@ -132,6 +141,19 @@ const fastifyPhase5APolicyAssemblySchemaBundle = structuredClone(
   phase5aPolicyAssemblySchemaBundle,
 );
 delete fastifyPhase5APolicyAssemblySchemaBundle.$schema;
+const phase5b1PromptPackageSchemaBundle = JSON.parse(
+  readFileSync(
+    new URL(
+      "../../persistence-contracts/schemas/phase5b1-prompt-package-v1.schema.json",
+      import.meta.url,
+    ),
+    "utf8",
+  ),
+) as Record<string, unknown>;
+const fastifyPhase5B1PromptPackageSchemaBundle = structuredClone(
+  phase5b1PromptPackageSchemaBundle,
+);
+delete fastifyPhase5B1PromptPackageSchemaBundle.$schema;
 
 export interface OperatorPrincipalV1 {
   readonly principalId: "local:phase2-operator";
@@ -196,6 +218,7 @@ export async function createCaseApiV1(
   app.addSchema(fastifyDoctrineSchemaBundle);
   app.addSchema(fastifyDoctrineRetrievalSchemaBundle);
   app.addSchema(fastifyPhase5APolicyAssemblySchemaBundle);
+  app.addSchema(fastifyPhase5B1PromptPackageSchemaBundle);
   await app.register(fastifyHelmet, {
     global: true,
     contentSecurityPolicy: {
@@ -258,6 +281,10 @@ export async function createCaseApiV1(
       (entry) =>
         entry.path === request.routeOptions.url && entry.method === request.method,
     );
+    const phase5b1Route = PHASE5B1_PROMPT_PACKAGE_ROUTE_MANIFEST_V1.find(
+      (entry) =>
+        entry.path === request.routeOptions.url && entry.method === request.method,
+    );
     const workflowRoute = REVIEW_WORKFLOW_ROUTE_MANIFEST_V1.find(
       (entry) => entry.path === request.routeOptions.url,
     );
@@ -266,6 +293,7 @@ export async function createCaseApiV1(
     );
     const authentication =
       doctrineRoute?.authentication ??
+      phase5b1Route?.authentication ??
       phase5aRoute?.authentication ??
       retrievalRoute?.authentication ??
       workflowRoute?.authentication ??
@@ -790,6 +818,120 @@ export async function createCaseApiV1(
       return reply.send(failure);
     },
   );
+  app.post<{ Body: ActivateBrooksPromptPackageCommandV1 }>(
+    "/v1/prompt-package-activations",
+    {
+      schema: {
+        body: phase5b1PromptPackageSchemaRef(
+          "ActivateBrooksPromptPackageCommandV1",
+        ),
+        response: {
+          200: phase5b1PromptPackageSchemaRef(
+            "BrooksPromptPackageActivationAuthorityV1",
+          ),
+          201: phase5b1PromptPackageSchemaRef(
+            "BrooksPromptPackageActivationAuthorityV1",
+          ),
+        },
+      },
+    },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      assertActivateBrooksPromptPackageCommand(request.body);
+      const created = await options.store.activateBrooksPromptPackage();
+      return reply
+        .code(created.status === "inserted" ? 201 : 200)
+        .send(created.activation);
+    },
+  );
+  app.post<{ Body: RollbackBrooksPromptPackageCommandV1 }>(
+    "/v1/prompt-package-rollback-activations",
+    {
+      schema: {
+        body: phase5b1PromptPackageSchemaRef(
+          "RollbackBrooksPromptPackageCommandV1",
+        ),
+        response: {
+          200: phase5b1PromptPackageSchemaRef(
+            "BrooksPromptPackageActivationAuthorityV1",
+          ),
+          201: phase5b1PromptPackageSchemaRef(
+            "BrooksPromptPackageActivationAuthorityV1",
+          ),
+        },
+      },
+    },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      assertRollbackBrooksPromptPackageCommand(request.body);
+      const created = await options.store.rollbackBrooksPromptPackage(
+        request.body,
+      );
+      return reply
+        .code(created.status === "inserted" ? 201 : 200)
+        .send(created.activation);
+    },
+  );
+  app.get(
+    "/v1/prompt-package-activations/current",
+    {
+      schema: {
+        response: {
+          200: phase5b1PromptPackageSchemaRef(
+            "BrooksPromptPackageActivationAuthorityV1",
+          ),
+        },
+      },
+    },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      const activation =
+        await options.store.getCurrentBrooksPromptPackageActivation();
+      if (activation === null) throw notFound("Prompt Package activation");
+      return reply.send(activation);
+    },
+  );
+  app.post<{ Body: PreparePolicyPayloadCommandV1 }>(
+    "/v1/prepared-policy-payloads",
+    {
+      schema: {
+        body: phase5b1PromptPackageSchemaRef(
+          "PreparePolicyPayloadCommandV1",
+        ),
+        response: {
+          200: phase5b1PromptPackageSchemaRef("PreparedPolicyPayloadV1"),
+          201: phase5b1PromptPackageSchemaRef("PreparedPolicyPayloadV1"),
+        },
+      },
+    },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      assertPreparePolicyPayloadCommand(request.body);
+      const created = await options.store.preparePolicyPayload(request.body);
+      return reply
+        .code(created.status === "inserted" ? 201 : 200)
+        .send(created.preparedPayload);
+    },
+  );
+  app.get<{ Params: { readonly preparationId: ContractSha256 } }>(
+    "/v1/prepared-policy-payloads/:preparationId",
+    {
+      schema: {
+        params: hashParamsSchema("preparationId"),
+        response: {
+          200: phase5b1PromptPackageSchemaRef("PreparedPolicyPayloadV1"),
+        },
+      },
+    },
+    async (request, reply) => {
+      requireOperatorPrincipal(principals, request);
+      const prepared = await options.store.getPreparedPolicyPayload(
+        request.params.preparationId,
+      );
+      if (prepared === null) throw notFound("Prepared policy payload");
+      return reply.send(prepared);
+    },
+  );
   app.post<{ Body: DoctrineRetrievalQueryCommandV1 }>(
     "/v1/doctrine/retrieval-queries",
     { schema: { body: doctrineRetrievalSchemaRef("DoctrineRetrievalQueryCommandV1") } },
@@ -993,6 +1135,14 @@ function phase5aPolicyAssemblySchemaRef(
 ): { readonly $ref: string } {
   return {
     $ref: `${PHASE5A_POLICY_ASSEMBLY_SCHEMA_ID}#/$defs/${component}`,
+  };
+}
+
+function phase5b1PromptPackageSchemaRef(
+  component: string,
+): { readonly $ref: string } {
+  return {
+    $ref: `${PHASE5B1_PROMPT_PACKAGE_SCHEMA_ID}#/$defs/${component}`,
   };
 }
 

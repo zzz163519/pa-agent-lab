@@ -15,6 +15,7 @@ describe("Phase 3A trusted-loopback deployment artifacts", () => {
       dockerfile,
       /^FROM node:24\.18\.0-bookworm-slim@sha256:6f7b03f7c2c8e2e784dcf9295400527b9b1270fd37b7e9a7285cf83b6951452d AS build/m,
     );
+    assert.match(dockerfile, /^COPY docs\/prompts \.\/docs\/prompts$/m);
     assert.match(
       compose,
       /pgvector\/pgvector:0\.8\.6-pg18-trixie@sha256:8888de64a42b12a8e56df21d0d404c81864c18bafec7ab0f802a1453ec6cd352/,
@@ -33,6 +34,7 @@ describe("Phase 3A trusted-loopback deployment artifacts", () => {
     assert.doesNotMatch(consoleBlock, /phase3a-loopback-ingress/);
     assert.match(consoleBlock, /PA_REVIEWER_AUTH_MODE: trusted_loopback/);
     assert.match(consoleBlock, /PA_DATABASE_PASSWORD:/);
+    assert.match(consoleBlock, /PA_PROMPT_PACKAGE_ROOT: \/app\/docs\/prompts/);
     assert.doesNotMatch(consoleBlock, /postgresql:\/\//);
     assert.match(consoleBlock, /PA_TRUSTED_LOOPBACK_GATEWAY: "true"/);
 

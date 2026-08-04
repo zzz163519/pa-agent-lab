@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "phase5b1-implementation-authorization.v1",
+  "authorizationScope": "phase5b1-offline-implementation-only",
+  "authorizedBy": "Calvin",
+  "recordedBy": "Direct Pi",
+  "recordedAt": "2026-08-04T18:07:21+08:00",
+  "decisionStatus": "accepted",
+  "acceptedAdr": "ADR-0021",
+  "acceptedContract": "phase5b1-brooks-prompt-package-and-offline-validation.v1",
+  "implementationAuthorized": true,
+  "approvedPackageHash": "sha256:b67896d15d5e2542c7bebaeca2b60c67cbb5510ef359efaca7f44e42fa17b0d9",
+  "approvedBaselineCommit": "f7572e8",
+  "packageActivationAuthorized": false,
+  "packageActivationPerformed": false,
+  "providerCallsAuthorized": false,
+  "modelRunsAuthorized": false,
+  "productionBrooksDecisionsAuthorized": false,
+  "realDataAuthorized": false,
+  "replayAuthorized": false,
+  "tradingAuthorized": false,
+  "implementationBoundary": [
+    "immutable Prompt Package governance",
+    "explicit activation and rollback capabilities without performing activation",
+    "synthetic Policy Assembly payload preparation",
+    "invented-response strict offline validation"
+  ],
+  "terminalBoundary": "no provider or model call; no ModelCall, ModelRun, ProviderAttempt, ModelRunAudit, production BrooksDecision, real data, replay, or trading capability",
+  "authorizationRecordHash": "sha256:fd84862d0e0308d5a0474c077078307dcb2562162912736e28ab2fc7119e0a32"
+}

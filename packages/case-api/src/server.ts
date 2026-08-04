@@ -21,6 +21,7 @@ export interface StartedCaseApiServerV1 {
 export interface CaseApiDeploymentV1 {
   readonly databaseUrl: string;
   readonly artifactRoot: string;
+  readonly promptPackageRoot: string;
   readonly localToken: string;
   readonly consoleRoot?: string;
   readonly authorizedSyntheticBundleHashes: readonly ContractSha256[];
@@ -43,6 +44,7 @@ export async function startCaseApiServerV1(
     authorizedSyntheticBundleHashes:
       deployment.authorizedSyntheticBundleHashes,
     artifactRoot: deployment.artifactRoot,
+    promptPackageRoot: deployment.promptPackageRoot,
   });
   try {
     const app = await createCaseApiV1({
@@ -108,6 +110,7 @@ export function parseCaseApiDeploymentV1(
   return {
     databaseUrl: databaseConnectionString(env),
     artifactRoot: required(env, "PA_CHART_ARTIFACT_ROOT"),
+    promptPackageRoot: required(env, "PA_PROMPT_PACKAGE_ROOT"),
     localToken: required(env, "PA_API_TOKEN"),
     ...(env.PA_CONSOLE_ROOT === undefined
       ? {}

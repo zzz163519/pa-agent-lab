@@ -7,6 +7,7 @@ import {
   buildDoctrineApprovalTransportDocumentsV1,
   buildDoctrineRetrievalTransportDocumentsV1,
   buildPhase5APolicyAssemblyTransportDocumentsV1,
+  buildPhase5B1PromptPackageTransportDocumentsV1,
   buildReplayBoundaryTransportDocumentsV1,
   buildReviewWorkflowTransportDocumentsV1,
   buildTransportSchemaDocumentsV1,
@@ -23,6 +24,8 @@ const doctrineApprovalDocuments = buildDoctrineApprovalTransportDocumentsV1(pack
 const doctrineRetrievalDocuments = buildDoctrineRetrievalTransportDocumentsV1(packageRoot);
 const phase5aPolicyAssemblyDocuments =
   buildPhase5APolicyAssemblyTransportDocumentsV1(packageRoot);
+const phase5b1PromptPackageDocuments =
+  buildPhase5B1PromptPackageTransportDocumentsV1(packageRoot);
 
 await mkdir(schemasDirectory, { recursive: true });
 await mkdir(openapiDirectory, { recursive: true });
@@ -82,6 +85,14 @@ await Promise.all([
   writeJson(
     resolve(openapiDirectory, "phase5a-synthetic-policy-assembly-v1.openapi.json"),
     phase5aPolicyAssemblyDocuments.openapi,
+  ),
+  writeJson(
+    resolve(schemasDirectory, "phase5b1-prompt-package-v1.schema.json"),
+    phase5b1PromptPackageDocuments.schemaBundle,
+  ),
+  writeJson(
+    resolve(openapiDirectory, "phase5b1-prompt-package-v1.openapi.json"),
+    phase5b1PromptPackageDocuments.openapi,
   ),
 ]);
 

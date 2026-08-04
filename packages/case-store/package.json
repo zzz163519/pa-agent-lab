@@ -10,6 +10,8 @@
     "./doctrine-retrieval-store-v1": "./src/doctrine-retrieval-store-v1.ts",
     "./migration-runner-v1": "./src/migration-runner-v1.ts",
     "./policy-assembly-store-v1": "./src/policy-assembly-store-v1.ts",
+    "./prepared-policy-payload-store-v1": "./src/prepared-policy-payload-store-v1.ts",
+    "./prompt-package-store-v1": "./src/prompt-package-store-v1.ts",
     "./postgres-connection-v1": "./src/postgres-connection-v1.ts"
   },
   "dependencies": {

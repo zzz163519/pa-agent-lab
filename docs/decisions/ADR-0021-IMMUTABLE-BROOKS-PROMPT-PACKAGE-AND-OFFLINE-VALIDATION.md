@@ -1,6 +1,6 @@
 # ADR-0021: Immutable Brooks Prompt Package and Offline Validation Boundary
 
-Status: PROPOSED FOR PHASE 5B1 CONTRACT ACCEPTANCE. EXACT PACKAGE HASH APPROVED BY CALVIN. NO IMPLEMENTATION OR ACTIVATION AUTHORITY.
+Status: ACCEPTED FOR PHASE 5B1. EXACT PACKAGE HASH APPROVED BY CALVIN. OFFLINE IMPLEMENTATION AUTHORIZED; PACKAGE ACTIVATION AND PROVIDER AUTHORITY REMAIN UNAUTHORIZED.
 
 ## Context
 
@@ -19,7 +19,7 @@ Phase 5B is split into:
 - **Phase 5B1**: immutable Brooks Prompt Package governance, deterministic preparation of a synthetic outbound payload, and invented-response offline compatibility validation;
 - **Phase 5B2**: exact provider/model selection, image transport, real ModelRun and ProviderAttempt creation, external calls, retries, timeout, retention, usage, cost, and accepted/rejected BrooksDecision audit.
 
-This proposal decides only the Phase 5B1 contract. Phase 5B1 implementation requires separate approval. Phase 5B2 requires another ADR, contract, privacy review, provider/model decision, and explicit external-call approval.
+This decision accepts only the Phase 5B1 contract. Calvin separately authorized its bounded offline implementation in `PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`. Phase 5B2 requires another ADR, contract, privacy review, provider/model decision, and explicit external-call approval.
 
 ### One fixed English prompt
 
@@ -124,9 +124,9 @@ Only Calvin may approve an exact package hash. Direct Pi may draft and review a 
 
 Restoring an older package requires a new explicit rollback/activation record and reason. The system never auto-falls back, and historical prepared payloads or future runs remain bound to their original package identity.
 
-### Phase 5B1 terminal boundary
+### Phase 5B1 implementation boundary
 
-A future Phase 5B1 implementation may:
+The authorized Phase 5B1 implementation may:
 
 - persist immutable package approval and activation evidence;
 - deterministically construct the existing `OutboundModelPayloadV1` from one existing `PolicyAssemblyV1` and the current package's prompt/schema identities;
@@ -147,7 +147,7 @@ Calvin explicitly approved this exact package content identity on `2026-08-04T16
 
 The separate immutable approval artifact is `docs/prompts/BROOKS_PROMPT_PACKAGE_V1.approval.json`, with record hash `sha256:d1c0ddbac5c14ec2d455de5ba85d0de381f8561dd928c8362207f7c41370389e`. Its record hash is SHA-256 over the canonical approval object after removing `approvalRecordHash`, using the same sorted-key and array-order rules as the package manifest. The approval artifact is outside the Prompt Package preimage and does not change the approved package hash.
 
-This approval is exact-package-content-only. It does not authorize Phase 5B1 implementation, package activation, provider calls, or model runs.
+This approval is exact-package-content-only. It does not itself authorize Phase 5B1 implementation, package activation, provider calls, or model runs. Calvin's separate implementation authorization is recorded in `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`; that record authorizes only the offline implementation boundary above and explicitly leaves activation and provider/model authority false.
 
 ## Reuse decision
 
@@ -168,9 +168,9 @@ The complete evidence is recorded in `docs/research/PHASE5B1_PROMPT_PACKAGE_REUS
 
 ## Not authorized
 
-This exact-package approval does not authorize:
+This accepted decision and separate implementation authorization do not authorize:
 
-- Phase 5B1 code, migrations, database changes, API/CLI routes, deployment, or activation;
+- performing a package activation or rollback, despite implementing the operator-only capabilities;
 - provider/model selection, provider SDK, credentials, network requests, external retention, usage, or cost;
 - ModelCall, ModelRun, ProviderAttempt, ModelRunAudit, BrooksDecision, or real raw-response records;
 - response repair, secondary-model repair, prompt variants, dynamic prompt selection, or provider-hosted prompt authority;

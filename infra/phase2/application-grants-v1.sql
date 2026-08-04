@@ -28,10 +28,15 @@ GRANT SELECT, INSERT ON
   pa_policy_assemblies,
   pa_policy_assembly_bindings,
   pa_policy_assembly_doctrine_bindings,
-  pa_policy_assembly_failures
+  pa_policy_assembly_failures,
+  pa_prompt_package_manifests,
+  pa_prompt_package_approvals,
+  pa_prompt_package_activations,
+  pa_prepared_policy_payloads
 TO pa_app;
 GRANT SELECT ON
   pa_doctrine_activation_authority_v1,
+  pa_prompt_package_activation_authority_v1,
   pa_model_runs,
   pa_provider_attempts,
   pa_model_run_audits
@@ -54,4 +59,8 @@ GRANT EXECUTE ON FUNCTION pa_serialize_policy_assembly_authority() TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_lock_policy_assembly_authority() TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_validate_policy_assembly() TO pa_app;
 GRANT EXECUTE ON FUNCTION pa_validate_policy_assembly_failure() TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_serialize_prompt_package_authority() TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_validate_prompt_package_activation() TO pa_app;
+GRANT EXECUTE ON FUNCTION pa_validate_prepared_policy_payload() TO pa_app;
 GRANT USAGE ON SEQUENCE pa_doctrine_corpus_activation_sequence_seq TO pa_app;
+GRANT USAGE ON SEQUENCE pa_prompt_package_activation_sequence_seq TO pa_app;

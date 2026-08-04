@@ -5,4 +5,6 @@ export * from "./doctrine-retrieval-quality-v1.ts";
 export * from "./doctrine-retrieval-store-v1.ts";
 export * from "./migration-runner-v1.ts";
 export * from "./policy-assembly-store-v1.ts";
+export * from "./prepared-policy-payload-store-v1.ts";
+export * from "./prompt-package-store-v1.ts";
 export * from "./postgres-connection-v1.ts";

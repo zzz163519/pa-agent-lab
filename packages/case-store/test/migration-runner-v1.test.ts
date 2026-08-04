@@ -47,14 +47,18 @@ describe("content-hashed migrations", () => {
       [5, "0005_phase4a_doctrine_lexical_retrieval_v1.sql"],
       [6, "0006_explicit_doctrine_corpus_rollback_v1.sql"],
       [7, "0007_phase5a_synthetic_policy_assembly_v1.sql"],
+      [8, "0008_phase5b1_prompt_package_activation_v1.sql"],
+      [9, "0009_phase5b1_prepared_policy_payload_v1.sql"],
     ]);
     const first = await applyContentHashedMigrations(db, migrations);
     const second = await applyContentHashedMigrations(db, migrations);
     assert.deepEqual(first.map(({ status }) => status), [
-      "applied", "applied", "applied", "applied", "applied", "applied", "applied",
+      "applied", "applied", "applied", "applied", "applied",
+      "applied", "applied", "applied", "applied",
     ]);
     assert.deepEqual(second.map(({ status }) => status), [
-      "existing", "existing", "existing", "existing", "existing", "existing", "existing",
+      "existing", "existing", "existing", "existing", "existing",
+      "existing", "existing", "existing", "existing",
     ]);
 
     const ledger = await db.query<{
@@ -98,6 +102,8 @@ describe("content-hashed migrations", () => {
           migrations[4]!,
           migrations[5]!,
           migrations[6]!,
+          migrations[7]!,
+          migrations[8]!,
         ]),
       { message: /migration content hash drift/ },
     );

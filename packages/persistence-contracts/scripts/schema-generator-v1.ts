@@ -12,6 +12,7 @@ import {
 import { DOCTRINE_APPROVAL_ROUTE_MANIFEST_V1 } from "../src/doctrine-approval-transport-v1.ts";
 import { DOCTRINE_RETRIEVAL_ROUTE_MANIFEST_V1 } from "../src/doctrine-retrieval-transport-v1.ts";
 import { PHASE5A_POLICY_ASSEMBLY_ROUTE_MANIFEST_V1 } from "../src/policy-assembly-transport-v1.ts";
+import { PHASE5B1_PROMPT_PACKAGE_ROUTE_MANIFEST_V1 } from "../src/prompt-package-transport-v1.ts";
 import { REVIEW_WORKFLOW_ROUTE_MANIFEST_V1 } from "../src/review-workflow-transport-v1.ts";
 import { createGenerator } from "ts-json-schema-generator";
 
@@ -187,6 +188,49 @@ const PHASE5A_POLICY_ASSEMBLY_TARGETS = [
   {
     component: "DoctrineActivationAuthorityV1",
     source: "../contracts/src/doctrine-corpus-rollback-v1.ts",
+  },
+  {
+    component: "CaseApiErrorV1",
+    source: "src/case-store-transport-v1.ts",
+  },
+] as const;
+
+const PHASE5B1_PROMPT_PACKAGE_TARGETS = [
+  {
+    component: "BrooksPromptPackageManifestV1",
+    source: "../contracts/src/brooks-prompt-package-v1.ts",
+  },
+  {
+    component: "BrooksPromptPackageApprovalV1",
+    source: "../contracts/src/brooks-prompt-package-v1.ts",
+  },
+  {
+    component: "BrooksPromptPackageActivationV1",
+    source: "../contracts/src/brooks-prompt-package-v1.ts",
+  },
+  {
+    component: "BrooksPromptPackageRollbackActivationV1",
+    source: "../contracts/src/brooks-prompt-package-v1.ts",
+  },
+  {
+    component: "BrooksPromptPackageActivationAuthorityV1",
+    source: "../contracts/src/brooks-prompt-package-v1.ts",
+  },
+  {
+    component: "PreparedPolicyPayloadV1",
+    source: "../contracts/src/prepared-policy-payload-v1.ts",
+  },
+  {
+    component: "ActivateBrooksPromptPackageCommandV1",
+    source: "src/prompt-package-transport-v1.ts",
+  },
+  {
+    component: "RollbackBrooksPromptPackageCommandV1",
+    source: "src/prompt-package-transport-v1.ts",
+  },
+  {
+    component: "PreparePolicyPayloadCommandV1",
+    source: "src/prompt-package-transport-v1.ts",
   },
   {
     component: "CaseApiErrorV1",
@@ -707,6 +751,161 @@ function buildPhase5APolicyAssemblyOpenApiPaths(): Record<string, unknown> {
                     "201": jsonResponse(
                       responseComponent,
                       "Phase 5A resource inserted",
+                    ),
+                  }
+                : {}),
+              ...errors,
+            },
+          },
+        },
+      ];
+    }),
+  );
+}
+
+export function buildPhase5B1PromptPackageTransportDocumentsV1(
+  packageRoot: string,
+): GeneratedTransportDocumentsV1 {
+  const documents = buildSchemaDocuments(
+    packageRoot,
+    PHASE5B1_PROMPT_PACKAGE_TARGETS,
+    {
+      schemaId:
+        "https://pa-agent-lab.local/schemas/phase5b1-prompt-package-v1",
+      title: "PA Agent Lab Phase 5B1 Prompt Package V1",
+      extensions: {
+        "x-pa-phase5b1-record-kinds": {
+          prompt_package_manifest: "BrooksPromptPackageManifestV1",
+          prompt_package_approval: "BrooksPromptPackageApprovalV1",
+          prompt_package_activation: "BrooksPromptPackageActivationAuthorityV1",
+          prepared_policy_payload: "PreparedPolicyPayloadV1",
+        },
+        "x-pa-route-manifest": PHASE5B1_PROMPT_PACKAGE_ROUTE_MANIFEST_V1,
+        "x-pa-runtime-authority":
+          "offline_synthetic_only_package_governance_and_payload_preparation_no_external_calls_or_decisions",
+      },
+    },
+    refinePhase5B1PromptPackageComponents,
+  );
+  const openapi = asRecord(documents.openapi);
+  const components = asRecord(openapi.components);
+  return {
+    schemaBundle: documents.schemaBundle,
+    openapi: {
+      ...openapi,
+      paths: buildPhase5B1PromptPackageOpenApiPaths(),
+      components: {
+        ...components,
+        securitySchemes: {
+          operatorToken: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "PA-Local-Operator-Token",
+          },
+        },
+      },
+    },
+  };
+}
+
+function refinePhase5B1PromptPackageComponents(
+  components: Record<string, unknown>,
+): void {
+  for (const componentName of [
+    "BrooksPromptPackageActivationV1",
+    "BrooksPromptPackageRollbackActivationV1",
+  ]) {
+    const component = asRecord(components[componentName]);
+    const properties = asRecord(component.properties);
+    Object.assign(asRecord(properties.activationSequence), {
+      type: "integer",
+      minimum: 1,
+    });
+  }
+  for (const componentName of [
+    "RollbackBrooksPromptPackageCommandV1",
+    "BrooksPromptPackageRollbackActivationV1",
+  ]) {
+    const component = asRecord(components[componentName]);
+    const properties = asRecord(component.properties);
+    Object.assign(asRecord(properties.reason), {
+      minLength: 1,
+      maxLength: 500,
+      pattern: "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f-\\u009f]*$",
+    });
+  }
+}
+
+function buildPhase5B1PromptPackageOpenApiPaths(): Record<string, unknown> {
+  return Object.fromEntries(
+    PHASE5B1_PROMPT_PACKAGE_ROUTE_MANIFEST_V1.map((route) => {
+      const requestComponent =
+        route.operationId === "activateBrooksPromptPackage"
+          ? "ActivateBrooksPromptPackageCommandV1"
+          : route.operationId === "rollbackBrooksPromptPackage"
+            ? "RollbackBrooksPromptPackageCommandV1"
+            : route.operationId === "preparePolicyPayload"
+              ? "PreparePolicyPayloadCommandV1"
+              : null;
+      const responseComponent =
+        route.operationId === "preparePolicyPayload" ||
+        route.operationId === "getPreparedPolicyPayload"
+          ? "PreparedPolicyPayloadV1"
+          : "BrooksPromptPackageActivationAuthorityV1";
+      const parameterName = route.openapiPath.includes("{preparationId}")
+        ? "preparationId"
+        : null;
+      const mutation = route.method === "POST";
+      const errors = Object.fromEntries(
+        ["400", "401", "403", "404", "409", "422", "503"].map(
+          (status) => [
+            status,
+            {
+              description: "Rejected by the Phase 5B1 offline contract",
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/CaseApiErrorV1" },
+                },
+              },
+            },
+          ],
+        ),
+      );
+      return [
+        route.openapiPath,
+        {
+          [route.method.toLowerCase()]: {
+            operationId: route.operationId,
+            security: [{ operatorToken: [] }],
+            ...(requestComponent === null
+              ? {}
+              : {
+                  requestBody: {
+                    required: true,
+                    content: {
+                      "application/json": {
+                        schema: {
+                          $ref: `#/components/schemas/${requestComponent}`,
+                        },
+                      },
+                    },
+                  },
+                }),
+            ...(parameterName === null
+              ? {}
+              : { parameters: [pathHashParameter(parameterName)] }),
+            responses: {
+              "200": jsonResponse(
+                responseComponent,
+                mutation
+                  ? "Exact Phase 5B1 resource already exists"
+                  : "Phase 5B1 offline resource",
+              ),
+              ...(mutation
+                ? {
+                    "201": jsonResponse(
+                      responseComponent,
+                      "Phase 5B1 offline resource inserted",
                     ),
                   }
                 : {}),

@@ -1,14 +1,14 @@
 # Phase 5B1 Brooks Prompt Package and Offline Validation V1
 
-Status: PROPOSED CONTRACT. EXACT PACKAGE HASH APPROVED BY CALVIN. NO IMPLEMENTATION, ACTIVATION, OR PROVIDER AUTHORITY.
+Status: ACCEPTED CONTRACT. EXACT PACKAGE HASH APPROVED BY CALVIN. OFFLINE IMPLEMENTATION AUTHORIZED; ACTIVATION AND PROVIDER AUTHORITY REMAIN UNAUTHORIZED.
 
-Authority: ADR-0003, ADR-0008 through ADR-0013, ADR-0015, ADR-0018, ADR-0020, and proposed ADR-0021.
+Authority: ADR-0003, ADR-0008 through ADR-0013, ADR-0015, ADR-0018, ADR-0020, accepted ADR-0021, and `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`.
 
 ## Purpose
 
 Freeze one provider-neutral Brooks V1 instruction package and define how a future offline implementation may prepare a synthetic outbound payload without calling a model or creating records that imply a call occurred.
 
-This contract is documentation-only until separately approved for implementation.
+This contract is implemented only within the separately authorized offline Phase 5B1 boundary. It grants no package activation or provider/model-call authority.
 
 ## Static package artifacts
 
@@ -144,7 +144,7 @@ Claims, codes, structures, and Doctrine references may describe some additional 
 
 ## Validator contract V1
 
-`brooks-identity-free-response-validator.v1` is a future local validator identity. It must execute the following ordered gates without repair:
+`brooks-identity-free-response-validator.v1` is the fixed local validator identity. It must execute the following ordered gates without repair:
 
 1. accept only a non-empty JavaScript string already decoded by a separately approved transport and within a separately fixed local resource bound; invalid UTF-8 byte sequences must fail at the future Phase 5B2 transport boundary before this validator;
 2. parse strict JSON with comments and trailing commas disabled and duplicate keys rejected;
@@ -205,7 +205,7 @@ A proposal consists of exact static artifacts and the recomputed package hash. D
 
 ### Approval
 
-Only Calvin may approve one exact package hash. Approval binds that hash and does not approve future byte changes. Calvin approved the V1 hash recorded above for exact-package-content-only scope. The immutable repository-governed approval artifact records `phase5b1ImplementationAuthorized = false`, `packageActivationPerformed = false`, and `providerCallsAuthorized = false`; a future implementation must validate that artifact and its canonical hash. It must not expose a generic runtime prompt-approval route to operator, reviewer, model, provider, or research-agent roles.
+Only Calvin may approve one exact package hash. Approval binds that hash and does not approve future byte changes. Calvin approved the V1 hash recorded above for exact-package-content-only scope. The immutable repository-governed approval artifact records `phase5b1ImplementationAuthorized = false`, `packageActivationPerformed = false`, and `providerCallsAuthorized = false`; the implementation validates that artifact and its canonical hash. The immutable approval artifact remains unchanged because its scope is exact content, while separate ADR/contract acceptance and offline implementation authorization are recorded in `docs/decisions/PHASE5B1_IMPLEMENTATION_AUTHORIZATION_V1.json`. No generic runtime prompt-approval route is exposed to operator, reviewer, model, provider, or research-agent roles.
 
 ### Activation
 
@@ -217,7 +217,7 @@ Restoring an older approved package appends a new explicit rollback activation w
 
 ## Deterministic payload preparation
 
-A future Phase 5B1 command accepts only one existing successful `assemblyId`. The server resolves the current package activation once and revalidates:
+A Phase 5B1 command accepts only one existing successful `assemblyId`. The server resolves the current package activation once and revalidates:
 
 - exact package approval and activation identity;
 - prompt and response-schema bytes against the package manifest;
@@ -257,7 +257,7 @@ The natural idempotency identity is `(assemblyId, packageActivationId, preparati
 
 ## Persistence and transport direction
 
-A future approved implementation uses:
+The authorized implementation uses:
 
 - strict TypeScript builders and generated JSON Schema/OpenAPI;
 - content-hashed forward-only migrations;
@@ -286,7 +286,7 @@ Phase 5B1 implementation tests, if separately approved, must use only invented s
 
 Tests prove contract behavior, not Brooks source completeness, model quality, probability, profitability, or cost viability.
 
-## Exit gate for a future Phase 5B1 implementation
+## Exit gate for Phase 5B1 implementation
 
 Phase 5B1 is complete only when:
 
@@ -300,4 +300,4 @@ Phase 5B1 is complete only when:
 
 ## Explicit exclusions
 
-This exact-package approval does not authorize implementation, activation, provider/model calls, provider-specific response schema adaptation, credentials, cost, retries, real response storage, production BrooksDecision creation, geometry/cost assumptions, Phase 4B, Selector V2, real data, protected windows, outcomes, replay, training, Paper, Live, execution, exchange, wallet, or real-money action.
+The separate implementation authorization does not authorize performing activation, provider/model calls, provider-specific response schema adaptation, credentials, cost, retries, real response storage, production BrooksDecision creation, geometry/cost assumptions, Phase 4B, Selector V2, real data, protected windows, outcomes, replay, training, Paper, Live, execution, exchange, wallet, or real-money action. The exact-package approval artifact remains content-only and does not itself authorize implementation.

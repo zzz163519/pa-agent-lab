@@ -254,6 +254,133 @@ export function makeValidLongDecision(
   };
 }
 
+export function makeValidNoTradeDecision(): BrooksDecisionInputV1 {
+  const base = makeValidLongDecision();
+  return {
+    ...base,
+    decisionId: "decision:fixture-no-trade",
+    verdict: "no_trade",
+    evidenceBalance: "balanced",
+    longCase: {
+      ...base.longCase,
+      state: "forming",
+      evidenceBalance: "balanced",
+      setupCandidates: base.longCase.setupCandidates.map((setup) => ({
+        ...setup,
+        state: "forming",
+      })),
+      signalBasis: {
+        ...base.longCase.signalBasis,
+        state: "forming",
+      },
+      triggerState: "not_applicable",
+    },
+    tradePlan: null,
+    noTrade: {
+      reasonCodes: ["setup_forming"],
+      claimIds: ["claim-setup", "claim-verdict"],
+      nextObservableCondition: "wait_for_confirmed_signal",
+    },
+    uncertainty: null,
+    humanSummary: "The long setup is still forming, so there is no trade.",
+  };
+}
+
+export function makeValidUncertainDecision(): BrooksDecisionInputV1 {
+  const base = makeValidLongDecision();
+  return {
+    ...base,
+    decisionId: "decision:fixture-uncertain",
+    verdict: "uncertain",
+    evidenceBalance: "conflicting",
+    longCase: {
+      ...base.longCase,
+      state: "uncertain",
+      evidenceBalance: "conflicting",
+      signalBasis: {
+        ...base.longCase.signalBasis,
+        state: "uncertain",
+      },
+      triggerState: "ambiguous",
+    },
+    tradePlan: null,
+    noTrade: null,
+    uncertainty: {
+      reasonCodes: ["market_structure_conflict"],
+      conflictingClaimIds: ["claim-setup", "claim-short"],
+      missingEvidence: ["follow_through_evidence"],
+      resolutionCondition: "wait_for_structure_confirmation",
+    },
+    humanSummary: "The visible structure is conflicting, so the decision abstains.",
+  };
+}
+
+export function makeValidShortDecision(): BrooksDecisionInputV1 {
+  const base = makeValidLongDecision("scalp");
+  if (base.tradePlan === null) throw new Error("fixture requires a trade plan");
+  return {
+    ...base,
+    decisionId: "decision:fixture-short",
+    verdict: "short",
+    evidenceBalance: "favors_short",
+    broadContext: {
+      ...base.broadContext,
+      trendDirection: "bear",
+    },
+    currentLeg: { ...base.currentLeg, direction: "down" },
+    alwaysIn: { ...base.alwaysIn, state: "short" },
+    pressure: {
+      buying: { ...base.pressure.buying, state: "absent" },
+      selling: { ...base.pressure.selling, state: "present" },
+      balance: "favors_short",
+    },
+    magnets: base.magnets.map((magnet) => ({
+      ...magnet,
+      structureId: "structure:support",
+      side: "below",
+    })),
+    longCase: {
+      ...base.shortCase,
+      direction: "long",
+    },
+    shortCase: {
+      ...base.longCase,
+      direction: "short",
+      evidenceBalance: "favors_short",
+      setupCandidates: base.longCase.setupCandidates.map((setup) => ({
+        ...setup,
+        setupId: "setup:short-primary",
+      })),
+    },
+    tradePlan: {
+      ...base.tradePlan,
+      direction: "short",
+      setupId: "setup:short-primary",
+      entry: {
+        entryType: "stop",
+        relation: "break_below",
+        anchor: {
+          barId: "bar:119",
+          field: "low",
+          normalizedReferencePrice: 100.5,
+        },
+        validAfterBarId: "bar:119",
+        validForClosedBars: 1,
+        claimIds: ["claim-entry"],
+      },
+      protection: {
+        ...base.tradePlan.protection,
+        relation: "above",
+        anchor: {
+          barId: "bar:119",
+          field: "high",
+          normalizedReferencePrice: 103,
+        },
+      },
+    },
+  };
+}
+
 export function makeValidationContext(
   overrides: Partial<BrooksDecisionValidationContextV1> = {},
 ): BrooksDecisionValidationContextV1 {

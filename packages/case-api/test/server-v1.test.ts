@@ -6,6 +6,7 @@ import { parseCaseApiDeploymentV1 } from "../src/server.ts";
 const baseEnvironment = {
   PA_DATABASE_URL: "postgresql://pa_app:test-password@postgres/pa_agent_lab",
   PA_CHART_ARTIFACT_ROOT: "/var/lib/pa-agent-lab/charts",
+  PA_PROMPT_PACKAGE_ROOT: "/app/docs/prompts",
   PA_API_TOKEN: "operator-token-0123456789abcdef",
   PA_AUTHORIZED_SYNTHETIC_BUNDLE_HASHES: `sha256:${"a".repeat(64)}`,
   PA_API_PORT: "3210",
@@ -15,6 +16,7 @@ const baseEnvironment = {
 describe("Phase 3A server deployment boundary", () => {
   it("keeps bearer deployments on a direct loopback listener", () => {
     const deployment = parseCaseApiDeploymentV1(baseEnvironment);
+    assert.equal(deployment.promptPackageRoot, "/app/docs/prompts");
     assert.equal(deployment.reviewerAuthMode, "bearer");
     assert.equal(deployment.listenHost, "127.0.0.1");
     assert.equal(deployment.publicOrigin, "http://127.0.0.1:3210");
