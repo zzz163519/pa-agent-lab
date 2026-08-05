@@ -7,6 +7,8 @@
     "./brooks-decision-v1": "./src/brooks-decision-v1.ts",
     "./brooks-identity-free-response-v1": "./src/brooks-identity-free-response-v1.ts",
     "./brooks-identity-free-response-v2": "./src/brooks-identity-free-response-v2.ts",
+    "./brooks-multi-timeframe-input-v1": "./src/brooks-multi-timeframe-input-v1.ts",
+    "./brooks-multi-timeframe-response-v1": "./src/brooks-multi-timeframe-response-v1.ts",
     "./brooks-prompt-package-v1": "./src/brooks-prompt-package-v1.ts",
     "./brooks-prompt-package-v2": "./src/brooks-prompt-package-v2.ts",
     "./calvin-review-v1": "./src/calvin-review-v1.ts",

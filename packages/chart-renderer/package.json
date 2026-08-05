@@ -4,7 +4,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./anonymous-chart-renderer-v1": "./src/anonymous-chart-renderer-v1.ts"
+    "./anonymous-chart-renderer-v1": "./src/anonymous-chart-renderer-v1.ts",
+    "./anonymous-multi-timeframe-chart-renderer-v1": "./src/anonymous-multi-timeframe-chart-renderer-v1.ts"
   },
   "dependencies": {
     "@pa-agent-lab/contracts": "workspace:*",

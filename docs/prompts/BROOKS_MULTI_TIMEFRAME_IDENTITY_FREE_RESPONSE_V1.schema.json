@@ -1,0 +1,363 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pa-agent-lab.local/schemas/brooks-multi-timeframe-identity-free-response-v1",
+  "title": "Brooks Multi-Timeframe Identity-Free Response V1 (Unapproved Proposal)",
+  "description": "Strict unapproved offline proposal. It extends one complete V2 Brooks response with timeframe-aware evidence, optional-reference assessments, gap assessments, conflict assessment, and frozen geometry anchors. It grants no prompt, package, provider, runtime, persistence, replay, or trading authority.",
+  "type": "object",
+  "properties": {
+    "primaryDecision": {
+      "$ref": "https://pa-agent-lab.local/schemas/brooks-identity-free-response-v2"
+    },
+    "timeframeEvidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/TimeframeEvidence"
+      },
+      "maxItems": 512
+    },
+    "referenceAssessments": {
+      "$ref": "#/$defs/ReferenceAssessments"
+    },
+    "gapAssessments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/GapAssessment"
+      },
+      "maxItems": 240
+    },
+    "crossTimeframeConflictAssessment": {
+      "$ref": "#/$defs/ConflictAssessment"
+    },
+    "geometryAnchors": {
+      "$ref": "#/$defs/GeometryAnchors"
+    }
+  },
+  "required": [
+    "primaryDecision",
+    "timeframeEvidence",
+    "referenceAssessments",
+    "gapAssessments",
+    "crossTimeframeConflictAssessment",
+    "geometryAnchors"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Timeframe": {
+      "enum": [
+        "5m",
+        "60m",
+        "1d"
+      ]
+    },
+    "ReferenceTimeframe": {
+      "enum": [
+        "60m",
+        "1d"
+      ]
+    },
+    "Lifecycle": {
+      "enum": [
+        "finalized",
+        "provisional"
+      ]
+    },
+    "NonEmptyCode": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "NonEmptyStringArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/NonEmptyCode"
+      },
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true
+    },
+    "StringArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/NonEmptyCode"
+      },
+      "maxItems": 64,
+      "uniqueItems": true
+    },
+    "TimeframeEvidence": {
+      "type": "object",
+      "properties": {
+        "evidenceId": {
+          "$ref": "#/$defs/NonEmptyCode"
+        },
+        "timeframe": {
+          "$ref": "#/$defs/Timeframe"
+        },
+        "barId": {
+          "type": "string",
+          "pattern": "^bar:(5m|60m|1d):(finalized|provisional):[0-9]{3}$"
+        },
+        "field": {
+          "enum": [
+            "open",
+            "high",
+            "low",
+            "close",
+            "relationship"
+          ]
+        },
+        "normalizedValue": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "lifecycle": {
+          "$ref": "#/$defs/Lifecycle"
+        },
+        "claimScope": {
+          "$ref": "#/$defs/NonEmptyStringArray"
+        },
+        "doctrineClaimReferences": {
+          "$ref": "#/$defs/NonEmptyStringArray"
+        }
+      },
+      "required": [
+        "evidenceId",
+        "timeframe",
+        "barId",
+        "field",
+        "normalizedValue",
+        "lifecycle",
+        "claimScope",
+        "doctrineClaimReferences"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "field": {
+                "const": "relationship"
+              }
+            },
+            "required": [
+              "field"
+            ]
+          },
+          "then": {
+            "properties": {
+              "normalizedValue": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "normalizedValue": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ReferenceAssessment": {
+      "type": "object",
+      "properties": {
+        "timeframe": {
+          "$ref": "#/$defs/ReferenceTimeframe"
+        },
+        "relationship": {
+          "enum": [
+            "supports",
+            "limits",
+            "opposes",
+            "no_material_effect",
+            "uncertain",
+            "unavailable_for_this_decision"
+          ]
+        },
+        "summaryCode": {
+          "$ref": "#/$defs/NonEmptyCode"
+        },
+        "evidenceReferences": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "doctrineClaimReferences": {
+          "$ref": "#/$defs/StringArray"
+        }
+      },
+      "required": [
+        "timeframe",
+        "relationship",
+        "summaryCode",
+        "evidenceReferences",
+        "doctrineClaimReferences"
+      ],
+      "additionalProperties": false
+    },
+    "ReferenceAssessments": {
+      "type": "object",
+      "properties": {
+        "sixtyMinute": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReferenceAssessment"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "daily": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReferenceAssessment"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "sixtyMinute",
+        "daily"
+      ],
+      "additionalProperties": false
+    },
+    "GapAssessment": {
+      "type": "object",
+      "properties": {
+        "gapId": {
+          "$ref": "#/$defs/NonEmptyCode"
+        },
+        "timeframe": {
+          "$ref": "#/$defs/Timeframe"
+        },
+        "materiality": {
+          "enum": [
+            "material",
+            "immaterial",
+            "uncertain"
+          ]
+        },
+        "affectedClaims": {
+          "$ref": "#/$defs/NonEmptyStringArray"
+        },
+        "evidenceReferences": {
+          "$ref": "#/$defs/NonEmptyStringArray"
+        },
+        "doctrineClaimReferences": {
+          "$ref": "#/$defs/NonEmptyStringArray"
+        },
+        "resolutionCondition": {
+          "$ref": "#/$defs/NonEmptyCode"
+        }
+      },
+      "required": [
+        "gapId",
+        "timeframe",
+        "materiality",
+        "affectedClaims",
+        "evidenceReferences",
+        "doctrineClaimReferences",
+        "resolutionCondition"
+      ],
+      "additionalProperties": false
+    },
+    "ConflictAssessment": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "not_applicable",
+            "no_material_conflict",
+            "material_conflict",
+            "uncertain"
+          ]
+        },
+        "summaryCode": {
+          "$ref": "#/$defs/NonEmptyCode"
+        },
+        "evidenceReferences": {
+          "$ref": "#/$defs/StringArray"
+        },
+        "doctrineClaimReferences": {
+          "$ref": "#/$defs/StringArray"
+        }
+      },
+      "required": [
+        "state",
+        "summaryCode",
+        "evidenceReferences",
+        "doctrineClaimReferences"
+      ],
+      "additionalProperties": false
+    },
+    "GeometryAnchor": {
+      "type": "object",
+      "properties": {
+        "timeframe": {
+          "$ref": "#/$defs/Timeframe"
+        },
+        "barId": {
+          "type": "string",
+          "pattern": "^bar:(5m|60m|1d):(finalized|provisional):[0-9]{3}$"
+        },
+        "field": {
+          "enum": [
+            "open",
+            "high",
+            "low",
+            "close"
+          ]
+        },
+        "lifecycle": {
+          "$ref": "#/$defs/Lifecycle"
+        },
+        "normalizedValue": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "timeframe",
+        "barId",
+        "field",
+        "lifecycle",
+        "normalizedValue"
+      ],
+      "additionalProperties": false
+    },
+    "NullableGeometryAnchor": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/GeometryAnchor"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "GeometryAnchors": {
+      "type": "object",
+      "properties": {
+        "entry": {
+          "$ref": "#/$defs/NullableGeometryAnchor"
+        },
+        "protection": {
+          "$ref": "#/$defs/NullableGeometryAnchor"
+        },
+        "objective": {
+          "$ref": "#/$defs/NullableGeometryAnchor"
+        }
+      },
+      "required": [
+        "entry",
+        "protection",
+        "objective"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
