@@ -1,6 +1,6 @@
 # ADR-0024: Versioned Brooks Capability Expansion Before Provider Evaluation
 
-Status: ACCEPTED ROADMAP DECISION. EXACT PHASE 3D DESIGN DRAFT AUTHORIZED; DESIGN ACCEPTANCE AND IMPLEMENTATION REMAIN UNAUTHORIZED.
+Status: ACCEPTED ROADMAP AND EXACT PHASE 3D DESIGN BASELINE. IMPLEMENTATION REMAINS UNAUTHORIZED.
 
 ## Context
 
@@ -31,15 +31,17 @@ No Doctrine proposal batch is to be drafted, inserted, or approved from Source b
 
 Further bounded Source metadata review may be proposed separately, but this ADR grants no Source access or extraction authority.
 
-### Authorized exact design draft
+### Exact Phase 3D design acceptance
 
-After one-question-at-a-time adjudication, Calvin authorized Direct Pi on 2026-08-05 to draft and independently review `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md`. The draft records accepted discussion decisions but is not itself an accepted exact-content baseline until a separate immutable approval record binds its content hash.
+After one-question-at-a-time adjudication, Calvin authorized Direct Pi on 2026-08-05 to draft and independently review `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md`.
 
-Draft authority is documentation-only. It grants no schema, prompt, code, Source, Doctrine, data, provider, replay, training, or trading authority.
+Calvin subsequently accepted exact contract content hash `sha256:989eb4a9717aff887fd5c970abf6bd14e53e97f4e37216779e4d287774a50b90`. `PHASE3D_MULTI_TIMEFRAME_CAPABILITY_CONTRACT_APPROVAL_V1.json`, record hash `sha256:0107f512023f2e0e33bd892ba262e3ba3db24e0224d0dadea50c65b67b6eaf3c`, is the external status authority. The contract's `DRAFT FOR CALVIN ACCEPTANCE` text remains unchanged because it is part of the accepted exact preimage.
+
+Design acceptance grants no schema, prompt, code, Source, Doctrine, data, provider, replay, training, or trading authority.
 
 ### Multi-timeframe is a pre-provider-evaluation core capability
 
-A separately accepted versioned input and decision contract must add causal multi-timeframe context before formal provider semantic evaluation. The authorized draft must define at least:
+A separately accepted versioned input and decision contract must add causal multi-timeframe context before formal provider semantic evaluation. The accepted Phase 3D design defines at least:
 
 - five minutes as the required primary decision timeframe, native sixty-minute as the critical optional reference, native daily as an additional optional reference, and weekly/monthly as excluded from this target;
 - one immutable closed-five-minute decision cutoff with finalized history and explicitly provisional, cutoff-frozen higher-timeframe snapshots;
@@ -76,10 +78,11 @@ The current bounded Phase 3D design task defines:
 
 It inventories scaling, active-management, and intrabar as separate required tracks but does not design them or decide their sequencing by implication.
 
-The authorized Phase 3D draft defines the multi-timeframe target and inventories the separate required tracks. Only after Calvin accepts that draft's exact content hash may a separately authorized Doctrine proposal batch resume for claims that the accepted V1 or multi-timeframe contracts can honestly express. Scaling, active-management, intrabar, and other still-unexpressible claims remain paused until their own exact designs are accepted.
+The accepted Phase 3D design defines the multi-timeframe target and inventories the separate required tracks. Only a separately authorized Doctrine proposal batch may resume for claims that the accepted V1 or multi-timeframe contracts can honestly express. Scaling, active-management, intrabar, and other still-unexpressible claims remain paused until their own exact designs are accepted.
 
 ## Consequences
 
+- The exact Phase 3D multi-timeframe design baseline is accepted; implementation remains unauthorized.
 - Phase 3C V1 remains a valid single-timeframe baseline but no longer represents the complete intended pre-provider Brooks capability target.
 - The Phase 3C final completion route must be revised or supplemented before it can unlock formal provider evaluation.
 - Current Prompt Package V2 remains inactive and does not gain multi-timeframe, scaling, active-management, intrabar, or `market_next_event` support.
@@ -90,7 +93,7 @@ The authorized Phase 3D draft defines the multi-timeframe target and inventories
 
 Calvin approved this roadmap correction directly on 2026-08-05 after reviewing why the four capabilities were excluded from V1. Direct Pi recorded the decision.
 
-`AGENTS.md`, `OPEN_DECISIONS.md`, `PA_AGENT_LAB_IMPLEMENTATION_SEQUENCE_V1.md`, the Charter, and ADR-0023 record the roadmap correction without modifying accepted V1/V2 contract or prompt bytes. The authorized Phase 3D exact draft and its governance synchronization remain unaccepted design artifacts until a separate approval record binds the draft hash. The immutable Source batch 001 report and execution record remain unchanged; ADR-0024 governs their later proposal-routing interpretation.
+`AGENTS.md`, `OPEN_DECISIONS.md`, `PA_AGENT_LAB_IMPLEMENTATION_SEQUENCE_V1.md`, the Charter, and ADR-0023 record the accepted exact Phase 3D design without modifying accepted V1/V2 contract or prompt bytes. The immutable Source batch 001 report and execution record remain unchanged; ADR-0024 and the external approval record govern their later proposal-routing interpretation.
 
 ## Not authorized
 

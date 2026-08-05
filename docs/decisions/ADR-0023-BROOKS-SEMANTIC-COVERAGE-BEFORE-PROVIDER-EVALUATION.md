@@ -42,9 +42,9 @@ The frozen public URL inventory remains discovery metadata. Its 182 `doctrine_ca
 
 ### ADR-0024 capability-expansion correction
 
-After Source batch 001 exposed multi-timeframe, scaling, active-position management, and intrabar spike/event semantics that V1 cannot express, Calvin accepted ADR-0024. The exact V1 contract and its historical coverage design remain valid for the five-minute single-timeframe baseline, but formal provider evaluation now requires a separately accepted versioned multi-timeframe core capability. Scaling, active management, and intrabar handling are preserved as separate required design tracks rather than dismissed as remote future candidates.
+After Source batch 001 exposed multi-timeframe, scaling, active-position management, and intrabar spike/event semantics that V1 cannot express, Calvin accepted ADR-0024. The exact V1 contract and its historical coverage design remain valid for the five-minute single-timeframe baseline. `PHASE3D_MULTI_TIMEFRAME_CAPABILITY_CONTRACT_APPROVAL_V1.json`, record hash `sha256:0107f512023f2e0e33bd892ba262e3ba3db24e0224d0dadea50c65b67b6eaf3c`, now accepts exact `PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md` content hash `sha256:989eb4a9717aff887fd5c970abf6bd14e53e97f4e37216779e4d287774a50b90` as the design baseline required before formal provider evaluation. Scaling, active management, and intrabar handling remain separate required but unaccepted design tracks.
 
-Doctrine proposal drafting is paused until the capability-expansion contract defines how Source semantics route to V1 and the new tracks. No current V1/V2 bytes, Source authority, Doctrine record, corpus, or provider gate is changed by that correction.
+Exact multi-timeframe design acceptance does not resume Doctrine work by implication. Any proposal batch still requires separate exact authorization, and claims requiring unresolved capability tracks remain quarantined. No current V1/V2 bytes, implementation authority, Source authority, Doctrine record, corpus, or provider gate is changed by this acceptance.
 
 ### Phase 4A2: expanded corpus activation
 

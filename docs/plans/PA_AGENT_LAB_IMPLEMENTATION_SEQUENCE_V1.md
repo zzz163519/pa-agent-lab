@@ -124,13 +124,13 @@ The accepted contract defines:
 
 The 182 inventory `doctrine_candidate` URLs remain discovery metadata, not a bulk-ingestion target. Exact Source reads, extraction, proposal insertion, and approval batches require separate authorization.
 
-Design exit condition met for the single-timeframe V1 baseline. Semantic coverage completion exit condition is not met: no expanded approved Doctrine set exists and no final coverage report or completion acceptance exists. ADR-0024 additionally requires a versioned multi-timeframe core capability before formal provider evaluation and pauses Doctrine proposal drafting until the capability-expansion design routes Source semantics across V1 and the new tracks.
+Design exit condition met for the single-timeframe V1 baseline. Semantic coverage completion exit condition is not met: no expanded approved Doctrine set exists and no final coverage report or completion acceptance exists. ADR-0024 additionally requires a versioned multi-timeframe core capability before formal provider evaluation; the exact Phase 3D design route is now accepted, but Doctrine proposals remain paused until a separate exact proposal-batch authorization and claims requiring unresolved capability tracks remain quarantined.
 
 ## Phase 3D: versioned Brooks multi-timeframe capability design
 
-ADR-0024 roadmap direction is accepted. Calvin authorized the exact design draft `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md`; that draft remains unaccepted until a separate immutable approval record binds its exact content hash. Implementation, Source access, Doctrine proposals, data, and provider operations remain separately unauthorized.
+Exact design exit condition met. `PHASE3D_MULTI_TIMEFRAME_CAPABILITY_CONTRACT_APPROVAL_V1.json`, record hash `sha256:0107f512023f2e0e33bd892ba262e3ba3db24e0224d0dadea50c65b67b6eaf3c`, accepts exact `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md` content hash `sha256:989eb4a9717aff887fd5c970abf6bd14e53e97f4e37216779e4d287774a50b90` as the design baseline only. Implementation, Source access, Doctrine proposals, data, and provider operations remain separately unauthorized.
 
-The authorized draft records:
+The accepted design records:
 
 - immutable V1/V2 identities and a separately versioned multi-timeframe target;
 - five minutes as the required primary decision timeframe, optional native same-source sixty-minute as the critical reference, optional native daily as an additional reference, and no weekly/monthly target;
@@ -141,7 +141,7 @@ The authorized draft records:
 - timeframe-aware evidence/geometry, future provider-evaluation combinations and paired causal tests, and strict privacy/authority boundaries;
 - scaling/aggregate-risk, active-position management, intrabar spike/event handling, and `market_next_event` as separate unresolved contracts.
 
-Exit condition not met: Calvin has not accepted the exact draft content hash. Until then, Doctrine proposal drafting from Source batch 001 remains paused, and no current contract, schema, prompt, code, or provider path changes. After exact acceptance, a separate exact proposal-batch authorization is still required; claims needing an unresolved capability track remain paused.
+Design exit condition met; implementation exit condition not met. A separate exact implementation authorization must define write scope and tests before any contract, schema, prompt, code, migration, chart, data, or provider-path change. Doctrine proposal drafting does not resume by implication: a separate exact proposal-batch authorization is still required, and claims needing an unresolved capability track remain paused.
 
 ## Phase 4: Doctrine ingestion and retrieval
 
