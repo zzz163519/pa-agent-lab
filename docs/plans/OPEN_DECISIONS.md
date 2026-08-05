@@ -6,20 +6,24 @@ This file contains only unresolved decisions. Accepted decisions are recorded in
 
 ## Doctrine corpus
 
-Accepted source classes are Brooks public materials, direct material from the official Al Brooks YouTube channel, and reviewed third-party Brooks course transcripts such as approved Bilibili sources. ADR-0010 accepts a deliberately simple local Source plus `draft | approved | retired` DoctrineUnit workflow; RAG receives only approved core trading semantics. ADR-0023 records that the current nine approved public pilot units prove the lifecycle/retrieval platform but do not form a coverage-complete V1 Brooks semantic baseline. Calvin accepted the exact Phase 3C design baseline in `PHASE3C_SEMANTIC_COVERAGE_CONTRACT_APPROVAL_V1.json`, record hash `sha256:9f1da60ba4ef32113616b1c9d0a17305001816bcbff0f608c10352c69cbfb63c`, binding contract content hash `sha256:5aedc6ad98c74b09f2703e3b6e1d58042ea513d409c62815449f075fd933f0a6`. This is contract approval only, not semantic coverage completion acceptance or Source-access authority.
+Accepted source classes are Brooks public materials, direct material from the official Al Brooks YouTube channel, and reviewed third-party Brooks course transcripts such as approved Bilibili sources. ADR-0010 accepts a deliberately simple local Source plus `draft | approved | retired` DoctrineUnit workflow; RAG receives only approved core trading semantics. ADR-0023 records that the current nine approved public pilot units prove the lifecycle/retrieval platform but do not form a coverage-complete V1 Brooks semantic baseline. Calvin accepted the exact Phase 3C design baseline in `PHASE3C_SEMANTIC_COVERAGE_CONTRACT_APPROVAL_V1.json`, record hash `sha256:9f1da60ba4ef32113616b1c9d0a17305001816bcbff0f608c10352c69cbfb63c`, binding contract content hash `sha256:5aedc6ad98c74b09f2703e3b6e1d58042ea513d409c62815449f075fd933f0a6`. This is contract approval only, not semantic coverage completion acceptance or Source-access authority. ADR-0024 now pauses Doctrine proposal drafting until a versioned capability-expansion contract routes Source semantics across the V1 baseline, multi-timeframe core, and the separate scaling, active-management, and intrabar tracks.
 
 Still open:
 
-- authorize the exact selected public Source snapshots and bounded read-only access/extraction workflow; the 182 inventory candidates are discovery metadata, not a bulk-ingestion target;
-- authorize exact Doctrine proposal batches and explicit item-level approvals or retirements;
+- accept the versioned Brooks capability-expansion contract, including exact multi-timeframe input/decision semantics, causal alignment, evidence references, provider-evaluation gate, and separate scaling/active-management/intrabar design tracks;
+- authorize any next exact selected public Source snapshots and bounded read-only access/extraction workflow; the 182 inventory candidates are discovery metadata, not a bulk-ingestion target;
+- after capability-expansion acceptance, authorize exact Doctrine proposal batches and explicit item-level approvals or retirements;
 - accept the Phase 4A2 expanded Source allowlist, complete-snapshot quality suite, activation, and coverage-acceptance record;
 - map selected V6 definition candidates to Brooks semantics before approval without using V6 outcomes or artifacts as doctrine authority.
 
 ## Brooks decision and Calvin review
 
-ADR-0003 makes the Brooks Policy Agent the sole first runtime policy and keeps Calvin auxiliary and offline. ADR-0008 fixes scheduling, ADR-0009 fixes five-minute decisions, and ADR-0010 freezes the V1 BrooksDecision, whole-decision CalvinReview, and deterministic Conflict semantics.
+ADR-0003 makes the Brooks Policy Agent the sole first runtime policy and keeps Calvin auxiliary and offline. ADR-0008 fixes V1 scheduling, ADR-0009 fixes the five-minute V1 decision cadence, and ADR-0010 freezes the V1 BrooksDecision, whole-decision CalvinReview, and deterministic Conflict semantics. ADR-0024 preserves those bytes while requiring a versioned multi-timeframe core capability before formal provider evaluation and separate scaling, active-position management, and intrabar spike/event design tracks.
 
 Still open:
+
+- define the exact multi-timeframe durations, cutoff alignment, normalization, continuity, evidence-reference, disagreement, chart, payload, and evaluation identities;
+- define the separate scaling/aggregate-risk, active-position-management, and intrabar spike/event contracts and decide their exact pre-evaluation versus separately labeled later-stage gates;
 
 - decide whether a later version adds calibrated probability output;
 - decide whether a later, separately isolated `activePremiseReview` is useful after the entry-only baseline is evaluated.

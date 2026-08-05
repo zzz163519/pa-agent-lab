@@ -40,6 +40,12 @@ Contract approval is not semantic coverage completion acceptance. The final Phas
 
 The frozen public URL inventory remains discovery metadata. Its 182 `doctrine_candidate` URLs are not a bulk-ingestion target and confer no proposal, approval, or retrieval authority. Exact read-only source access, extraction, proposal creation, and approval batches require separate authorization.
 
+### ADR-0024 capability-expansion correction
+
+After Source batch 001 exposed multi-timeframe, scaling, active-position management, and intrabar spike/event semantics that V1 cannot express, Calvin accepted ADR-0024. The exact V1 contract and its historical coverage design remain valid for the five-minute single-timeframe baseline, but formal provider evaluation now requires a separately accepted versioned multi-timeframe core capability. Scaling, active management, and intrabar handling are preserved as separate required design tracks rather than dismissed as remote future candidates.
+
+Doctrine proposal drafting is paused until the capability-expansion contract defines how Source semantics route to V1 and the new tracks. No current V1/V2 bytes, Source authority, Doctrine record, corpus, or provider gate is changed by that correction.
+
 ### Phase 4A2: expanded corpus activation
 
 After Phase 3C content approval, a separately accepted Phase 4A2 contract must project the expanded exact approved/unretired set through the existing append-only corpus platform. It must separately authorize and verify:

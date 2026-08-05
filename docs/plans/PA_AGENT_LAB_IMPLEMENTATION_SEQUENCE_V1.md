@@ -124,7 +124,22 @@ The accepted contract defines:
 
 The 182 inventory `doctrine_candidate` URLs remain discovery metadata, not a bulk-ingestion target. Exact Source reads, extraction, proposal insertion, and approval batches require separate authorization.
 
-Design exit condition met. Semantic coverage completion exit condition is not met: no additional Source batch has been authorized or read, no expanded Doctrine set exists, and no final coverage report or completion acceptance exists.
+Design exit condition met for the single-timeframe V1 baseline. Semantic coverage completion exit condition is not met: no expanded approved Doctrine set exists and no final coverage report or completion acceptance exists. ADR-0024 additionally requires a versioned multi-timeframe core capability before formal provider evaluation and pauses Doctrine proposal drafting until the capability-expansion design routes Source semantics across V1 and the new tracks.
+
+## Phase 3D: versioned Brooks capability-expansion design
+
+Accepted roadmap direction under ADR-0024; the design contract, implementation, Source access, Doctrine proposals, data, and provider operations remain separately unauthorized.
+
+Required design scope:
+
+- preserve immutable V1/V2 identities while defining a causal multi-timeframe input and decision version as a core pre-provider-evaluation capability;
+- define exact higher-timeframe durations, five-minute decision cadence, closed-bar cutoff alignment, aggregation/provenance, anonymous normalization, continuity, left-censoring, evidence references, cross-timeframe disagreement, and uncertainty behavior;
+- define separately bounded scaling/aggregate-risk, active-position-management, and intrabar spike/event contracts;
+- route Source semantics and Doctrine proposals to the V1 baseline or the correct expansion track rather than forcing unavailable inputs into V1;
+- define compatibility, chart, payload, Prompt Package, cost, privacy, and Phase 6 evaluation consequences;
+- decide exactly which of scaling, active management, and intrabar handling must be implemented before the target formal provider evaluation and which may only be studied in a separately labeled later stage.
+
+Exit condition not met: Calvin has not yet accepted the exact capability-expansion contract. Until then, Doctrine proposal drafting from Source batch 001 remains paused, and no current contract, schema, prompt, code, or provider path changes.
 
 ## Phase 4: Doctrine ingestion and retrieval
 
@@ -144,7 +159,7 @@ Platform/pilot exit condition met: the exact initial six-Source, nine-Doctrine p
 
 ### Phase 4A2: expanded coverage-baseline activation
 
-Required next by ADR-0023 after Phase 3C content approval. Its contract and implementation remain separately unauthorized.
+Required next by ADR-0023 only after the Phase 3C/3D semantic route, approved coverage set, and exact Source snapshots are accepted. Its contract and implementation remain separately unauthorized.
 
 - expand the exact Source allowlist only to the separately approved Phase 3C Source snapshots;
 - replace the fixed nine-unit quality-suite assumption with exact complete-snapshot coverage fixtures;
@@ -238,7 +253,7 @@ Still requires separate immutable decisions for:
 - any production cleanup/supervisor and persistence seam plus a separately authorized first bounded synthetic external call;
 - any later evaluation expansion under frozen Phase 6 gates.
 
-Current exit: the exact fake-only offline process, parser, resource, and authority foundation plus the four-rule V2 geometry correction are accepted, and exact Prompt Package V2 content is approved separately. ADR-0023 now stops progression before V2 activation/preparation and before every installed-CLI, external-provider, runtime-record, production-data, replay, training, or trading operation until the Phase 3C, Phase 4A2, post-corpus assembly, installed-CLI, and Phase 6 prerequisites are separately accepted and met.
+Current exit: the exact fake-only offline process, parser, resource, and authority foundation plus the four-rule V2 geometry correction are accepted, and exact Prompt Package V2 content is approved separately. ADR-0023 and ADR-0024 now stop progression before V2 activation/preparation and before every installed-CLI, external-provider, runtime-record, production-data, replay, training, or trading operation until the revised Phase 3C/3D semantic-capability route, Phase 4A2, post-corpus assembly, installed-CLI, and Phase 6 prerequisites are separately accepted and met.
 
 ## Phase 6: Semantic evaluation
 
