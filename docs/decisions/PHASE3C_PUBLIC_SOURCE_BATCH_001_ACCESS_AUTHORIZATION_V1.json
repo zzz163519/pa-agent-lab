@@ -1,0 +1,157 @@
+{
+  "schemaVersion": "phase3c-public-source-batch-access-authorization.v1",
+  "authorizationId": "phase3c-public-source-batch-001-v1",
+  "decisionStatus": "authorized",
+  "authorizationScope": "exact-four-public-ask-al-pages-read-once-derived-notes-only",
+  "authorizedBy": "Calvin",
+  "recordedBy": "Direct Pi",
+  "authorizedAt": "2026-08-05T17:10:24+08:00",
+  "authorizationMethod": "direct-conversation-approval-of-recommended-exact-four-page-read-only-batch",
+  "governingAdr": "ADR-0023",
+  "governingContractVersion": "phase3c-brooks-semantic-coverage.v1",
+  "governingContractContentHash": "sha256:5aedc6ad98c74b09f2703e3b6e1d58042ea513d409c62815449f075fd933f0a6",
+  "governingContractApprovalRecordHash": "sha256:9f1da60ba4ef32113616b1c9d0a17305001816bcbff0f608c10352c69cbfb63c",
+  "authorizedSources": [
+    {
+      "sourceCandidateId": "source-candidate:ask-al-always-in-major-trend-reversal-analysis:batch-001",
+      "url": "https://www.brookstradingcourse.com/ask-al/always-in-major-trend-reversal-analysis/",
+      "inventorySnapshotDate": "2026-08-04",
+      "inventoryEligibility": "doctrine_candidate",
+      "inventoryReason": "official_public_ask_al_item_requires_item_review",
+      "inventoryLastModified": "2018-03-25T11:00:03+00:00",
+      "intendedCoverage": [
+        "C05",
+        "C06",
+        "C07",
+        "C13",
+        "I01",
+        "I03"
+      ]
+    },
+    {
+      "sourceCandidateId": "source-candidate:ask-al-trading-buying-selling-pressure:batch-001",
+      "url": "https://www.brookstradingcourse.com/ask-al/trading-buying-selling-pressure/",
+      "inventorySnapshotDate": "2026-08-04",
+      "inventoryEligibility": "doctrine_candidate",
+      "inventoryReason": "official_public_ask_al_item_requires_item_review",
+      "inventoryLastModified": "2021-05-27T11:52:48+00:00",
+      "intendedCoverage": [
+        "C08",
+        "C18",
+        "C19",
+        "C26",
+        "I04",
+        "I06",
+        "I10"
+      ]
+    },
+    {
+      "sourceCandidateId": "source-candidate:ask-al-structuring-limit-stop-order-trades:batch-001",
+      "url": "https://www.brookstradingcourse.com/ask-al/structuring-limit-stop-order-trades/",
+      "inventorySnapshotDate": "2026-08-04",
+      "inventoryEligibility": "doctrine_candidate",
+      "inventoryReason": "official_public_ask_al_item_requires_item_review",
+      "inventoryLastModified": "2018-03-25T14:14:09+00:00",
+      "intendedCoverage": [
+        "C20",
+        "C21",
+        "C22",
+        "C23",
+        "I05",
+        "I08"
+      ]
+    },
+    {
+      "sourceCandidateId": "source-candidate:ask-al-missing-swing-trades-measured-moves-spikes:batch-001",
+      "url": "https://www.brookstradingcourse.com/ask-al/missing-swing-trades-measured-moves-spikes/",
+      "inventorySnapshotDate": "2026-08-04",
+      "inventoryEligibility": "doctrine_candidate",
+      "inventoryReason": "official_public_ask_al_item_requires_item_review",
+      "inventoryLastModified": "2018-03-25T14:12:50+00:00",
+      "intendedCoverage": [
+        "C09",
+        "C10",
+        "C11",
+        "C24",
+        "C25",
+        "I09"
+      ]
+    }
+  ],
+  "accessMethod": {
+    "platform": "agent-reach-web",
+    "backend": "jina-reader",
+    "maximumFetchesPerExactUrl": 1,
+    "followLinks": false,
+    "fetchPagination": false,
+    "fetchRelatedArticles": false,
+    "fetchVideoOrAudio": false,
+    "fetchAttachments": false,
+    "loginAuthorized": false,
+    "bulkCrawlAuthorized": false
+  },
+  "requiredCapture": [
+    "requested exact URL",
+    "resolved or reported final URL",
+    "fetch timestamp",
+    "HTTP or reader terminal status",
+    "exact fetched representation SHA-256 and byte length",
+    "page title, stated author or speaker identity, publication date, and copyright/retention status when visible",
+    "precise review locators for each derived semantic note",
+    "capability, state, interaction, positive-path, counterexample, permission-abstention, uncertainty, conflict, and residual-gap mappings when supported"
+  ],
+  "retentionBoundary": {
+    "repositoryMayRetain": [
+      "authorization and execution records",
+      "source identity metadata and fetched representation hash",
+      "copyright and availability status",
+      "precise non-empty locators",
+      "simplified source-mapped derived semantic notes",
+      "gap, conflict, rejection, and follow-up records"
+    ],
+    "repositoryMayNotRetain": [
+      "complete fetched page body",
+      "bulk transcript text",
+      "video or audio bytes",
+      "images or attachments",
+      "verbatim excerpts absent a separately approved excerpt allowance"
+    ],
+    "temporaryFetchedBodies": "outside-repository temporary files only; delete after hash, metadata, locator, and derived-note review"
+  },
+  "failClosedConditions": [
+    "requested URL resolves outside the exact authorized URL or its same-page canonical equivalent",
+    "page requires login, membership, challenge bypass, cookies, credentials, or non-public access",
+    "page identity, authorship, speaker attribution, copyright status, or permitted local retention cannot be established",
+    "page is time-specific market analysis rather than stable Brooks semantic teaching",
+    "page touches a protected window or exposes protected-window market analysis",
+    "reader output is empty, truncated beyond useful review, or cannot be content-hashed",
+    "a useful semantic claim lacks a precise reviewable locator"
+  ],
+  "allowedOutputs": [
+    "one immutable batch execution record",
+    "one bounded derived extraction report with no full Source body",
+    "draft Doctrine proposal candidates for later separate proposal-batch authorization only"
+  ],
+  "sourceAccessAuthorized": true,
+  "sourceFetchingAuthorized": true,
+  "sourceExtractionAuthorized": true,
+  "fullSourceRetentionAuthorized": false,
+  "doctrineProposalCandidateDraftingAuthorized": true,
+  "doctrineProposalInsertionAuthorized": false,
+  "doctrineApprovalAuthorized": false,
+  "doctrineRetirementAuthorized": false,
+  "corpusMutationAuthorized": false,
+  "phase3cCoverageCompletionAccepted": false,
+  "phase4a2ImplementationAuthorized": false,
+  "phase4a2ActivationAuthorized": false,
+  "providerCallsAuthorized": false,
+  "modelRunsAuthorized": false,
+  "realDataAuthorized": false,
+  "protectedWindowAccessAuthorized": false,
+  "replayAuthorized": false,
+  "trainingAuthorized": false,
+  "paperOrLiveAuthorized": false,
+  "tradingAuthorized": false,
+  "terminalBoundary": "authorize exactly one public read of each of the four named Ask Al URLs and bounded derived-notes capture, then stop before any other URL, login, linked media, full-page retention, Doctrine proposal insertion or approval, corpus mutation, Phase 3C completion acceptance, Phase 4A2, provider/model operation, real data, protected window, replay, training, Paper, Live, or trading",
+  "authorizationRecordHash": "sha256:90f9d63674df8acf70b3250ecbf14a6f899ec5b639ba6c6e42be754c71b6f77b"
+}
