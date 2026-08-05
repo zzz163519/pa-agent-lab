@@ -1,6 +1,6 @@
 # ADR-0024: Versioned Brooks Capability Expansion Before Provider Evaluation
 
-Status: ACCEPTED ROADMAP AND EXACT PHASE 3D DESIGN BASELINE. PHASE 3D1 OFFLINE SYNTHETIC FOUNDATION IMPLEMENTATION AUTHORIZED; NO OPERATIONAL AUTHORITY.
+Status: ACCEPTED ROADMAP, EXACT PHASE 3D DESIGN BASELINE, AND EXACT PHASE 3D1 OFFLINE SYNTHETIC FOUNDATION COMMIT; NO OPERATIONAL AUTHORITY.
 
 ## Context
 
@@ -45,7 +45,9 @@ After the completed reuse scan and exact implementation-plan review, Calvin auth
 
 The authorization permits only separately versioned pure contracts, synthetic fixtures, deterministic multi-timeframe PNG artifacts using the existing pinned resvg seam, one unapproved response-schema proposal, strict offline invented-response validation, necessary exports, and one fresh-context read-only review. It adds zero dependencies and requires an isolated worktree with Direct Pi as sole writer and final verifier.
 
-Implementation acceptance remains a separate gate. No migration, persistence, API/CLI, Policy Assembly, prompt or Prompt Package change, Source or Doctrine work, installed-provider inspection, provider call, real data, replay, training, Paper/Live, exchange, wallet, order, or trading authority is granted.
+Calvin accepted exact implementation commit `e1757c4916811260f9e853ccbfcbccb6c06839d3` and tree `21fa792ba769c5410010e097c026f150ff2948a4` after the final fresh-context read-only review returned `PASS` with no blocking or non-blocking finding. `PHASE3D1_IMPLEMENTATION_ACCEPTANCE_V1.json`, record hash `sha256:10ebe854fb8daf0ef9e7a033601610f01a6e908bda44a4414e7f807691c9e108`, is the exact-commit implementation acceptance authority.
+
+The acceptance covers only the separately versioned offline synthetic contracts, deterministic charts, unapproved response-schema proposal, strict invented-response validation, tests, and exports in the accepted commit. No migration, persistence, API/CLI, Policy Assembly, prompt or Prompt Package change, Source or Doctrine work, installed-provider inspection, provider call, real data, replay, training, Paper/Live, exchange, wallet, order, or trading authority is granted.
 
 ### Multi-timeframe is a pre-provider-evaluation core capability
 
@@ -90,7 +92,7 @@ The accepted Phase 3D design defines the multi-timeframe target and inventories 
 
 ## Consequences
 
-- The exact Phase 3D multi-timeframe design baseline is accepted; implementation remains unauthorized.
+- The exact Phase 3D multi-timeframe design baseline and exact Phase 3D1 offline synthetic foundation commit are accepted; full Phase 3D capability completion and operational integration remain unaccepted.
 - Phase 3C V1 remains a valid single-timeframe baseline but no longer represents the complete intended pre-provider Brooks capability target.
 - The Phase 3C final completion route must be revised or supplemented before it can unlock formal provider evaluation.
 - Current Prompt Package V2 remains inactive and does not gain multi-timeframe, scaling, active-management, intrabar, or `market_next_event` support.
@@ -101,7 +103,7 @@ The accepted Phase 3D design defines the multi-timeframe target and inventories 
 
 Calvin approved this roadmap correction directly on 2026-08-05 after reviewing why the four capabilities were excluded from V1. Direct Pi recorded the decision.
 
-`AGENTS.md`, `OPEN_DECISIONS.md`, `PA_AGENT_LAB_IMPLEMENTATION_SEQUENCE_V1.md`, the Charter, and ADR-0023 record the accepted exact Phase 3D design without modifying accepted V1/V2 contract or prompt bytes. The immutable Source batch 001 report and execution record remain unchanged; ADR-0024 and the external approval record govern their later proposal-routing interpretation.
+`AGENTS.md`, `OPEN_DECISIONS.md`, `PA_AGENT_LAB_IMPLEMENTATION_SEQUENCE_V1.md`, the Charter, and this ADR record the accepted exact Phase 3D design and exact Phase 3D1 implementation commit without modifying accepted V1/V2 contract or prompt bytes. The immutable Source batch 001 report and execution record remain unchanged; ADR-0024 and the external design and implementation acceptance records govern their later proposal-routing interpretation.
 
 ## Not authorized
 

@@ -1,6 +1,6 @@
 # PA Agent Lab Implementation Sequence V1
 
-Status: ACCEPTED SEQUENCING BASELINE UNDER ADR-0023. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, THE INITIAL PHASE 4A PLATFORM/PILOT ACTIVATION, PHASE 5A, PHASE 5B1, PHASE 5B2A DESIGN, THE EXACT FAKE-ONLY PHASE 5B2B FOUNDATION, AND THE FOUR-RULE V2 GEOMETRY CORRECTION ARE ACCEPTED WITHIN THEIR RECORDED BOUNDARIES. EXACT PROMPT PACKAGE V2 CONTENT IS SEPARATELY APPROVED. THE CURRENT CORPUS REMAINS A NINE-UNIT PUBLIC PILOT, SO PHASE 3C COVERAGE COMPLETION AND A SEPARATELY ACCEPTED PHASE 4A2 EXPANDED ACTIVATION PRECEDE V2 ACTIVATION/PREPARATION, INSTALLED-CLI INFERENCE, PROVIDER CALLS, AND FORMAL PHASE 6 EVALUATION.
+Status: ACCEPTED SEQUENCING BASELINE UNDER ADR-0023. PHASE 0, PHASE 1 CONTRACTS, PHASE 2, PHASE 3A/3B, THE EXACT PHASE 3D1 OFFLINE SYNTHETIC FOUNDATION, THE INITIAL PHASE 4A PLATFORM/PILOT ACTIVATION, PHASE 5A, PHASE 5B1, PHASE 5B2A DESIGN, THE EXACT FAKE-ONLY PHASE 5B2B FOUNDATION, AND THE FOUR-RULE V2 GEOMETRY CORRECTION ARE ACCEPTED WITHIN THEIR RECORDED BOUNDARIES. EXACT PROMPT PACKAGE V2 CONTENT IS SEPARATELY APPROVED. THE CURRENT CORPUS REMAINS A NINE-UNIT PUBLIC PILOT, SO PHASE 3C COVERAGE COMPLETION AND A SEPARATELY ACCEPTED PHASE 4A2 EXPANDED ACTIVATION PRECEDE V2 ACTIVATION/PREPARATION, INSTALLED-CLI INFERENCE, PROVIDER CALLS, AND FORMAL PHASE 6 EVALUATION.
 
 ## Delivery model
 
@@ -12,7 +12,7 @@ The first user interface exists to produce high-quality outcome-blind source rev
 
 Project progress is tracked on three independent axes:
 
-1. **engineering infrastructure** has reached the accepted fake-only Phase 5B2B foundation and exact Prompt Package V2 content approval;
+1. **engineering infrastructure** has reached the accepted fake-only Phase 5B2B foundation, exact Prompt Package V2 content approval, and accepted Phase 3D1 offline synthetic multi-timeframe foundation;
 2. **Brooks semantic content** has reached only the nine-unit Phase 3B/4A public pilot;
 3. **external execution and formal evaluation** have not started: no real provider call, real Case, runtime model record, or Phase 6 evaluation exists.
 
@@ -128,7 +128,7 @@ Design exit condition met for the single-timeframe V1 baseline. Semantic coverag
 
 ## Phase 3D: versioned Brooks multi-timeframe capability design
 
-Exact design exit condition met. `PHASE3D_MULTI_TIMEFRAME_CAPABILITY_CONTRACT_APPROVAL_V1.json`, record hash `sha256:0107f512023f2e0e33bd892ba262e3ba3db24e0224d0dadea50c65b67b6eaf3c`, accepts exact `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md` content hash `sha256:989eb4a9717aff887fd5c970abf6bd14e53e97f4e37216779e4d287774a50b90` as the design baseline only. `PHASE3D1_IMPLEMENTATION_AUTHORIZATION_V1.json`, record hash `sha256:85b4102a24874ff46fee7be7b07856c6ff0cb7f05f5448feb17f77b85c35f1fb`, separately authorizes the zero-new-dependency offline synthetic foundation bound to plan hash `sha256:fd9fa0c30228151ce8d5f17020c6b7b601531c773f7bc13b307501c13d5ab390` and reuse-scan hash `sha256:5bb128384c774d6c4bdf090f1c11156f754c9875c1c143aeea30ed21929ac238`. Source access, Doctrine proposals, real data, provider operations, and implementation acceptance remain separately unauthorized.
+Exact design and Phase 3D1 offline-foundation implementation exit conditions are met. `PHASE3D_MULTI_TIMEFRAME_CAPABILITY_CONTRACT_APPROVAL_V1.json`, record hash `sha256:0107f512023f2e0e33bd892ba262e3ba3db24e0224d0dadea50c65b67b6eaf3c`, accepts exact `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md` content hash `sha256:989eb4a9717aff887fd5c970abf6bd14e53e97f4e37216779e4d287774a50b90`. `PHASE3D1_IMPLEMENTATION_AUTHORIZATION_V1.json`, record hash `sha256:85b4102a24874ff46fee7be7b07856c6ff0cb7f05f5448feb17f77b85c35f1fb`, authorized the zero-new-dependency offline synthetic foundation bound to plan hash `sha256:fd9fa0c30228151ce8d5f17020c6b7b601531c773f7bc13b307501c13d5ab390` and reuse-scan hash `sha256:5bb128384c774d6c4bdf090f1c11156f754c9875c1c143aeea30ed21929ac238`. `PHASE3D1_IMPLEMENTATION_ACCEPTANCE_V1.json`, record hash `sha256:10ebe854fb8daf0ef9e7a033601610f01a6e908bda44a4414e7f807691c9e108`, accepts exact commit `e1757c4916811260f9e853ccbfcbccb6c06839d3` and tree `21fa792ba769c5410010e097c026f150ff2948a4` only within that offline synthetic boundary. Source access, Doctrine proposals, real data, provider operations, and operational integration remain separately unauthorized.
 
 The accepted design records:
 
@@ -141,7 +141,7 @@ The accepted design records:
 - timeframe-aware evidence/geometry, future provider-evaluation combinations and paired causal tests, and strict privacy/authority boundaries;
 - scaling/aggregate-risk, active-position management, intrabar spike/event handling, and `market_next_event` as separate unresolved contracts.
 
-Design exit condition met; Phase 3D1 implementation is authorized but not yet accepted. The candidate must remain inside the exact plan/write scope, pass the complete synthetic causal/privacy/rendering test matrix and fresh-context read-only review, then stop for a separate exact-commit Calvin acceptance. Doctrine proposal drafting does not resume by implication: a separate exact proposal-batch authorization is still required, and claims needing an unresolved capability track remain paused.
+Phase 3D1 implementation exit condition is met only for the accepted offline synthetic foundation commit. Doctrine proposal drafting does not resume by implication: a separate exact proposal-batch authorization is still required, claims needing an unresolved capability track remain paused, and native real-source integration, expanded corpus activation, package/assembly progression, installed-provider proof, and provider evaluation remain separate gates.
 
 ## Phase 4: Doctrine ingestion and retrieval
 

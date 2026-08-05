@@ -1,6 +1,6 @@
 # Phase 3D1 Multi-Timeframe Offline Synthetic Foundation Implementation Plan V1
 
-Status: IMPLEMENTATION AUTHORIZED BY SEPARATE IMMUTABLE RECORD. SYNTHETIC OFFLINE FOUNDATION ONLY.
+Status: EXACT IMPLEMENTATION COMMIT `e1757c4916811260f9e853ccbfcbccb6c06839d3` ACCEPTED BY SEPARATE IMMUTABLE RECORD. SYNTHETIC OFFLINE FOUNDATION ONLY; FULL PHASE 3D AND OPERATIONAL INTEGRATION REMAIN UNACCEPTED.
 
 Date: 2026-08-05
 
@@ -12,7 +12,8 @@ This plan is bound to:
 - accepted Phase 3D contract content hash `sha256:989eb4a9717aff887fd5c970abf6bd14e53e97f4e37216779e4d287774a50b90`;
 - Phase 3D approval-record identity `sha256:0107f512023f2e0e33bd892ba262e3ba3db24e0224d0dadea50c65b67b6eaf3c`;
 - completed reuse-scan content hash `sha256:5bb128384c774d6c4bdf090f1c11156f754c9875c1c143aeea30ed21929ac238`;
-- `docs/decisions/PHASE3D1_IMPLEMENTATION_AUTHORIZATION_V1.json`.
+- `docs/decisions/PHASE3D1_IMPLEMENTATION_AUTHORIZATION_V1.json`;
+- `docs/decisions/PHASE3D1_IMPLEMENTATION_ACCEPTANCE_V1.json`, record hash `sha256:10ebe854fb8daf0ef9e7a033601610f01a6e908bda44a4414e7f807691c9e108`.
 
 The accepted contract remains byte-immutable. Its `DRAFT FOR CALVIN ACCEPTANCE` text is part of the accepted preimage; the external approval record remains acceptance authority.
 
@@ -186,7 +187,7 @@ At minimum:
 
 ## 8. Verification and review
 
-Required before the candidate commit:
+The accepted candidate was required to pass:
 
 - focused new tests pass;
 - `pnpm test` passes;
@@ -200,7 +201,7 @@ Required before the candidate commit:
 - `git diff --check` passes;
 - a separately approved fresh-context read-only reviewer returns a visible `PASS` with zero blockers.
 
-Direct Pi remains the sole writer, verifier, and candidate-commit owner. The reviewer may read and run tests but may not edit files.
+Direct Pi remained the sole writer, verifier, and candidate-commit owner. Four fresh-context read-only reviews were performed; all prior findings were corrected and reverified, and the final review returned `PASS` with zero blocking and zero non-blocking findings. Calvin separately accepted exact commit `e1757c4916811260f9e853ccbfcbccb6c06839d3` and tree `21fa792ba769c5410010e097c026f150ff2948a4` under the immutable acceptance record. The reviewers only read and ran tests; they did not edit files.
 
 ## 9. Falsification and stop conditions
 
@@ -217,6 +218,6 @@ Stop and seek a new decision if:
 
 ## 10. Rollback and terminal boundary
 
-The implementation is additive and has no migration, stored state, service, deployment, credential, or external side effect. Before acceptance it can be abandoned by deleting the isolated worktree/branch. After commit it can be reversed by an ordinary non-destructive Git revert.
+The implementation is additive and has no migration, stored state, service, deployment, credential, or external side effect. Exact commit `e1757c4916811260f9e853ccbfcbccb6c06839d3` is accepted only within this offline synthetic boundary and can be reversed by an ordinary non-destructive Git revert.
 
-Stop after reporting the exact candidate commit, tree, diff, fresh verification, immutable-hash evidence, reviewer verdict, and residual gaps. Do not create an implementation-acceptance record until Calvin separately accepts that exact commit.
+The acceptance terminal boundary remains before persistence, Policy Assembly, Prompt Package mutation or activation, Source or Doctrine work, installed-provider inspection, provider evaluation or call, runtime record creation, production decisions, real data, replay, training, Paper, Live, exchange, wallet, order, or trading.
