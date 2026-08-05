@@ -1,6 +1,6 @@
 # ADR-0024: Versioned Brooks Capability Expansion Before Provider Evaluation
 
-Status: ACCEPTED ROADMAP AND EXACT PHASE 3D DESIGN BASELINE. IMPLEMENTATION REMAINS UNAUTHORIZED.
+Status: ACCEPTED ROADMAP AND EXACT PHASE 3D DESIGN BASELINE. PHASE 3D1 OFFLINE SYNTHETIC FOUNDATION IMPLEMENTATION AUTHORIZED; NO OPERATIONAL AUTHORITY.
 
 ## Context
 
@@ -38,6 +38,14 @@ After one-question-at-a-time adjudication, Calvin authorized Direct Pi on 2026-0
 Calvin subsequently accepted exact contract content hash `sha256:989eb4a9717aff887fd5c970abf6bd14e53e97f4e37216779e4d287774a50b90`. `PHASE3D_MULTI_TIMEFRAME_CAPABILITY_CONTRACT_APPROVAL_V1.json`, record hash `sha256:0107f512023f2e0e33bd892ba262e3ba3db24e0224d0dadea50c65b67b6eaf3c`, is the external status authority. The contract's `DRAFT FOR CALVIN ACCEPTANCE` text remains unchanged because it is part of the accepted exact preimage.
 
 Design acceptance grants no schema, prompt, code, Source, Doctrine, data, provider, replay, training, or trading authority.
+
+### Exact Phase 3D1 implementation authorization
+
+After the completed reuse scan and exact implementation-plan review, Calvin authorized the bounded Phase 3D1 offline synthetic foundation on 2026-08-05. `PHASE3D1_IMPLEMENTATION_AUTHORIZATION_V1.json`, record hash `sha256:85b4102a24874ff46fee7be7b07856c6ff0cb7f05f5448feb17f77b85c35f1fb`, binds baseline `44ae0cf10191d3f756ff46db9aae59d882f68a82`, implementation-plan hash `sha256:fd9fa0c30228151ce8d5f17020c6b7b601531c773f7bc13b307501c13d5ab390`, and reuse-scan hash `sha256:5bb128384c774d6c4bdf090f1c11156f754c9875c1c143aeea30ed21929ac238`.
+
+The authorization permits only separately versioned pure contracts, synthetic fixtures, deterministic multi-timeframe PNG artifacts using the existing pinned resvg seam, one unapproved response-schema proposal, strict offline invented-response validation, necessary exports, and one fresh-context read-only review. It adds zero dependencies and requires an isolated worktree with Direct Pi as sole writer and final verifier.
+
+Implementation acceptance remains a separate gate. No migration, persistence, API/CLI, Policy Assembly, prompt or Prompt Package change, Source or Doctrine work, installed-provider inspection, provider call, real data, replay, training, Paper/Live, exchange, wallet, order, or trading authority is granted.
 
 ### Multi-timeframe is a pre-provider-evaluation core capability
 

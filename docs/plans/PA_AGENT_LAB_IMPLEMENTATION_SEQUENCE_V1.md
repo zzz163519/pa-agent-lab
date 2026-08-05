@@ -128,7 +128,7 @@ Design exit condition met for the single-timeframe V1 baseline. Semantic coverag
 
 ## Phase 3D: versioned Brooks multi-timeframe capability design
 
-Exact design exit condition met. `PHASE3D_MULTI_TIMEFRAME_CAPABILITY_CONTRACT_APPROVAL_V1.json`, record hash `sha256:0107f512023f2e0e33bd892ba262e3ba3db24e0224d0dadea50c65b67b6eaf3c`, accepts exact `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md` content hash `sha256:989eb4a9717aff887fd5c970abf6bd14e53e97f4e37216779e4d287774a50b90` as the design baseline only. Implementation, Source access, Doctrine proposals, data, and provider operations remain separately unauthorized.
+Exact design exit condition met. `PHASE3D_MULTI_TIMEFRAME_CAPABILITY_CONTRACT_APPROVAL_V1.json`, record hash `sha256:0107f512023f2e0e33bd892ba262e3ba3db24e0224d0dadea50c65b67b6eaf3c`, accepts exact `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md` content hash `sha256:989eb4a9717aff887fd5c970abf6bd14e53e97f4e37216779e4d287774a50b90` as the design baseline only. `PHASE3D1_IMPLEMENTATION_AUTHORIZATION_V1.json`, record hash `sha256:85b4102a24874ff46fee7be7b07856c6ff0cb7f05f5448feb17f77b85c35f1fb`, separately authorizes the zero-new-dependency offline synthetic foundation bound to plan hash `sha256:fd9fa0c30228151ce8d5f17020c6b7b601531c773f7bc13b307501c13d5ab390` and reuse-scan hash `sha256:5bb128384c774d6c4bdf090f1c11156f754c9875c1c143aeea30ed21929ac238`. Source access, Doctrine proposals, real data, provider operations, and implementation acceptance remain separately unauthorized.
 
 The accepted design records:
 
@@ -141,7 +141,7 @@ The accepted design records:
 - timeframe-aware evidence/geometry, future provider-evaluation combinations and paired causal tests, and strict privacy/authority boundaries;
 - scaling/aggregate-risk, active-position management, intrabar spike/event handling, and `market_next_event` as separate unresolved contracts.
 
-Design exit condition met; implementation exit condition not met. A separate exact implementation authorization must define write scope and tests before any contract, schema, prompt, code, migration, chart, data, or provider-path change. Doctrine proposal drafting does not resume by implication: a separate exact proposal-batch authorization is still required, and claims needing an unresolved capability track remain paused.
+Design exit condition met; Phase 3D1 implementation is authorized but not yet accepted. The candidate must remain inside the exact plan/write scope, pass the complete synthetic causal/privacy/rendering test matrix and fresh-context read-only review, then stop for a separate exact-commit Calvin acceptance. Doctrine proposal drafting does not resume by implication: a separate exact proposal-batch authorization is still required, and claims needing an unresolved capability track remain paused.
 
 ## Phase 4: Doctrine ingestion and retrieval
 
