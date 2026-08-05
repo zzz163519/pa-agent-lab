@@ -32,16 +32,11 @@ Offline privacy/capability research may be proposed separately, but this sequenc
 
 ### Phase 3C: V1 Brooks semantic coverage baseline
 
-A new Phase 3C must define a finite, auditable V1 Brooks semantic coverage baseline before additional Doctrine extraction or approval.
+Calvin accepted the exact Phase 3C design baseline after closure audit and fresh-context independent review. `PHASE3C_SEMANTIC_COVERAGE_CONTRACT_APPROVAL_V1.json`, record hash `sha256:9f1da60ba4ef32113616b1c9d0a17305001816bcbff0f608c10352c69cbfb63c`, binds exact `PHASE3C_BROOKS_SEMANTIC_COVERAGE_V1.md` content hash `sha256:5aedc6ad98c74b09f2703e3b6e1d58042ea513d409c62815449f075fd933f0a6` as the contract design baseline only.
 
-The baseline is coverage-complete only for the accepted BrooksDecision V1 policy surface. It is not a claim to exhaust all Al Brooks teaching or all Price Action knowledge. Its future contract must bind at least:
+The accepted baseline defines twenty-seven V1 semantic capabilities, complete state/boundary and reason-code disposition obligations, eleven interaction families, Source/Doctrine authority binding, separate V1-semantic and provider-profile compatibility axes, residual-gap records, rejection/retirement rules, and one future completion acceptance with zero in-scope blockers. It preserves `market_next_event` as in-scope V1 semantics while current Prompt Package V2 remains fail-closed and unsupported for that entry type.
 
-- the V1 decision layers and doctrine concepts that require source support;
-- required positive rules, counterexamples, conflict/ambiguity treatment, and no-trade/uncertainty boundaries;
-- exact eligible public Source classes and selected Source snapshots;
-- source locators, content hashes, derived-wording review, and gap disposition;
-- completion, rejection, retirement, and residual-gap criteria;
-- outcome blindness and exclusion of protected windows, private material, unauthorized V6 content, model-generated authority, Calvin review, outcomes, and PnL.
+Contract approval is not semantic coverage completion acceptance. The final Phase 3C completion still requires exact separately authorized Source snapshots, approved Doctrine evidence, positive/counterexample and permission/abstention closure, conflict adjudication, complete ledgers, and zero `unresolved_in_scope_blocker` items.
 
 The frozen public URL inventory remains discovery metadata. Its 182 `doctrine_candidate` URLs are not a bulk-ingestion target and confer no proposal, approval, or retrieval authority. Exact read-only source access, extraction, proposal creation, and approval batches require separate authorization.
 

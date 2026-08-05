@@ -108,21 +108,23 @@ Exit condition met: an exact public-source proposal can be explicitly approved o
 
 ## Phase 3C: V1 Brooks semantic coverage baseline
 
-Accepted sequencing direction under ADR-0023; the design, Source access, extraction, proposal batches, and implementation remain separately unauthorized.
+Exact design contract accepted by Calvin. `PHASE3C_SEMANTIC_COVERAGE_CONTRACT_APPROVAL_V1.json`, record hash `sha256:9f1da60ba4ef32113616b1c9d0a17305001816bcbff0f608c10352c69cbfb63c`, binds exact `PHASE3C_BROOKS_SEMANTIC_COVERAGE_V1.md` content hash `sha256:5aedc6ad98c74b09f2703e3b6e1d58042ea513d409c62815449f075fd933f0a6` as the design baseline only. Source access, extraction, Doctrine proposal batches, semantic coverage completion acceptance, Phase 4A2, and all provider/runtime operations remain separately unauthorized.
 
-Phase 3C must freeze a finite, auditable coverage baseline for the accepted BrooksDecision V1 policy surface before additional Doctrine extraction or approval. It is not a claim to exhaust all Brooks teaching or all Price Action knowledge.
+Phase 3C freezes a finite, auditable coverage baseline for the accepted BrooksDecision V1 policy surface before additional Doctrine extraction or approval. It is not a claim to exhaust all Brooks teaching or all Price Action knowledge.
 
-The future contract must define:
+The accepted contract defines:
 
-- coverage across the accepted context, current-leg, Always-In, location/magnet, pressure, breakout/reversal, setup/signal/trigger, trade-permission, protection/invalidation, holding/objective, no-trade, and uncertainty surfaces;
-- source-grounded positive rules, counterexamples, conflicts, ambiguity, and residual-gap treatment;
-- exact eligible public Source snapshots, locators, content hashes, derived-wording review, and item selection from discovery inventory;
-- completion, rejection, retirement, and coverage-acceptance criteria;
+- twenty-seven V1 semantic capabilities under Capability, State and Boundary, Interaction Scenario, Authority and Evidence, and Scope and Gap ledgers;
+- complete provider-owned state, enum, reason-code, branch, causal-effective-time, collection-bound, positive/counterexample, permission/abstention, conflict, and residual-gap obligations;
+- eleven interaction families with long/short mirror, permission/abstention symmetry, causal robustness, and complete capability-to-interaction mapping;
+- exact eligible public Source classes, later exact-snapshot binding, locators, content hashes, copyright/derived-wording review, rejection, retirement, and conflict treatment;
+- separate V1 semantic and provider-profile compatibility axes, preserving `market_next_event` as in-scope V1 semantics while current Prompt Package V2 remains `profile_unsupported_fail_closed`;
+- one future semantic coverage completion acceptance only after the exact source-grounded ledgers contain zero `unresolved_in_scope_blocker` items;
 - outcome blindness and exclusion of protected windows, private material, unauthorized V6 content, model-generated authority, Calvin review, outcomes, and PnL.
 
 The 182 inventory `doctrine_candidate` URLs remain discovery metadata, not a bulk-ingestion target. Exact Source reads, extraction, proposal insertion, and approval batches require separate authorization.
 
-Exit condition not yet designed or met: an exact source-grounded V1 coverage matrix, approved Doctrine set, counterexample/conflict review, and explicit residual-gap record are complete under a separately accepted contract.
+Design exit condition met. Semantic coverage completion exit condition is not met: no additional Source batch has been authorized or read, no expanded Doctrine set exists, and no final coverage report or completion acceptance exists.
 
 ## Phase 4: Doctrine ingestion and retrieval
 
