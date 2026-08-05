@@ -126,20 +126,22 @@ The 182 inventory `doctrine_candidate` URLs remain discovery metadata, not a bul
 
 Design exit condition met for the single-timeframe V1 baseline. Semantic coverage completion exit condition is not met: no expanded approved Doctrine set exists and no final coverage report or completion acceptance exists. ADR-0024 additionally requires a versioned multi-timeframe core capability before formal provider evaluation and pauses Doctrine proposal drafting until the capability-expansion design routes Source semantics across V1 and the new tracks.
 
-## Phase 3D: versioned Brooks capability-expansion design
+## Phase 3D: versioned Brooks multi-timeframe capability design
 
-Accepted roadmap direction under ADR-0024; the design contract, implementation, Source access, Doctrine proposals, data, and provider operations remain separately unauthorized.
+ADR-0024 roadmap direction is accepted. Calvin authorized the exact design draft `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md`; that draft remains unaccepted until a separate immutable approval record binds its exact content hash. Implementation, Source access, Doctrine proposals, data, and provider operations remain separately unauthorized.
 
-Required design scope:
+The authorized draft records:
 
-- preserve immutable V1/V2 identities while defining a causal multi-timeframe input and decision version as a core pre-provider-evaluation capability;
-- define exact higher-timeframe durations, five-minute decision cadence, closed-bar cutoff alignment, aggregation/provenance, anonymous normalization, continuity, left-censoring, evidence references, cross-timeframe disagreement, and uncertainty behavior;
-- define separately bounded scaling/aggregate-risk, active-position-management, and intrabar spike/event contracts;
-- route Source semantics and Doctrine proposals to the V1 baseline or the correct expansion track rather than forcing unavailable inputs into V1;
-- define compatibility, chart, payload, Prompt Package, cost, privacy, and Phase 6 evaluation consequences;
-- decide exactly which of scaling, active management, and intrabar handling must be implemented before the target formal provider evaluation and which may only be studied in a separately labeled later stage.
+- immutable V1/V2 identities and a separately versioned multi-timeframe target;
+- five minutes as the required primary decision timeframe, optional native same-source sixty-minute as the critical reference, optional native daily as an additional reference, and no weekly/monthly target;
+- a closed-five-minute cutoff with finalized and cutoff-frozen provisional higher-timeframe evidence, fixed source/session alignment, and immutable correction history;
+- the inherited five-minute 120/40 boundary plus zero-through-120 optional reference windows with no minimum reference-bar count;
+- deterministic anonymous charts and OHLC, five-minute context/detail plus one context chart per available reference timeframe, and one common normalization base;
+- one Brooks decision, structured reference relationships, Doctrine-governed conflict and continuity materiality, and no timeframe voting or fixed priority;
+- timeframe-aware evidence/geometry, future provider-evaluation combinations and paired causal tests, and strict privacy/authority boundaries;
+- scaling/aggregate-risk, active-position management, intrabar spike/event handling, and `market_next_event` as separate unresolved contracts.
 
-Exit condition not met: Calvin has not yet accepted the exact capability-expansion contract. Until then, Doctrine proposal drafting from Source batch 001 remains paused, and no current contract, schema, prompt, code, or provider path changes.
+Exit condition not met: Calvin has not accepted the exact draft content hash. Until then, Doctrine proposal drafting from Source batch 001 remains paused, and no current contract, schema, prompt, code, or provider path changes. After exact acceptance, a separate exact proposal-batch authorization is still required; claims needing an unresolved capability track remain paused.
 
 ## Phase 4: Doctrine ingestion and retrieval
 

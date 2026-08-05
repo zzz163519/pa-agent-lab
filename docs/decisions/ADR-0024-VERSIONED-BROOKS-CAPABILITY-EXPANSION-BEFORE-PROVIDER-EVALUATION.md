@@ -1,6 +1,6 @@
 # ADR-0024: Versioned Brooks Capability Expansion Before Provider Evaluation
 
-Status: ACCEPTED ROADMAP DECISION. DESIGN AND IMPLEMENTATION REMAIN UNAUTHORIZED.
+Status: ACCEPTED ROADMAP DECISION. EXACT PHASE 3D DESIGN DRAFT AUTHORIZED; DESIGN ACCEPTANCE AND IMPLEMENTATION REMAIN UNAUTHORIZED.
 
 ## Context
 
@@ -31,19 +31,25 @@ No Doctrine proposal batch is to be drafted, inserted, or approved from Source b
 
 Further bounded Source metadata review may be proposed separately, but this ADR grants no Source access or extraction authority.
 
+### Authorized exact design draft
+
+After one-question-at-a-time adjudication, Calvin authorized Direct Pi on 2026-08-05 to draft and independently review `docs/contracts/PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md`. The draft records accepted discussion decisions but is not itself an accepted exact-content baseline until a separate immutable approval record binds its content hash.
+
+Draft authority is documentation-only. It grants no schema, prompt, code, Source, Doctrine, data, provider, replay, training, or trading authority.
+
 ### Multi-timeframe is a pre-provider-evaluation core capability
 
-A separately accepted versioned input and decision contract must add causal multi-timeframe context before formal provider semantic evaluation. The future design must define at least:
+A separately accepted versioned input and decision contract must add causal multi-timeframe context before formal provider semantic evaluation. The authorized draft must define at least:
 
-- exact higher-timeframe durations and which duration remains the decision cadence;
-- closed-bar-only alignment at one immutable decision cutoff;
-- deterministic aggregation or exact read-only source-slice provenance;
-- anonymous cross-timeframe bar identities and normalization;
-- missing history, session/boundary, continuity, and left-censoring behavior per timeframe;
-- which `BrooksDecision` assessments may use higher-timeframe evidence;
-- explicit evidence references that identify the supporting timeframe;
-- disagreement, ambiguity, and no-trade/uncertainty treatment across timeframes;
-- byte-equivalent candidate inputs and independent causal tests;
+- five minutes as the required primary decision timeframe, native sixty-minute as the critical optional reference, native daily as an additional optional reference, and weekly/monthly as excluded from this target;
+- one immutable closed-five-minute decision cutoff with finalized history and explicitly provisional, cutoff-frozen higher-timeframe snapshots;
+- native same-signal-source provenance, fixed versioned session alignment, and local five-minute aggregation as validation only rather than replacement authority;
+- anonymous cross-timeframe bar identities and one common five-minute-anchored normalization;
+- the inherited five-minute 120/40 boundary, optional zero-through-120 higher-timeframe windows, short-history provenance, continuity, and missing-data materiality;
+- one primary Brooks decision with structured higher-timeframe reference assessments rather than votes or independent decisions;
+- explicit timeframe-aware evidence and geometry references;
+- disagreement, ambiguity, and no-trade/uncertainty treatment according to approved Brooks Doctrine rather than fixed timeframe priority;
+- immutable provisional/correction lifecycles, byte-equivalent candidate inputs, and independent causal tests;
 - provider payload, chart, schema, package-version, privacy, and cost consequences.
 
 Formal provider evaluation must not claim broader Brooks competence until this capability's exact design, implementation, source-grounded semantics, and evaluation prerequisites are accepted. A separately labeled V1 single-timeframe baseline may still be evaluated only if Calvin explicitly authorizes that narrower experiment and it is not represented as the target multi-timeframe Brooks policy.
@@ -56,20 +62,21 @@ The following are important required design tracks, not discarded ideas:
 2. **Active-position management contract** — immutable entry premise, current position/fill state, later closed observations, hold/exit/protection/objective/re-entry semantics, expiry and supersession, and strict exclusion of PnL/outcomes from doctrine authority.
 3. **Intrabar spike/event contract** — authorized event or lower-timeframe input, freshness, event ordering, provisional versus closed evidence, same-event ambiguity, deterministic watcher versus model reassessment, geometry/risk revalidation, and no execution implication.
 
-These tracks must remain separated from one another and from the entry-decision contract unless a later accepted design proves a minimal combined boundary is safer and more auditable. Their sequencing relative to formal provider evaluation must be explicitly decided in the capability-expansion contract; they cannot be silently postponed or treated as already supported.
+These tracks must remain separated from one another and from the entry-decision contract unless a later accepted design proves a minimal combined boundary is safer and more auditable. Their sequencing relative to formal provider evaluation requires separate explicit Calvin adjudication in their own exact design tracks; they cannot be silently postponed or treated as already supported.
 
-### One versioned expansion design before resumed corpus promotion
+### One versioned multi-timeframe design before resumed corpus promotion
 
-The next design task is a bounded capability-expansion contract that inventories:
+The current bounded Phase 3D design task defines:
 
 - the exact multi-timeframe target;
 - shared causal identities and evidence references;
-- the separate scaling, active-management, and intrabar contracts;
-- source-semantic routing to V1 versus each expansion track;
+- source-semantic routing to V1 versus multi-timeframe and the explicit quarantine of claims requiring unresolved tracks;
 - contract/package/evaluation migration and compatibility;
-- what must be implemented before provider evaluation versus what may be evaluated in a separately labeled later stage.
+- the multi-timeframe prerequisites that must be implemented before formal provider evaluation.
 
-Only after Calvin accepts that design may Doctrine proposal drafting resume under a new exact proposal-batch authorization.
+It inventories scaling, active-management, and intrabar as separate required tracks but does not design them or decide their sequencing by implication.
+
+The authorized Phase 3D draft defines the multi-timeframe target and inventories the separate required tracks. Only after Calvin accepts that draft's exact content hash may a separately authorized Doctrine proposal batch resume for claims that the accepted V1 or multi-timeframe contracts can honestly express. Scaling, active-management, intrabar, and other still-unexpressible claims remain paused until their own exact designs are accepted.
 
 ## Consequences
 
@@ -83,7 +90,7 @@ Only after Calvin accepts that design may Doctrine proposal drafting resume unde
 
 Calvin approved this roadmap correction directly on 2026-08-05 after reviewing why the four capabilities were excluded from V1. Direct Pi recorded the decision.
 
-`AGENTS.md`, `OPEN_DECISIONS.md`, `PA_AGENT_LAB_IMPLEMENTATION_SEQUENCE_V1.md`, the Charter, and ADR-0023 are synchronized without modifying accepted V1/V2 contract or prompt bytes. The immutable Source batch 001 report and execution record remain unchanged; ADR-0024 governs their later proposal-routing interpretation.
+`AGENTS.md`, `OPEN_DECISIONS.md`, `PA_AGENT_LAB_IMPLEMENTATION_SEQUENCE_V1.md`, the Charter, and ADR-0023 record the roadmap correction without modifying accepted V1/V2 contract or prompt bytes. The authorized Phase 3D exact draft and its governance synchronization remain unaccepted design artifacts until a separate approval record binds the draft hash. The immutable Source batch 001 report and execution record remain unchanged; ADR-0024 governs their later proposal-routing interpretation.
 
 ## Not authorized
 

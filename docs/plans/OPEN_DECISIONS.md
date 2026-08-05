@@ -6,11 +6,10 @@ This file contains only unresolved decisions. Accepted decisions are recorded in
 
 ## Doctrine corpus
 
-Accepted source classes are Brooks public materials, direct material from the official Al Brooks YouTube channel, and reviewed third-party Brooks course transcripts such as approved Bilibili sources. ADR-0010 accepts a deliberately simple local Source plus `draft | approved | retired` DoctrineUnit workflow; RAG receives only approved core trading semantics. ADR-0023 records that the current nine approved public pilot units prove the lifecycle/retrieval platform but do not form a coverage-complete V1 Brooks semantic baseline. Calvin accepted the exact Phase 3C design baseline in `PHASE3C_SEMANTIC_COVERAGE_CONTRACT_APPROVAL_V1.json`, record hash `sha256:9f1da60ba4ef32113616b1c9d0a17305001816bcbff0f608c10352c69cbfb63c`, binding contract content hash `sha256:5aedc6ad98c74b09f2703e3b6e1d58042ea513d409c62815449f075fd933f0a6`. This is contract approval only, not semantic coverage completion acceptance or Source-access authority. ADR-0024 now pauses Doctrine proposal drafting until a versioned capability-expansion contract routes Source semantics across the V1 baseline, multi-timeframe core, and the separate scaling, active-management, and intrabar tracks.
+Accepted source classes are Brooks public materials, direct material from the official Al Brooks YouTube channel, and reviewed third-party Brooks course transcripts such as approved Bilibili sources. ADR-0010 accepts a deliberately simple local Source plus `draft | approved | retired` DoctrineUnit workflow; RAG receives only approved core trading semantics. ADR-0023 records that the current nine approved public pilot units prove the lifecycle/retrieval platform but do not form a coverage-complete V1 Brooks semantic baseline. Calvin accepted the exact Phase 3C design baseline in `PHASE3C_SEMANTIC_COVERAGE_CONTRACT_APPROVAL_V1.json`, record hash `sha256:9f1da60ba4ef32113616b1c9d0a17305001816bcbff0f608c10352c69cbfb63c`, binding contract content hash `sha256:5aedc6ad98c74b09f2703e3b6e1d58042ea513d409c62815449f075fd933f0a6`. This is contract approval only, not semantic coverage completion acceptance or Source-access authority. ADR-0024 pauses Doctrine proposal drafting while `PHASE3D_VERSIONED_BROOKS_MULTI_TIMEFRAME_CAPABILITY_V1.md` remains an unaccepted exact design draft. After exact acceptance, only a separately authorized proposal batch may resume, and claims requiring unresolved scaling, active-management, or intrabar capability remain paused until their own designs are accepted.
 
 Still open:
 
-- accept the versioned Brooks capability-expansion contract, including exact multi-timeframe input/decision semantics, causal alignment, evidence references, provider-evaluation gate, and separate scaling/active-management/intrabar design tracks;
 - authorize any next exact selected public Source snapshots and bounded read-only access/extraction workflow; the 182 inventory candidates are discovery metadata, not a bulk-ingestion target;
 - after capability-expansion acceptance, authorize exact Doctrine proposal batches and explicit item-level approvals or retirements;
 - accept the Phase 4A2 expanded Source allowlist, complete-snapshot quality suite, activation, and coverage-acceptance record;
@@ -22,9 +21,8 @@ ADR-0003 makes the Brooks Policy Agent the sole first runtime policy and keeps C
 
 Still open:
 
-- define the exact multi-timeframe durations, cutoff alignment, normalization, continuity, evidence-reference, disagreement, chart, payload, and evaluation identities;
+- accept the exact Phase 3D draft hash for the proposed five-minute-primary, optional native sixty-minute/daily reference capability; no implementation follows by implication;
 - define the separate scaling/aggregate-risk, active-position-management, and intrabar spike/event contracts and decide their exact pre-evaluation versus separately labeled later-stage gates;
-
 - decide whether a later version adds calibrated probability output;
 - decide whether a later, separately isolated `activePremiseReview` is useful after the entry-only baseline is evaluated.
 
