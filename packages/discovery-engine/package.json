@@ -1,0 +1,12 @@
+{
+  "name": "@pa-agent-lab/discovery-engine",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./discovery-engine-v1": "./src/discovery-engine-v1.ts"
+  },
+  "dependencies": {
+    "@pa-agent-lab/contracts": "workspace:*"
+  }
+}

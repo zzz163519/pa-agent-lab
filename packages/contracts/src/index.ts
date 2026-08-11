@@ -9,6 +9,7 @@ export * from "./calvin-review-v1.ts";
 export * from "./calvin-review-workflow-v1.ts";
 export * from "./contract-utils-v1.ts";
 export * from "./decision-conflict-v1.ts";
+export * from "./discovery-factor-v1.ts";
 export * from "./doctrine-approval-v1.ts";
 export * from "./doctrine-corpus-rollback-v1.ts";
 export * from "./doctrine-retrieval-v1.ts";
