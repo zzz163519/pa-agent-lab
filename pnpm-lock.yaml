@@ -95,6 +95,12 @@ importers:
 
   packages/contracts: {}
 
+  packages/discovery-engine:
+    dependencies:
+      '@pa-agent-lab/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+
   packages/persistence-contracts:
     dependencies:
       '@pa-agent-lab/chart-renderer':

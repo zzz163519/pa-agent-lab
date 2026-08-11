@@ -14,6 +14,7 @@
     "./calvin-review-v1": "./src/calvin-review-v1.ts",
     "./contract-utils-v1": "./src/contract-utils-v1.ts",
     "./decision-conflict-v1": "./src/decision-conflict-v1.ts",
+    "./discovery-factor-v1": "./src/discovery-factor-v1.ts",
     "./doctrine-v1": "./src/doctrine-v1.ts",
     "./doctrine-corpus-rollback-v1": "./src/doctrine-corpus-rollback-v1.ts",
     "./doctrine-retrieval-v1": "./src/doctrine-retrieval-v1.ts",

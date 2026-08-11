@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "node --test packages/*/test/*.test.ts && pnpm --filter @pa-agent-lab/research-console test",
-    "typecheck": "tsc -p packages/contracts/tsconfig.json && tsc -p packages/chart-renderer/tsconfig.json && tsc -p packages/persistence-contracts/tsconfig.json && tsc -p packages/case-store/tsconfig.json && tsc -p packages/case-api/tsconfig.json && tsc -p packages/case-cli/tsconfig.json && pnpm --filter @pa-agent-lab/research-console typecheck",
+    "typecheck": "tsc -p packages/contracts/tsconfig.json && tsc -p packages/discovery-engine/tsconfig.json && tsc -p packages/chart-renderer/tsconfig.json && tsc -p packages/persistence-contracts/tsconfig.json && tsc -p packages/case-store/tsconfig.json && tsc -p packages/case-api/tsconfig.json && tsc -p packages/case-cli/tsconfig.json && pnpm --filter @pa-agent-lab/research-console typecheck",
     "generate:transport-schemas": "node packages/persistence-contracts/scripts/generate-transport-schemas-v1.ts",
     "phase2:server": "node packages/case-api/src/server.ts",
     "phase2:cli": "node packages/case-cli/src/main.ts",
