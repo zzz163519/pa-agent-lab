@@ -47,9 +47,20 @@ Keep these tracks separate even when they agree:
 - Keep a proposed DoctrineUnit `draft` until an authenticated ADR-0017 approval record binds its exact proposal hash, source content hash, and locator. This approval does not authorize embeddings, vector retrieval, a running RAG service, provider calls, training, or a complete corpus promotion; formal ingestion and retrieval remain Phase 4 work.
 - The current nine approved public pilot DoctrineUnits and Phase 4A activation prove the lifecycle and retrieval platform only. ADR-0023 requires a finite V1 Brooks semantic coverage baseline in Phase 3C and a separately accepted expanded Phase 4A2 activation before any V2 preparation or provider progression.
 
+## Delivery roles
+
+- Calvin owns product intent, strategy authority, real-world risk decisions, scope expansion, and final merge or deployment approval.
+- Claude is the default Architecture Manager. Claude reads the repository, explains the design in plain language, freezes goals and non-goals, defines module boundaries and acceptance evidence, decomposes work, and manages the delivery loop. Architecture work must be time-boxed and should normally fit in a short design brief with no more than three unresolved decisions.
+- Pi running through Orca with Sudocode `sudocode/gpt-5.6-luna` at max effort is the default Implementation Worker. It writes only within the manager-stated scope in an isolated worktree, adds focused tests, reports exact commands and residual risks, and does not approve its own work.
+- Codex is the default Independent Auditor. It uses fresh context, remains read-only during review, reports findings by severity with file and line evidence, and runs tests and typechecks independently. It does not silently redesign the accepted scope or become a second writer.
+- Keep one writer per worktree. The Architecture Manager and Independent Auditor do not edit an active implementation worktree. Corrections return to the same Implementation Worker unless Calvin approves a writer change.
+- Once Calvin approves an objective and its authority boundary, the Architecture Manager may decompose and dispatch implementation tasks inside that boundary without asking Calvin to reapprove each subtask. New authority, protected data access, provider/model calls, replay, Paper/Live, exchange, wallet, order, or trading-runtime scope still requires separate explicit approval.
+- Prefer an early runnable vertical slice over prolonged contract elaboration. Define contracts first only where cross-module behavior, persistence, causal semantics, privacy, or authority boundaries require them; use focused tests for ordinary internal mechanics.
+- Historical ADR and acceptance statements that name Direct Pi describe the accepted execution facts at that time. They remain unchanged and do not assign ongoing delivery roles after this section was approved.
+
 ## Engineering model
 
-- Implementation may be delegated to a worker only after Direct Pi states the concrete reason, write scope, and retained verification/merge responsibilities, and Calvin explicitly approves that delegation. Keep one writer per worktree and use a separate agent for independent review.
+- Before dispatch, the Architecture Manager states the concrete reason, exact write scope, acceptance checks, and retained merge responsibility. Keep the brief concise and use plain language.
 - Define domain contracts and API schemas before building model orchestration.
 - ADR-0008 fixes `evaluation_sampled` and `continuous_every_close` as the only V1 scheduling modes; a future frequency-reduction filter is a separately evaluated research candidate.
 - ADR-0009 fixes the first V1 Brooks policy duration to five-minute closed bars (`barDurationSeconds = 300`); any later timeframe is a separately versioned generalization candidate.
