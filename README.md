@@ -4,7 +4,7 @@ PA Agent Lab 是一个独立的 Price Action agent 研究项目。
 
 它的长期目标分为两个阶段：
 
-1. 建立对 Al Brooks Price Action 架构的可追溯理解，并由 Brooks Policy Agent 形成完整、因果、可审计的研究交易判断；Calvin 只提供离线审阅、解释和歧义裁定；
+1. 建立对 Price Action 架构的可追溯理解，并由 Agent 形成完整、因果、可审计的研究交易判断；Calvin 只提供离线审阅、解释和歧义裁定；
 2. 在冻结的 Brooks 基线之上，让独立 Research Agent 提出和验证新的交易假设与机会。
 
 本项目不是 CITA 的新版本，也不是 `vegas-ema-cta-lab` 的 V7。现有 Vegas/CITA 策略、结果、权限和历史 artifacts 不会自动成为本项目的策略权威。
